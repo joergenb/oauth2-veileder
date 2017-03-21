@@ -1,13 +1,14 @@
 ---
-title: Veilder for bruk av OpenID Connect i Id-porten
-pageid: veilder-introduction
+title: Veileder for bruk av OpenID Connect i Id-porten
+pageid: veileder-introduction
 layout: default
-description: Veilder for bruk av OpenID Connect i Id-porten
+description: Veileder for bruk av OpenID Connect i Id-porten
 isHome: true
 hiddenInToc: false
 ---
 
-## Introduksjon og bakgrunn for pilot
+## Introduksjon og bakgrunn
+
 
 ID-porten støtter idag autentisering av innbyggere basert på SAML2-protokollen. Dette er et teknologivalg som i praksis ble tatt midt på 2000-tallet. De siste 10 årene har det skjedd en betydlig teknologiutvikling, som gjør at det er naturlig å nå se på alternative løsninger.
 
