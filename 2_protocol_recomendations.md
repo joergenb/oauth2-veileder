@@ -7,8 +7,6 @@ isHome: false
 hiddenInToc: false
 ---
 
-#Anbefalte tiltak i protokollen
-
 ## Bruk av flyter
 
 ## Klientautentisering
