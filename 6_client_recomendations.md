@@ -2,15 +2,15 @@
 title: Anbefalte tiltak for klient
 pageid: veileder-client
 layout: default
-description:
+description: Anbefalte tiltak for klient
 isHome: false
 hiddenInToc: false
 ---
 
-##Beskyttelse mot CSRF og replay-attacs
+## Beskyttelse mot CSRF og replay-attacs
 
-###Bruk av state og nonce
+### Bruk av state og nonce
 
-##Validering av responser og tokens
+## Validering av responser og tokens
 
-##Sikker lagring av tokens
+## Sikker lagring av tokens

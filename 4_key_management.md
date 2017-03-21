@@ -2,15 +2,15 @@
 title: Anbefalte tiltak for nøkkel og sertifikathåndtering
 pageid: veileder-key-cert
 layout: default
-description:
+description: Anbefalte tiltak for nøkkel og sertifikathåndtering
 isHome: false
 hiddenInToc: false
 ---
 
-##Klienthemmeligheter
+## Klienthemmeligheter
 
-###Generering
-###Distribusjon
+### Generering
+### Distribusjon
 
 
 ## Sikker håndtering og lagring av privatnøkler

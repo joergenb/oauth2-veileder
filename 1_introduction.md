@@ -1,8 +1,8 @@
 ---
-title: Veileder for bruk av OpenID Connect i Id-porten
+title: Introduksjon og bakgrunn
 pageid: veileder-introduction
 layout: default
-description: Veileder for bruk av OpenID Connect i Id-porten
+description: Introduksjon og bakgrunn
 isHome: true
 hiddenInToc: false
 ---

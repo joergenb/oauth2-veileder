@@ -2,7 +2,7 @@
 title: Anbefalte tiltak i protokollen
 pageid: veileder-protocol
 layout: default
-description: Veileder for bruk av OpenID Connect i Id-porten
+description: Anbefalte tiltak i protokollen
 isHome: false
 hiddenInToc: false
 ---
