@@ -1,0 +1,52 @@
+# name of the software
+name: Veileder i bruk av OpenID Connect mot Id-porten
+siteUrlText: http://difi.github.io/idporten-oidc-veileder/
+siteUrl: http://difi.github.io/idporten-oidc-veileder/
+
+# current version of the software
+version: Staging
+
+# licence of the software
+license: GPL-3 License
+licenseUrl: http://opensource.org/licenses/GPL-3.0
+
+# the subpath of your site, e.g. /blog/
+baseurl: "/idporten-oidc-veileder"
+
+# list of additional links on the right of the top menu
+headerLinks:
+  - title: Om I-porten OpenID Connect provider
+    url: /idporten-oidc-veileder/about.html
+
+# github buttons
+githubButton:
+  user: difi
+  repo: idporten-oidc-veileder
+
+# twitter buttons
+twitter:
+  enabled: false
+  via:
+  hash:
+  account:
+
+# facebook buttons
+facebook:
+  enabled: false
+  profileUrl:
+
+# google analytics
+analytics:
+  account:
+  domain:
+
+# DON'T MODIFY
+highlight: rouge
+
+gems:
+  - jekyll-redirect-from
+
+exclude: ['README.md', 'Gemfile.lock', 'Gemfile']
+
+kramdown:
+  input: GFM
