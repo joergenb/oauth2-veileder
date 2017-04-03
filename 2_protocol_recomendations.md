@@ -9,16 +9,20 @@ hiddenInToc: false
 
 ## Bruk av flyter
 
-Flyt | Støttet | Bruksområde
+Tabellen under viser hvilke flyter som søttet og kriterier for bruk av hver flyt. For nærmere spesifikasjon vedrørende flytene se dokumentasjon for OAuth2 og OpenID Connect, henholdsvis [oauth2] og [oidc].
+
+Flyt | Støttet | Klient typer | Sikkerhetsnivå 
 --- | --- | ---
-Authorization Code | Ja |  For bruk ved integrering mot tjenester med privat klient på sikkerhetsnivå 2 og over.
-Implicit | Nei | N/A
-Resource Owner Password Credentials | Nei | N/A
-Client Credentials | Nei | N/A
+Authorization Code | Ja | Privat klient | 2,3 
+Implicit | Nei | N/A | N/A
+Resource Owner Password Credentials | Nei | N/A | N/A
+Client Credentials | Nei | N/A | N/A
+
+Videre følger mer detaljert informasjon vedrørende bruk av hver flyt.
 
 ### Authorization Code 
 
-[oauth2] 
+
 
 ## Klientautentisering
 
