@@ -3,7 +3,7 @@
 entries:
 - title: Oauth2-veileder
   product: Oauth2
-  version: 
+  version:
   folders:
 
   - title: oauth2(pdf)
@@ -19,16 +19,8 @@ entries:
       output: pdf
       type: frontmatter
 
-  - title: Bakgrunn
-    output: web, pdf
-    folderitems:
 
-#    - title: Get started
-#      url: /index.html
-#      output: web, pdf
-#      type: homepage
-
-  - title: Oversikt over Oauth2
+  - title: Arkitektur
     output: web, pdf
     folderitems:
 
@@ -36,32 +28,39 @@ entries:
       url: /systemlandskap.html
       output: web, pdf
 
-    - title: Klienter
-      url: /klienter.html
+    - title: Risiko-matrise
+      url: /risikomatrise.html
       output: web, pdf
-      
-  - title: Sikkerhetsmekanismer
+
+  - title: Protokoll-anbefalinger
     output: web, pdf
     folderitems:
-    
+
       - title: Protokoll-anbefalinger
         url: /sec_protocol_recomendations.html
         output: web, pdf
-        
+
+      - title: Navnekonvensjoner
+        url: /navnekonvensjoner.html
+        output: web, pdf
+
+
+  - title: Sikkerhetsmekanismer
+    output: web, pdf
+    folderitems:
+
       - title: Transportsikkerhet
         url: /sec_transport_security.html
         output: web, pdf
-        
+
       - title: Håndtering av hemmeligheter
         url: /sec_key_management.html
         output: web, pdf
-        
+
       - title: Kryptografiske anbefalinger
         url: /sec_crypto_recomendations.html
         output: web, pdf
-      
+
       - title: Klient-anbefalinger
         url: /sec_client_recomendations.html
         output: web, pdf
-    
-    
