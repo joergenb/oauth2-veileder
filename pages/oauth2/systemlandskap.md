@@ -10,7 +10,7 @@ summary: "Hvordan ser Oauth2-verdenen ut?"
 
 ## Overordnet systemlandskap
 
-I offentlig sektor har vi mange aktører som bruker Oauth2/OpenID Connect.   Figuren under viser en overorndet arkitektur.
+I offentlig sektor har vi flere aktører som har fellesløsninger basert på Oauth2/OpenID Connect.   Figuren under viser en overorndet arkitektur, med noen eksemler på koblinger.
 
 <div class="mermaid">
 graph LR
@@ -48,34 +48,56 @@ graph LR
   native-->mittapi
  end
 
-</div>
+ subgraph autentiseringslag
+   idporten
+   feide
+   fia
 
-sdf
+   idporten-oidc  --- idporten
+   dataporten --- feide
+   altinn --- idporten
+   ehelse-as --- fia
+   fia --- idporten
+ end
 
-
-## Grunnleggende Oauth2
-
-Oauth2 er en protokoll for autorisasjon.  Den klassiske flyten starter med en bruker som ønsker å benytte en tjeneste (kalla klient), og denne tjenesten har igjen behov for å bruke et API som en 3dje-part tilbyr (kalla ressurs-server, RS).  API-operasjonen skjer vanligvis i kontekst av den aktuelle brukeren, slik at APIet må forsikre seg om at brukeren har samtykket til at tjenesten kan operere på vegne av brukeren opp mot APIet.  APIet har valgt å la en ekstern autorisasjons-server (AS) ta ansvaret for bruker-dialogen.
-
-<div class="mermaid">
-sequenceDiagram
-Bruker->>Klient: Ønsker å bruke tjeneste
-Klient->>AS: Kan eg få? (authorize/)
-AS->>Bruker: Er det greitt?  (innlogging +evt. samtykke)
-Bruker->>AS: Jada
-AS->>Klient: Returnerer tokens (Access_token + evt id_token)
-Klient->>RS: Bruk API (med access_token)
-RS->>AS:  Validere token (access_token)
-AS->>RS: OK
-RS->>Klient: Resultat av API-operasjon
 </div>
 
 
-Merk at Oauth2 kun omhandler selve _autorisasjon_, men at autorisasjons-serveren normalt vil måtte be brukeren _autentisere_ seg for å vite hvem brukeren er.
+Konsekvenser av denne arkitetekturen er mellom anna
 
-### om samtykker
+Tjenesteutvikler (klienter):
+* ulike API-er kan ha ulike autorisasjonsservere.  Liten forskjell fra idag,  APIer til tilbudt på mange forskjellige protokoller.   
 
-samtykke kan vere eksplisitt (bruker får presentert en side med "ønsker du at Instagram skal kunne poste på Facebook-veggen din ?"  eller implisitt (ikke noe egen siden, men annen informasjon, for eksempel i tilknytting til tjeenste "ved å logge inn i denne tjenesten godtar du at vi henter opplysninger hos X"
+
+API-tilbydere ( ressursservere):
+* brukerne av APIer kan være alt fra sikra system til reine nettleser/javascript.  Ønskjer dei ha kontroll på dette?
+
+autorisasjonsservere
+* bør stole på autorisasjoner frå andre AS:
+* bør tilby felles "orkestreingsfunksjonalitet" - samvirke mellom AS.
+* harmoisert identifikasjon av klienter til ressursservere
+
+
+
+## spørsmål til workshop
+
+* Der løysingane samspeler
+  * kva må vi standardisere?
+  * kva kan vere forskjellig mellom sektorane
+* bruksområde for dei ulike fellesløysingane
+  * sjå døme
+
+
+## dokumentasjon tilknytta dei ulike løysingane
+
+* samtykkeløsningen i altinn  [https://altinn.github.io/docs/api/sluttbruker-api/diverse/samtykke/](https://altinn.github.io/docs/api/sluttbruker-api/diverse/samtykke/)
+* skatteetaens bruk av altinn samtykkeløsning: [https://skatteetaten.github.io/datasamarbeid-api-dokumentasjon/about_samtykkelosning.html](https://skatteetaten.github.io/datasamarbeid-api-dokumentasjon/about_samtykkelosning.html)
+* id-porten oidc [https://difi.github.io/idporten-oidc-dokumentasjon/](https://difi.github.io/idporten-oidc-dokumentasjon/)
+* fia [https://fia-sikkerhet.github.io/](https://fia-sikkerhet.github.io/)
+
+
+
+
 
 
 
