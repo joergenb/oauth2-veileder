@@ -28,14 +28,25 @@ entries:
       url: /systemlandskap.html
       output: web, pdf
 
-    - title: Tjenestekategorisering
+    - title: Tjenestekategorisering/risikomatrise
       url: /risikomatrise.html
+      output: web, pdf
+
+    - title: Tjenester
+      url: /klienter.html
+      output: web, pdf
+
+    - title: Ressurs-servere
+      url: /rs.html
+      output: web, pdf
+
+    - title: Autorisasjonsservere
+      url: /as.html
       output: web, pdf
 
     - title: Navnekonvensjoner
       url: /navnekonvensjoner.html
       output: web, pdf
-
 
   - title: Sikkerhetsmekanismer
     output: web, pdf

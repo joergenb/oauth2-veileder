@@ -7,6 +7,10 @@ permalink: navnekonvensjoner.html
 summary: "skal vi harmonisere navnekonvensjoner"
 ---
 
+## governance ?
+
+
+
 ## kandidater for navnekonvensjoner:
 
 * scopes
