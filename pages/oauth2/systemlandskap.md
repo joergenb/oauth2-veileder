@@ -62,34 +62,31 @@ graph LR
 
 </div>
 
+
+Nøkkel-egenskaper:
+
+* distribuert arkitektur
+* bredde i typer tjenester(konsumenter)
+* bredde i typer APIer
+* både innbygger-rettede og maskin-rettede tjenester
+* både private og offentlige virksomheter
+
 **Mål**:  felles- og sektorløsningene bør være "like", slik at det blir enkelt å bygge tjenster på toppen av dem.
 
+## bruksområder
 
-Konsekvenser av denne arkitetekturen er mellom anna
-
-Tjenesteutviklere (klienter):
-* API-er kan være tilbudt fra ulike autorisasjonsservere. (Liten forskjell fra idag,  APIer til tilbudt på mange forskjellige protokoller SOAP/REST/ulike sikringsmekanismer)
-  * Både autorisasjonsservere og ressursservere bør derfor tilstrebe lik bruk av Oauth.
-
-
-API-tilbydere ( ressursservere):
-* Brukerne av APIer kan være alt fra robust,sikra system til reine nettleser/javascript.  
-  * Kva kontroll ønskjer/bør RS ha?
-
-autorisasjonsservere
-* bør stole på autorisasjoner frå andre AS:
-* bør tilby felles "orkestreingsfunksjonalitet" - samvirke mellom AS.
-* harmoisert identifikasjon av klienter til ressursservere
+* autentisering
+  * autentiseringsnær autorisasjon
+* samtykke/autorisasjon
 
 
-## governance
 
-korleis påverke internt
-
-#
+## Governance
 
 
-## dokumentasjon tilknytta dei ulike løysingane
+
+
+## Eksisternde dokumentasjon tilknytta dei ulike løysingane
 
 * samtykkeløsningen i altinn  [https://altinn.github.io/docs/api/sluttbruker-api/diverse/samtykke/](https://altinn.github.io/docs/api/sluttbruker-api/diverse/samtykke/)
 * skatteetaens bruk av altinn samtykkeløsning: [https://skatteetaten.github.io/datasamarbeid-api-dokumentasjon/about_samtykkelosning.html](https://skatteetaten.github.io/datasamarbeid-api-dokumentasjon/about_samtykkelosning.html)
@@ -103,4 +100,4 @@ korleis påverke internt
   * kva må vi standardisere?
   * kva kan vere forskjellig mellom sektorane
 * bruksområde for dei ulike fellesløysingane
-  * sjå døme
+* forholdet til private verksemder

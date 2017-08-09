@@ -14,16 +14,18 @@ tiltak skal stå i stil med eksponert risiko.
 
 Forsøker å definere 3 kategorier tjenester / APIer/ "informasjon".  Gjenbruke risiko-klasse frå "rammeverk for autentisering og uavviseslighet "   TODO:  er det anna lovverk som er meir relevant? Har Normen i helsevesenet noko vi kan bygge på?
 
-Er det vesensforskjellig å risiko-klassifisere APIer kontra nett-tjenester?  Samme informasjonsverdiene som ein beskytter.   ein forskjell er 3.dje-parten
+Overordna spørsmål i risikovurderinga:
 
 * Kva data beskytter eg ?
 * Kor mange eksponerer eg ?
 * Kva brukomåråde?
 
 
+
+
 | område | høg | medium | låg |
 |-|-|-|-|
-|**Kva data beskytter eg ?** | utlevere personsentivive opplysninger. Gjere handlingar med "stor" konsekvens for brukar| "alt anna" | returnerer ingen person(sensitive) opplysninger | kan ikkje gjere "viktige" val på vegne av bruker|
+|**Kva data beskytter eg ?** | utlevere personsentivive opplysninger. Gjere handlingar med "stor" konsekvens for brukar| "alt anna" | returnerer ingen person(sensitive) opplysninger. Kan ikkje gjere "viktige" val på vegne av bruker|
 |**Kor mange eksponerer eg?** | befolkningen?  | ? |? |
 |Døme på APIer|helsejournaldata, sjukemeldingar, søke lån| bestille legetime, søke barnehageplas, (prosessar som konsekvens av) å melde flytting.| sjå ungane sin timeplan, mine biler|
 | Oauth2-flyt| auth.code|auth.code| auth.code<br>implicit|
@@ -43,3 +45,4 @@ Er det vesensforskjellig å risiko-klassifisere APIer kontra nett-tjenester?  Sa
 * dersom du er RS, kva krav kan / bør du stille til klienten?  
   * og skal/bør AS vite noko om desse?
 * er risikoen ved å utlevere sensivitve data over HTTPS til nettleser mindre enn å sende dette til ein public-klient ?
+* Er det vesensforskjellig å risiko-klassifisere APIer kontra nett-tjenester?  Samme informasjonsverdiene som ein beskytter.() 3 parter i staden for 2)

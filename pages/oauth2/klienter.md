@@ -13,7 +13,7 @@ permalink: klienter.html
 
 
 
-### ulike typer tjenester / klienter
+## Ulike typer tjenester / klienter
 
 | Klient | Beskrivelse | Anbefalinger |
 | --- | --- | --- |
@@ -23,6 +23,10 @@ permalink: klienter.html
 
 
 (tabellen er vel litt duplikat av [risikomatrise](risikomatrise.html)
+
+
+
+
 
 
 ## Spørsmål til workshop
