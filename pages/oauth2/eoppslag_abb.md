@@ -4,21 +4,12 @@ title: "eOppslag Architecture Building Block"
 sidebar: oauth2
 permalink: eoppslag_abb.html
 
-summary: "eOppslag Architecture Building Block"
+summary: "Detaljert spesifikasjon av referansearkitekturen for eOppslag"
 ---
 
-## Description
+## Archimate tegning
 
-eOppslag er synkron tilgang til informasjon enten ved henting av informasjon (pull) eller oppdatering av informasjon (push). Dette foregår i sanntid (synkront), hvor svar på en forespørsel gis innenfor få sekunder. Dette kan være å gjøre en spørring i Folkeregisteret. Mønsteret egner seg når en virksomhet har faste og forutsigbare parter, slik som ved oppslag mot et register, der virksomhetene på forhånd kan avtale hvordan og hvor fort mottakers forretningsprosess skal utføres.
-
-## Requirements
-
-
-## Specification
-
-### Archimate tegning
-
-#### Klaus sin modell:
+### Klaus sin modell:
 
 Merk: bruker EIRA-byggesteiner / notasjon
 
@@ -48,18 +39,18 @@ graph LR
 (treng vi Trust Registry Service ?)
 
 
-#### Rolf sin modell :
+### Rolf sin modell :
 
 ![bilde](assets/eoppslag_abb-6a8ed.png)
 
 
 
 
-### Architectural Description
+## Architectural Description
 
-#### komponenter
+### komponenter
 
-##### Virksomhetsautentisering(Identity Management Service)
+#### Virksomhetsautentisering(Identity Management Service)
 
 Vil si å autentisere ein virksomhet
 
@@ -73,13 +64,15 @@ Bruk av virksomhetssertifikater er forankret i følgende:
 Som en konsekvens av innføring av eIDAS-forordningen i norsk lov i 2018, vil overnevnte dokumenter bli harmonsiert til å være i tråd med eIDAS.  De nye dokumentene er pt. på høring. For virksomhetsautentisering medfører dette at virksomhetssertifikater blir erstattet av såkalte 'eIDAS segl'.  Disse kommer i flere avarter:  elektroniske segl, avanserte segl og kvalifiserte segl.
 
 
-FYLL PÅ
 
-avledede
+avledede/egen-produserte nøkler
+
+bruksområde av nøkler
 
 
+####  FYLL PÅ
 
-#### Aktører:
+### Aktører:
 
 •	Tjenesteeier (A): den part som tilbyr en tjeneste gjennom et API
 •	Konsument (C): den part som skal bruke tjenesten og juridisk sett er mottaker
@@ -93,7 +86,7 @@ avledede
 
 
 
-#### Scenario:
+### Scenario:
 
 Scenario navn	Typisk antall konsumenter	Typisk antall tjenesteeiere	Beskrivelse
 Lovhjemlet	1-10	1	Utveksling av informasjon mellom offentlige etater hvor dette er spesifikt hjemlet i lov og forskrift, og hvor den aktuelle informasjonen typisk inngår i definerte prosesser hos alle involverte parter. Et eksempel er utlendingsforvaltningen som er fordelt mellom Politiet, UDI og UNE, og hvor disse utveksler bestemte opplysninger på definerte steder i saksgangen.
@@ -109,51 +102,6 @@ Utenfor scope i denne omgang:
 For alle scenariene hvor det er flere enn 10 aktører må det også støttes at det finnes sentrale leverandører eller bransjeorganisasjoner som opptrer på vegne av flere aktører (for eksempel «eika» på vegne av en rekke banker, eller en regnskapsfører på vegne av sine kunder).
 
 
-### Profile
+## Profile
 
-### Standards
-
-## Recommendations
-
-## Work-in-Progress
-
-## Løsningsarkitekturer (SBB) som oppfyller referansearkitekturen
-
-Flere løsningsarkitekturer
-
-### Metode for valg av løsningsarkitekturen
-
-Slik bør du velge hvilken løsningsarkitektur som passer DITT behov!
-
-### 1. Oauth2 token-basert sikring
-
-Se [detaljert underside](eoppslag_sbb_oauth2.html)
-
-### 2. SOAP med WS-security
-
-### 3. Tovegs TLS klientautentisering
-
-### sikkert ein haug fleire
-
-## Eksemler på bruk av løsningsarkitekturen
-
-###  DSOP forsikring samhandlingsarkitektur
-
-Elektronisk overføring fra NAV til forsikringsselskapene av stønadsinformasjon knyttet til brukere/kunder som er arbeidsuføre
-* Redusert saksbehandlingstid både hos NAV og forsikringsselskapene ved å redusere manuelt arbeid i behandlingen av sensitive personopplysninger og rask overføring av informasjon
-* Forbedret kunde-/brukeropplevelser med bedre forutsigbarhet og raskere behandlingstid
-
-Overføring av data basert på samtykke gitt av bruker-/kunde, vil sikre riktig håndtering av personopplysninger (understøtter kravene i personvernforordningen)
-* NAV deler kun data som forsikringsselskapene må ha for å kunne behandle saken – data minimering
-* Selskapene unngår å motta overflødig informasjon som må gjennomgås og slettes
-* Bruker kan trekke samtykke når de måtte ønske det
-
-Se eget dokument [LINK]
-
-### DSOP skatteetaens
-
-TODO
-
-
-
-## References
+## Standards
