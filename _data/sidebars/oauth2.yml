@@ -9,32 +9,16 @@ entries:
 
   - title: eOppslag
     output: web, pdf
+    url: /eoppslag_abb.html
     folderitems:
 
-    - title: eOppslag ABB
-      url: /eoppslag_abb.html
-      output: web, pdf
 
-    - title: eOppslag SBB for Oauth2
+  - title: Oauth2 SBB
       url: /eoppslag_sbb_oauth2.html
-      output: web, pdf
 
 
-  - title: oauth2(pdf)
-    output: pdf
-    type: frontmatter
-    folderitems:
-    - title:
-      url: /titlepage
-      output: pdf
-      type: frontmatter
-    - title:
-      url: /tocpage
-      output: pdf
-      type: frontmatter
 
-
-  - title: Arkitektur
+  - title: Oauth2-veileder
     output: web, pdf
     folderitems:
 
@@ -62,7 +46,7 @@ entries:
       url: /navnekonvensjoner.html
       output: web, pdf
 
-  - title: Sikkerhetsmekanismer
+  - title: Oauth2 Sikkerhetsmekanismer
     output: web, pdf
     folderitems:
 
