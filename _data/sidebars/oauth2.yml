@@ -15,17 +15,13 @@ entries:
         output: web, pdf
         url: /eoppslag_abb.html
 
-  - title: Oauth2 løsningsarkitektur
+  - title: Oauth2 løsningsarkitektur (SBB)
     output: web, pdf
     folderitems:
 
-      - title: Solution Building Block overview
-        output: web, pdf
-        url: /eoppslag_sbb_oauth2.html
-
-  - title: Oauth2-veileder
-    output: web, pdf
-    folderitems:
+    - title: Solution Building Block overview
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2.html
 
     - title: Systemlandskap
       url: /systemlandskap.html
@@ -35,15 +31,15 @@ entries:
       url: /risikomatrise.html
       output: web, pdf
 
-    - title: Tjenester
+    - title: Anbefalinger for konsumenter
       url: /klienter.html
       output: web, pdf
 
-    - title: Ressurs-servere
+    - title: Anbefalinger for API-tilbydere
       url: /rs.html
       output: web, pdf
 
-    - title: Autorisasjonsservere
+    - title: Anbefalinger for Autorisasjonsservere
       url: /as.html
       output: web, pdf
 

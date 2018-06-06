@@ -19,7 +19,7 @@ graph LR
   dataporten
   altinn
   idporten-oidc
-  ehelse-as
+  helsenorge
  end
 
  subgraph API-lag
@@ -30,7 +30,7 @@ graph LR
   dittapi-. kontrollerer tilgang .- altinn
  end
 
- subgraph Tjeneste-lab
+ subgraph Tjeneste-lag
   subgraph Tradisjonell netttjeneste
     browser
     applikasjonsserver
@@ -51,13 +51,13 @@ graph LR
  subgraph autentiseringslag
    idporten
    feide
-   fia
+   helseid
 
    idporten-oidc  --- idporten
    dataporten --- feide
    altinn --- idporten
-   ehelse-as --- fia
-   fia --- idporten
+   helsenorge --- helseid
+   helseid --- idporten
  end
 
 </div>
@@ -73,15 +73,7 @@ Nøkkel-egenskaper:
 
 **Mål**:  felles- og sektorløsningene bør være "like", slik at det blir enkelt å bygge tjenster på toppen av dem.
 
-## bruksområder
 
-* autentisering
-  * autentiseringsnær autorisasjon
-* samtykke/autorisasjon
-
-
-
-## Governance
 
 
 
@@ -93,6 +85,12 @@ Nøkkel-egenskaper:
 * id-porten oidc [https://difi.github.io/idporten-oidc-dokumentasjon/](https://difi.github.io/idporten-oidc-dokumentasjon/)
 * fia [https://fia-sikkerhet.github.io/](https://fia-sikkerhet.github.io/)
 * Dataporten [https://docs.dataporten.no/](https://docs.dataporten.no/)
+
+
+##  Fin archimate tegning
+
+![oauth2 archimate](assets/eoppslag_sbb_oauth2-266aa.png)
+
 
 # spørsmål til workshop
 
