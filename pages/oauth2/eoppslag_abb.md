@@ -38,10 +38,14 @@ graph LR
  subgraph fellestjenster
   cl[Capability Lookup]
   am[Access Management Service]
+  ims[Identity Management Service]
  end
 
 
 </div>
+
+(burde Bus.  det vore Data Exchange service / component ?)
+(treng vi Trust Registry Service ?)
 
 
 #### Rolf sin modell :
@@ -51,12 +55,28 @@ graph LR
 
 
 
-
 ### Architectural Description
 
-fyll på
+#### komponenter
 
-### Aktører:
+##### Virksomhetsautentisering(Identity Management Service): v
+
+vil si å autentisere ein virksomeht
+
+I dagens løsninger for maskingrensesnitt mellom offentlige etater, og mellom private og det offentlige, brukes i stor grad virksomhetssertifkater for autentisering over TLS tilkoblinger.
+Bruk av virksomhetssertifikater er forankret i følgende:
+•	https://www.regjeringen.no/no/dokumenter/rammeverk-for-autentisering-og-uavviseli/id505958/
+•	https://www.regjeringen.no/no/dokumenter/kravspesifikasjon-for-pki-i-offentlig-se/id611085/
+•	https://lovdata.no/dokument/SF/forskrift/2004-06-25-988
+
+
+
+
+
+
+
+
+#### Aktører:
 
 •	Tjenesteeier (A): den part som tilbyr en tjeneste gjennom et API
 •	Konsument (C): den part som skal bruke tjenesten og juridisk sett er mottaker
@@ -67,7 +87,10 @@ fyll på
 •	Programvareleverandør (S): der hvor konsumenten (C) ikke går gjennom en driftsleverandør, men integrerer direkte vil det i mange sammenhenger ikke være C som lager programvaren, men de kjøper for eksempel et ERP-system fra en leverandør, og dette kaller tjenesten. Hvorvidt S er relevant i tilgangsstyringen vil variere.
 
 
-### Scenario:
+
+
+
+#### Scenario:
 
 Scenario navn	Typisk antall konsumenter	Typisk antall tjenesteeiere	Beskrivelse
 Lovhjemlet	1-10	1	Utveksling av informasjon mellom offentlige etater hvor dette er spesifikt hjemlet i lov og forskrift, og hvor den aktuelle informasjonen typisk inngår i definerte prosesser hos alle involverte parter. Et eksempel er utlendingsforvaltningen som er fordelt mellom Politiet, UDI og UNE, og hvor disse utveksler bestemte opplysninger på definerte steder i saksgangen.
@@ -76,11 +99,16 @@ Alle virksomheter	Over 1 million	1	Tjenester som alle registrerte virksomheter i
 Revers	1-10	10-1000	Der hvor offentlige etater trenger å kalle tjenester hos private virksomheter for å hente informasjon om disse virksomhetene sine kunder.
 
 
+Utenfor scope i denne omgang:
+•	Virksomhet gjør kall på vegne av en borger
+•	Utenlandske virksomheter
+
+For alle scenariene hvor det er flere enn 10 aktører må det også støttes at det finnes sentrale leverandører eller bransjeorganisasjoner som opptrer på vegne av flere aktører (for eksempel «eika» på vegne av en rekke banker, eller en regnskapsfører på vegne av sine kunder).
+
+
 ### Profile
 
 ### Standards
-
-## Recommendations
 
 ## Recommendations
 
