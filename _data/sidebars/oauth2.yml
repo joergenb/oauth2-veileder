@@ -1,20 +1,25 @@
 # This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
 
 entries:
-- title: Oauth2-veileder
+- title: eOppslag
   product: Oauth2
   version:
   folders:
 
 
-  - title: eOppslag ABB
+  - title: Referansearkitektur (ABB)
     output: web, pdf
-    url: /eoppslag_abb.html
+    folderitems:
 
-  - title: Oauth2 SBB
+      - title: Architecture Building Block
+        url: /eoppslag_abb.html
+
+  - title: Oauth2 løsningsarkitektur
     output: web, pdf
-    url: /eoppslag_sbb_oauth2.html
+    folderitems:
 
+      - title: Solution Building Block overview
+        url: /eoppslag_sbb_oauth2.html
 
   - title: Oauth2-veileder
     output: web, pdf
