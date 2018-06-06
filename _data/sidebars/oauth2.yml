@@ -13,7 +13,7 @@ entries:
 
   - title: Oauth2 SBB
     output: web, pdf
-      url: /eoppslag_sbb_oauth2.html
+    url: /eoppslag_sbb_oauth2.html
 
 
   - title: Oauth2-veileder
