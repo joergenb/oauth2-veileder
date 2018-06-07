@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "eOppslag Architecture Building Block"
-sidebar: oauth2
+sidebar: eoppslag
 permalink: eoppslag_abb.html
 
 summary: "Detaljert spesifikasjon av referansearkitekturen for eOppslag"

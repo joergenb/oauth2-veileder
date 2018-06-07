@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "Navnekonvensjoner"
-sidebar: oauth2
+sidebar: eoppslag
 permalink: navnekonvensjoner.html
 
 summary: "skal vi harmonisere navnekonvensjoner"

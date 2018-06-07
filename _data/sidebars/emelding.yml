@@ -1,0 +1,34 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: eMelding
+  product: emelding
+  version:
+  folders:
+
+
+  - title: Referansearkitektur (ABB)
+    output: web, pdf
+    folderitems:
+
+      - title: Oversikt
+        output: web, pdf
+        url: /emelding_abb_overview.html
+
+
+  - title: Løsningsarkitektur 1
+    output: web, pdf
+    folderitems:
+
+    - title: Solution Building Block overview
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2.html
+
+
+  - title: Løsningsarkitektur 2
+    output: web, pdf
+    folderitems:
+
+    - title: Solution Building Block overview
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2.html

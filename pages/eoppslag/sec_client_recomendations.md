@@ -2,7 +2,7 @@
 layout: page
 title: "Anbefalte tiltak for klient"
 summary: "Anbefalte tiltak for klient"
-sidebar: oauth2
+sidebar: eoppslag
 
 permalink: sec_client_recomendations.html
 ---

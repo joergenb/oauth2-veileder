@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "eOppslag ABB oversikt"
-sidebar: oauth2
+sidebar: eoppslag
 permalink: eoppslag_abb_overview.html
 
 summary: "Grunnleggende om eOppslag referansearkitekturen"

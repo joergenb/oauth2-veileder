@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "Systemlandskap"
-sidebar: oauth2
+sidebar: eoppslag
 permalink: systemlandskap.html
 
 summary: "Hvordan ser Oauth2-verdenen ut?"

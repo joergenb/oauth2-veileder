@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "Ressursservere"
-sidebar: oauth2
+sidebar: eoppslag
 permalink: rs.html
 
 summary: "Retningslinjer for Ressurs-servere (API-tilbydere)"

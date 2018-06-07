@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "eOppslag Solution Building Block: Token-basert sikring med Oauth2"
-sidebar: oauth2
+sidebar: eoppslag
 permalink: eoppslag_sbb_oauth2.html
 
 summary: "eOppslag Solution Building Block: Token-basert sikring med Oauth2"

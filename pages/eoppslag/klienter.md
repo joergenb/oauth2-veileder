@@ -3,7 +3,7 @@ layout: page
 title: "Tjenester"
 summary: "Tjenester"
 keywords: sample
-sidebar: oauth2
+sidebar: eoppslag
 folder: oauth2
 permalink: klienter.html
 ---

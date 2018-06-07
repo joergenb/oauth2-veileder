@@ -2,7 +2,7 @@
 layout: page
 title: "Anbefalte tiltak for transport-/kanalsikring"
 summary: "Anbefalte tiltak for transport-/kanalsikring"
-sidebar: oauth2
+sidebar: eoppslag
 folder: oauth2
 permalink: sec_transport_security.html
 ---

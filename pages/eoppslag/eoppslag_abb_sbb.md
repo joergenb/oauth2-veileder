@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "eOppslag Løsningsarkitekturer"
-sidebar: oauth2
+sidebar: eoppslag
 permalink: eoppslag_abb_sbb.html
 
 summary: "Det er flere løsningsarkitkturer som realiserer referansearkitektuern til eOppslag"

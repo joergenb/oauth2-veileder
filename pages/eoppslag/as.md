@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "Autorisasjonsservere"
-sidebar: oauth2
+sidebar: eoppslag
 permalink: as.html
 
 summary: "Retningslinjer for autorisasjonsservere "

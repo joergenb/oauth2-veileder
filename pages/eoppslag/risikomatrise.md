@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "Risikomatrise"
-sidebar: oauth2
+sidebar: eoppslag
 permalink: risikomatrise.html
 
 summary: "risikomatrise"

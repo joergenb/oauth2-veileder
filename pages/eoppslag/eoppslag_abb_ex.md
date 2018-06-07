@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "eOppslag ABB eksempler"
-sidebar: oauth2
+sidebar: eoppslag
 permalink: eoppslag_abb_ex.html
 
 summary: "Eksempler på bruk av eOppslag"
