@@ -3,10 +3,10 @@ repository: difi/idporten-oidc-veileder
 output: web
 # this property is useful for conditional filtering of content that is separate from the PDF.
 
-topnav_title: Oauth2-veiledere
+topnav_title: Referansearkitekturer
 # this appears on the top navigation bar next to the home button
 
-site_title: Ouath2-veiledere
+site_title: Referansearkitekturer
 # this appears in the html browser tab for the site title (seen mostly by search engines, not users)
 
 company_name: Direktoratet for forvaltning og IKT
@@ -94,11 +94,12 @@ defaults:
       search: true
       sidebar: eoppslag
       topnav: topnav
-  
+
 # these are defaults used for the frontmatter for these file types
 
 sidebars:
-- oauth2
+- eoppslag
+- emelding
 #- home_sidebar
 #- mydoc_sidebar
 #- product1_sidebar
