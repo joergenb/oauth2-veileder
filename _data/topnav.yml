@@ -5,15 +5,17 @@ topnav:
   items:
     - title: GitHub
       external_url: https://github.com/difi/idporten-oidc-veileder
-    
+
 #Topnav dropdowns
 topnav_dropdowns:
 - title: Topnav dropdowns
   folders:
     - title: Products
       folderitems:
-        - title: Oauth2
-          url: /o2_intro.html
+        - title: eMelding
+          url: /emelding_abb_overview.html
+        - title: eOppslag
+          url: /eoppslag_abb_overview.html
 #        - title: Jekyll Documentation Theme
 #          url: /mydoc_introduction.html
 #        - title: Product 1
