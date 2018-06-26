@@ -36,6 +36,10 @@ entries:
       output: web, pdf
       url: /eoppslag_sbb_oauth2.html
 
+    - title: Ulike tokens
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2_tokens.html
+
     - title: Systemlandskap
       url: /systemlandskap.html
       output: web, pdf
