@@ -3,6 +3,7 @@ layout: page
 title: "Ulike Oauth2 tokens"
 sidebar: eoppslag
 permalink: eoppslag_sbb_oauth2_tokens.html
+
 summary: "Ulike Oauth2 tokens brukt i det offentlige, både eOppslag og annen bruk "
 ---
 
