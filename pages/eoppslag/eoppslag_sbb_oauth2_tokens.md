@@ -8,19 +8,19 @@ summary: "Ulike Oauth2 tokens brukt i det offentlige, både eOppslag og annen br
 
 ## Description
 
-|claim|Autentiseringsbevis (OIDC id_token)|Autensieringær autorisasjon - bruker innlogget i tjeneste uten delegering (oauth2 access_token)|Maskinporten idag|eOppslag - selvstendig konsument|eOppslag konsument via leverandør|Persondelegering |spec'|definisjon|
-|-|-|-|-|-|-|-|-|-|
-|sub|TWGi0...2GBY=|TWGi0...2GBY=||oidc_storbanken|oidc_eika_kunde1|TWGi0...2GBY=|oidc, jwt|OIDC: unik, tjenstespesifikk ikke-meningsbærende identifikator, JWT: "the recipient thta the JWT is intended for" |
-|scope|openid|svv:pkk|global/kontaktopplysninger.read|nav:forsikring|nav:forsikring|oauth2|
-|client_orgno||944117784|990 983 291|999888777|777888999|
-|aud| oidc_kongsvingerkommune_acos|oidc_kongsvingerkommune_acos|oidc_authlevel_nav
-|acr| Level4 |Level4|||se
-|amr| BankID |BankID||
-|pid|11111156789|11111156789 |||| personidentifikator i folkeregisteret (burde heitt folkeregisteridentifikator)|
+|claim|Autentiseringsbevis (OIDC id_token)|Autensieringær autorisasjon - bruker innlogget i tjeneste uten delegering (oauth2 access_token)|Maskinporten idag|eOppslag - selvstendig konsument|eOppslag konsument via leverandør| Ansatt pålogging (delegering) |spec'|kommentar|
+|-|-|-|-|-|-|-|-|-|-|
+|sub|TWGi0...2GBY=|TWGi0...2GBY=||oidc_storbanken|oidc_eika_kunde1|TWGi0...2GBY=|OIDC, JWT|OIDC: unik, tjenstespesifikk ikke-meningsbærende identifikator, JWT:  The "sub" (subject) claim identifies the principal that is the  subject of the JWT. |
+|scope|openid|svv:pkk|global/kontaktinformasjon.read|nav:forsikring|nav:forsikring|nav:forsikring|Oauth2|
+|client_orgno||944117784|974761076|999888777|777888999|936796702
+|aud| oidc_kongsvingerkommune_acos|oidc_svv_vitecautodata|oidc_skatteetaten_krr|https://api.nav.no/|https://api.nav.no/||OIDC, JWT| `aud` utlevers kun når klient ber om det|
+|acr| Level4 |Level4||egen_nøkkel|kvalifisert_segl|Level4|oidc|Sikkerhetsnivå (Auth. context class ref. )|
+|amr| BankID |BankID||||BankID|oidc|
+|pid|11111156789|11111156789 ||||11111156789 | [krr] | personidentifikator i folkeregisteret (burde heitt folkeregisteridentifikator)|
 |**Fremtidige claims**|
-|act|||||`{ sub: oidc_eika, organisasjonsnummer: 999777555 }`|||Enhet|Norsk organisasjonsnummer (utenlandske foretak vil få et annet claim)|
-|client_id|| |
-|
+|act|||||`{ sub: "eika-gruppen", organisasjonsnummer: 999777555 }`|||Enhet|Norsk organisasjonsnummer (utenlandske foretak vil få et annet claim)|
+|may_act||||||`{ sub: "min arbeidsgiver", organisasjonsnummer: 999555111, iss: "altinn autorisasjon" }`|
+|client_id||oidc_svv_vitecautodata || evt bruke client_id istedenfor/ i tillegg til `sub` ?|| oidc_visma_skyregnskap
 
 
 Følgende claims er like i alle varianter:
@@ -35,11 +35,13 @@ Følgende claims er like i alle varianter:
 
 ## sikkerhetsnivå
 
-Personinnlogging:
+### Personinnlogging:
 * Level3
 * Level4
 
-Virksomhet:
+### Virksomhet:
+(må defineres)
+
 * eIDAS elektronisk segl
 * eIDAS avansert segl
 * eIDAS kvalifisert segl
@@ -50,4 +52,7 @@ Virksomhet:
 
 * [Enhet] : [Felles informasjonsmodell for Person og Enhet](https://www.difi.no/fagomrader-og-tjenester/digitalisering-og-samordning/nasjonal-arkitektur/informasjonsforvaltning/person-og-enhet-felles-informasjonsmodell)
 
-*
+* [krr] : [https://begrep.difi.no/Felles/personidentifikator](https://begrep.difi.no/Felles/personidentifikator)
+* [JWT] : [RFC 7519](https://tools.ietf.org/html/rfc7519)
+* [OIDC] : [
+OpenID Connect Core 1.0 incorporating errata set 1](http://openid.net/specs/openid-connect-core-1_0.html)
