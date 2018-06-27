@@ -19,8 +19,8 @@ summary: "Ulike Oauth2 tokens brukt i det offentlige, både eOppslag og annen br
 |amr| BankID |BankID||||BankID|oidc|
 |pid|11111156789|11111156789 ||||11111156789 | [krr] | personidentifikator i folkeregisteret (burde heitt folkeregisteridentifikator)|
 |**Fremtidige claims**|
-|act|||||`{ sub: "eika-gruppen", organisasjonsnummer: 999777555 }`|||Enhet|Norsk organisasjonsnummer (utenlandske foretak vil få et annet claim)|
-|may_act||||||`{ sub: "min arbeidsgiver", organisasjonsnummer: 999555111, iss: "altinn autorisasjon" }`|
+|act|||||`{ sub: "eika-gruppen", organisasjonsnummer: 999777555 }`|||Enhet|Norsk organisasjonsnummer (utenlandske foretak vil få et annet claim)|Token Ex.|The "act" (actor) claim provides a means within a JWT to express that    delegation has occurred and identify the acting party to whom authority has been delegated.|
+|may_act||||||`{ sub: "min arbeidsgiver", organisasjonsnummer: 999555111, iss: "altinn autorisasjon" }`|Token Ex. |The "may_act" claim makes a statement that one party is authorized to  become the actor and act on behalf of another party.|
 |client_id||oidc_svv_vitecautodata || oidc_storbanken (evt autogenerert)|oidc_eika_kunde23 (evt. autogenerert)|| oidc_visma_skyregnskap
 
 
