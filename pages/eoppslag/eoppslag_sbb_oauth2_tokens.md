@@ -11,7 +11,7 @@ summary: "Ulike Oauth2 tokens brukt i det offentlige, både eOppslag og annen br
 
 * *Maskinporten* : tbd
 * *Maskinporten delegering* : tbd
-* *Ansattpålogging* : En ansatt i "Min Arbeidsgiver" logger inn på ein sky-regneskapsløsning (levert av Visma), og skal bruke eit API levert av NAV. 
+* *Ansattpålogging* : En ansatt i "Min Arbeidsgiver" logger inn på ein sky-regneskapsløsning (levert av Visma), og skal bruke eit API levert av NAV.
 
 ## Detaljert token
 
@@ -27,7 +27,7 @@ summary: "Ulike Oauth2 tokens brukt i det offentlige, både eOppslag og annen br
 |**Fremtidige claims**|
 |act|||||`{ sub: "eika-gruppen", organisasjonsnummer: 999777555 }`||Token Ex.|The "act" (actor) claim provides a means within a JWT to express that    delegation has occurred and identify the acting party to whom authority has been delegated.|
 |may_act||||||`{ sub: "min arbeidsgiver", organisasjonsnummer: 999555111, iss: "altinn autorisasjon" }`|Token Ex. |The "may_act" claim makes a statement that one party is authorized to  become the actor and act on behalf of another party.|
-|client_id||oidc_svv_vitecautodata || oidc_storbanken (evt autogenerert)|oidc_eika_kunde23 (evt. autogenerert)|| oidc_visma_skyregnskap
+|client_id||oidc_svv_vitecautodata || oidc_storbanken (evt autogenerert)|oidc_eika_kunde23 (evt. autogenerert)| oidc_visma_skyregnskap
 
 
 Følgende claims er like i alle varianter:
