@@ -7,9 +7,15 @@ permalink: eoppslag_sbb_oauth2_tokens.html
 summary: "Ulike Oauth2 tokens brukt i det offentlige, både eOppslag og annen bruk "
 ---
 
-## Description
+## Scenario
 
-|claim|Autentiseringsbevis (OIDC id_token)|Autensieringær autorisasjon - bruker innlogget i tjeneste uten delegering (oauth2 access_token)|Maskinporten idag|eOppslag - selvstendig konsument|eOppslag konsument via leverandør| Ansatt pålogging (delegering) |spec'|kommentar|
+* *Maskinporten* : tbd
+* *Maskinporten delegering* : tbd
+* *Ansattpålogging* : En ansatt i "Min Arbeidsgiver" logger inn på ein sky-regneskapsløsning (levert av Visma), og skal bruke eit API levert av NAV. 
+
+## Detaljert token
+
+|claim|Autentiseringsbevis (OIDC id_token)|Autensieringær autorisasjon - bruker innlogget i tjeneste uten delegering (oauth2 access_token)|Maskinporten idag|eOppslag - selvstendig konsument|eOppslag konsument via leverandør| Ansattpålogging (delegering) |spec'|kommentar|
 |-|-|-|-|-|-|-|-|-|-|
 |sub|TWGi0...2GBY=|TWGi0...2GBY=||en UUID |en annen UUID|TWGi0...2GBY=|OIDC, JWT|OIDC: unik, tjenestespesifikk ikke-meningsbærende identifikator(strengt matematisk definert), JWT:  The "sub" (subject) claim identifies the principal that is the  subject of the JWT. |
 |scope|openid|svv:pkk|global/kontaktinformasjon.read|nav:forsikring|nav:forsikring|nav:forsikring|Oauth2|
