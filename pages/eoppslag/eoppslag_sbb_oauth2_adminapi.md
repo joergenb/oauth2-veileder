@@ -29,9 +29,7 @@ POST /scopes (prefix*, subscope*, audience, token-egenskaper)
 
 `token-egenskaper` er tekniske egenskaper som API-tilbyder forventer/krever. Dette kan være max tillatt levetid, self-contained eller ikke, minste sikkerhetsnivå, etc.
 
-#### Eksempler
-
-##### Normal-tilfelle, ein API-tilbyder med få APIer.
+#### Eksempel: Normal-tilfelle, ein API-tilbyder med få APIer.
 Her trengs ikkje audience.
 ```
 POST /scope ("nav:", "forsikring")    
@@ -40,7 +38,7 @@ som oppretter scopet `nav:forsikring`.
 Validering på at org.no i benyttet virk.sert stemmer med provisjonering.
 Dersom NAV berre har eitt prefix, kan ogso vere valgfri?
 
-##### Avansert tilfelle som krev audience
+#### Eksempel: Avansert tilfelle som krev audience
 ```
 POST /scopes ("bits:", "konto", "https://rs.bank1.no/")
 POST /scopes ("bits:", "konto", "https://rs.bank2.no/")
@@ -143,7 +141,7 @@ Konklusjon?: Konsumenter som ikke stoler på leverandører, må sørge for at de
 * C2 har tilgang til scope S1 direkte
 * L1 oppretter integrasjon falsk C1-integrL1 kan lage forespørsel med  
 * L1 forespør token for C2.
-  - Maskinporten ser at C2 og S1 
+  - Maskinporten ser at C2 og S1
 
 ### Risiko 3: kryss-scopes
 
