@@ -34,6 +34,9 @@ Følgende claims er like i alle varianter:
 |jti|oidc, jwt|unik identifikator for selve tokenet
 
 
+Access tokens bør følge strukturen uansett om dei er direkte utsted av Autorisasjonsserver, eller om dei er eit resultat av ein Token Exchange operasjon.
+
+
 ## sikkerhetsnivå
 
 ### Personinnlogging:
