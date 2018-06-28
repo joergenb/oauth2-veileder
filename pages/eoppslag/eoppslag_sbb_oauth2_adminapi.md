@@ -93,7 +93,7 @@ I begge tilfeller blir leverandørens org.no registert på integrasjonen.
 
 ### Tilgangsforespørsler
 
-Konsumenter kan så forespørre tilgang til APIer:
+Konsumenter kan konkret forespørre tilgang til APIer:
 ```
 POST /accessrequestes { scope*, client_id* }
 ```
@@ -103,16 +103,19 @@ Merk at scope må knyttes til en spesifikk integrasjon (client_id).
 
 Leverandører forspør tilgang på samme måte, men Maskinporten kan på bakgrunn av at aktuell client_id tilhører en leverandør-konsument-kobling, finne riktig konsument som tilgangsforespørselen gjelder. Evt kan man for leverandører kreve at de oppgir konsumentens org.no eksplisitt.
 
+Tilgangsforespørsler kan også skje *implisitt* når en oppretter integrasjon gjennom `/clients`-endepunktet, eller endrer forespurte scopes på klientregistreringa.  For å unngå at API-tilbyder blir "spamma" ned av gjentagende behandlingsforespørsler for samme C,S,A-tupler, bør ikke et fjerning av scope fra en klient-registrering automatisk slette tilhørende tuppel i tilgangstabellen.
+
 ## Delegering
 
 ### Fra konsumenter
 Konsumenter kan delegere tilgang til Leverandører
 ```
+POST /delegations { supplier_orgno*, scope*            }
 POST /delegations { supplier_orgno*, scope*, client_id }
 ```
-Her opprettes tuplet `C,L,S,client_id` i delegeringstabellen.  C (client_orgno) blir satt  automatisk basert på virksomhetsertifikatet.
+Her opprettes tuplet `C,L,S` evt. `C,L,S,client_id` i delegeringstabellen.  C (client_orgno) blir satt  automatisk basert på virksomhetsertifikatet.
 
-En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient). Dersom client_id mangler, må i prinsippet alle C's integrasjoner(både egne og levereandører) med aktuelt scope S få delegeringen.
+En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient), siden Oauth2-modellen som ligger i bunn forutsetter at det er klienter som får tilgang til scopes. Dersom client_id mangler, må i prinsippet alle C's integrasjoner(både egne og levereandører) med aktuelt scope S få delegeringen.  Dette er kanskje ikke et problem i praksis
 
 ### Fra leverandør
 Utvalgte leverandører kan gjennom en klient-registrering selv-deklarere at de opptrer på vegne av en konsument.:
@@ -182,45 +185,42 @@ graph LR
 
 </div>
 
+### Risiki
+
+teste algoritmen på ulike trusler
+
 #### Risiko 1: Annen leverandør forsøker å opptre på vegne av konsument
 
 * C er gitt tilgang av A til scopet S
-* C ønsker kun å delegere rettighet for scope S til leverandør L1
-* L2 oppretter en egen integrasjon med scope S der den hevder å opptre på vegne av C
+* C ønsker kun å delegere rettighet for scope S til leverandør L1   (L1,C,S lagres i delegeringsmatrise)
+* L2 oppretter en egen integrasjon med scope S der den hevder å opptre på vegne av C (L2,C,S lagres i delegeringsmatrise)
 * L2 lager ein token-forespørsel med C,S,egen client_id og eget virksomhetssertifikat
   - Dersom delegering er knyttet mot client_id: Maskinporten vil avvise token-forespørsel i punkt 6, siden L2 kommer med feil client_id
-  - Dersom delegering ikke er knyttet mot client_id: Maskinporten vil utstede token, siden C,S er en gyldig kombinasjonsarkitektur
+  - Dersom delegering ikke er knyttet mot client_id: Maskinporten vil utstede token, siden L2,C,S er en gyldig kombinasjonsarkitektur
 
 Konklusjon?: Konsumenter som ikke stoler på leverandører, må sørge for at delegering alltid blir knyttet til riktig integrasjon (må håndtere egen kompleksitet)   (andre konsumenter aksepterer dette som en rest-risiko)
 
 #### Risiko 2: Falsk client_id
 
 * C er gitt tilgang av A til scopet S
-* C ønsker kun å delegere rettighet for scope S til leverandør L1
+* C ønsker kun å delegere tilgang for scope S til leverandør L1
 * L2 oppretter en egen integrasjon med scope S der den hevder å opptre på vegne av C
-* L2 lager ein token-forespørsel med C,S, L1 sin client_id (må anses som kjent) og eget virksomhetssertifikat
-  - Maskinporten vil avvise forespørsel, siden orgno i virksomhetssertifikatet ikke stemmer med det som er registrerert for aktuell client_id.
+* L2 lager ein token-forespørsel med C,S, eget virksomhetssertifikat,  men med L2 sin client_id (må anses som kjent)
+  - Maskinporten vil avvise forespørsel i punkt 2, siden orgno i virksomhetssertifikatet ikke stemmer med det som er registrerert for aktuell client_id.
 
-### Risiko 3: Feil konsumenter
 
-* C1 har tilgang til scope S1 gjennom L1
-* C2 har tilgang til scope S1 direkte
-* L1 oppretter integrasjon falsk C1-integrL1 kan lage forespørsel med  
-* L1 forespør token for C2.
-  - Maskinporten ser at C2 og S1
+#### Blanding av egne og leverandør-integrasjoner
+eksempel her er API som blir integrert i "alle" systemer, t.d. Folkeregisteret
 
-### Risiko 3: kryss-scopes
+* C har en egen integrasjon mot S,A   (C,S,A lagres i tilgangsmatrise)
+* C kjøper en skytjeneste som også integrer mot S,A  (C,S,A lagres også i tilgangsmatrise, og (L,C,S,A,client_id) lagres i delegeringsmatrise
 
-* C1 har tilgang til scope S1 gjennom L1
-* C1 har tilgang til scope S2 gjennom L2
-* C2 har tilgang til scope S1 gjennom L2
-  - mao: L2 har både S1 og S2
-- L2 lager token-forespørsel med S1 og C1
+Dette er ikke en utfordring for tilgangstyring, men derimot for vedlikehold... Dersom ene systemet blir avsluttet, vil tilgang bli slettet for begge
+
+
+### Risiko 4: få tilgang til feil scopes
 
 
 
-### Risiko 3: virksomhetsssertifikat som universalnøkkel:
 
-* C gir virksert til L1.  L1 har tilgang til scope S1.
-* C gir annet virksert til L2
-* Viktig at
+### Risiko 5: virksomhetsssertifikat som universalnøkkel:
