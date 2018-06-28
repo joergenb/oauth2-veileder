@@ -78,12 +78,14 @@ POST /clients { scope*, name, description, nøkkel, token_egenskaper}
 ```
 `client_id` genereres automatisk av ID-porten (uuid)
 ### Leverandør
-Leverandøren L registrer sine integrasjonar via  via eksisterende metoder i dagens admin-API. To alternativer
+Utvalgte leverandører L registrer sine integrasjonar via eksisterende metoder i dagens admin-API. To alternativer
 ```
-POST /clients                            { client_orgno, scope*, name, description, nøkkel, token_egenskaper}
-POST /clients/{client_id}/onbehalfof/    { client_orgno,       , name, description }
+POST /clients                                 { client_orgno, scope*, name, description, nøkkel, token_egenskaper}
+POST /clients/{egen client_id}/onbehalfof/    { client_orgno,       , name, description }
 ```
-Det første tilfellet oppretter en selvstendig, helt standard oauth2 klient.  Det andre tilfellet
+Det første alternativet oppretter en selvstendig, helt standard oauth2 klient.  Det andre alternativet bruker ID-portens proprietære onbehalfof-funksjonalitet. Onbehalfof har sin bakgrunn fra SAML2, der kompleksiteten rundt SAML metadata gjorde at mange leverandører ønsket å ha en felles teknisk integrasjon mot ID-porten og heller fortelle hvilken kunde de operer på vegne av i hver forespørsel.   Med OIDC/Oauth2 antar vi derimot at de fleste leverandører vil foretrekke alternativ 1 fordi standard rammeverk kan benyttes.
+
+I begge tilfeller blir leverandørens org.no registert på integrasjonen.
 
 
 ## Konsumenter
@@ -113,11 +115,11 @@ Her opprettes tuplet `C,L,S,client_id` i delegeringstabellen.  C (client_orgno) 
 En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient). Dersom client_id mangler, må i prinsippet alle C's integrasjoner(både egne og levereandører) med aktuelt scope S få delegeringen.
 
 ### Fra leverandør
-Utvalgte leverandører kan gjennom en klient-registrering selv-deklarere at de opptrer på vegne av en konsument:
+Utvalgte leverandører kan gjennom en klient-registrering selv-deklarere at de opptrer på vegne av en konsument.:
 ```
 POST /clients { client_orgno*, scope* }
 ```
-Her opprettes tuplet `C,L,S,client_id` i delegeringstabellen.  L (supplier_orgno) blir satt automatisk basert på virksomhetssertifikatet.
+Her opprettes tuplet `C,L,S,client_id` i delegeringstabellen.  L (supplier_orgno) blir satt automatisk basert på virksomhetssertifikatet brukt mot admin-API.
 
 ### Hvordan skille de to typene delegering ?
 I begge tilfellene utleverer vi token som
@@ -138,34 +140,55 @@ Vi ser også at tuplene i delegeringsmatrisen som resultat av de to ulike typene
 
 #### Algoritme for tilgangskontroll:
 1. Grunnleggende Oauth2-validering (gyldig JWT, gyldig klient_id, har klient forespurt scope).
-2. Finn C basert på klienten sin konfigurajon
-2. Utfør klientautentisering
-  - dersom virk.sert:  
-    - stemmer
-3. Eksisterer (C,S) evt (C,S,A) i tilgangsmatrisen ?  
+2. Utfør klientautentisering, validere nøkler
+  - dersom virk.sert, kontrollere at orgno i sertifikat stemmer med org.no registrert på klient, sjekk revokaksjon, valider virksert
+3. Finn C basert på klienten sin konfigurajon
+4. Eksisterer (C,S) evt (C,S,A) i tilgangsmatrisen ?  
   - viss nei: avbryt
-4. Finn L basert på klienten sin konfigurasjon
-  - ingen L? Gå til punkt 7
-5. Eksisterer (L,C,S,client_id) i delegeringsmatrisen ?
-  - viss ja: utsted token
-  - viss nei: gå videre
+5. Finn L basert på klienten sin konfigurasjon
+  - ingen L? Gå til punkt 8
+6. Eksisterer (L,C,S,client_id) i delegeringsmatrisen ?
+  - viss ja: gå til 8
   - viss annan client_id: avbryt
-6. Eksisterer (L,C,S) i delegeringsmatrisen?
-  - viss ja: utsted token
-  - viss nei: gå videre
-7.
-3.
- eMeldingsformidlingsinfrastruktur
-2.
+7. Eksisterer (L,C,S) i delegeringsmatrisen?
+  - viss nei: avbryt
+8. Er forespurte token_egenskaper lik eller strengere enn API-tilbyders krav?
+  - viss nei: avbryt
+9. utsted token
 
+Forsøk på flytdiagram:
 
-#### Risiko 1: Kryss-leverandør
+<div class="mermaid">
+graph LR
+
+  o2val[Oauth2-validering]
+  klaut[klientautentisering]
+  o2val-->klaut
+  ctil{Har C tilgang til S,A?}
+  klaut-->ctil
+  lev{Leverandør-integrasjon?}
+  ctil-->lev
+  lev-- nei -->token
+  lev-- ja --> lev_client
+
+  lev_client{Tilgang delegert til integrasjon ? L,C,S,client_id}
+  lev_client -- ja --> token
+  lev_client -- nei --> lev_acc
+
+  lev_acc{Tilgang delegert til leverandør ?  L,C,S}
+  lev_acc -- ja -->token
+
+  token[Utsted token]
+
+</div>
+
+#### Risiko 1: Annen leverandør forsøker å opptre på vegne av konsument
 
 * C er gitt tilgang av A til scopet S
 * C ønsker kun å delegere rettighet for scope S til leverandør L1
 * L2 oppretter en egen integrasjon med scope S der den hevder å opptre på vegne av C
 * L2 lager ein token-forespørsel med C,S,egen client_id og eget virksomhetssertifikat
-  - Dersom delegering er knyttet mot client_id: Maskinporten vil avvise token-forespørsel, siden L2 kommer med feil client_id
+  - Dersom delegering er knyttet mot client_id: Maskinporten vil avvise token-forespørsel i punkt 6, siden L2 kommer med feil client_id
   - Dersom delegering ikke er knyttet mot client_id: Maskinporten vil utstede token, siden C,S er en gyldig kombinasjonsarkitektur
 
 Konklusjon?: Konsumenter som ikke stoler på leverandører, må sørge for at delegering alltid blir knyttet til riktig integrasjon (må håndtere egen kompleksitet)   (andre konsumenter aksepterer dette som en rest-risiko)
