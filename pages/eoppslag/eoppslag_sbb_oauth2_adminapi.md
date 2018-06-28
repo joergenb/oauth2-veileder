@@ -43,12 +43,13 @@ Dersom NAV berre har eitt prefix, kan ogso vere valgfri?
 POST /scopes ("bits:", "konto", "https://rs.bank1.no/")
 POST /scopes ("bits:", "konto", "https://rs.bank2.no/")
 ```
-eventuelt mer REST-ish:
+(
+  eller kanskje meir REST-ish:
 ```
-POST /scopes/bits:konto/"  { aud="https://rs.bank1.no/"}
-POST /scopes/bits:konto/"  { aud="https://rs.bank2.no/"}
+POST /scopes/bits:konto/audience/"  { "https://rs.bank1.no/"}
+POST /scopes/bits:konto/audience/"  { "https://rs.bank2.no/"}
 ```
-
+)
 
 ### Tilganger
 
@@ -66,10 +67,27 @@ som returnerer en JSON array med org.nummer på konsumenter som ønsker tilgang 
 
 
 
+
+## Integrasjoner
+
+### Konsument
+
+Konsumenten C registrerer sine ID-porten integrasjoner via eksisterende metoder i dagens admin-API eller selvbetjeningsløsning.  C sitt org.nummer blir automatisk koblet til integrasjonene.
+```
+POST /clients { scope*, name, description, nøkkel, token_egenskaper}
+```
+`client_id` genereres automatisk av ID-porten (uuid)
+### Leverandør
+Leverandøren L registrer sine integrasjonar via  via eksisterende metoder i dagens admin-API. To alternativer
+```
+POST /clients                            { client_orgno, scope*, name, description, nøkkel, token_egenskaper}
+POST /clients/{client_id}/onbehalfof/    { client_orgno,       , name, description }
+```
+Det første tilfellet oppretter en selvstendig, helt standard oauth2 klient.  Det andre tilfellet
+
+
 ## Konsumenter
 
-### Integrasjoner
-Konsumenten C registrerer sine ID-porten integrasjoner via eksisterende metoder i dagens admin-API.  C sitt org.nummer blir automatisk koblet til integrasjonene.
 
 ### Tilgangsforespørsler
 
@@ -90,16 +108,16 @@ Konsumenter kan delegere tilgang til Leverandører
 ```
 POST /delegations { supplier_orgno*, scope*, client_id }
 ```
-Her opprettes tuplet `C,L,S,client_id` i tilgangstabellen.  C (client_orgno) blir satt  automatisk basert på virksomhetsertifikatet.
+Her opprettes tuplet `C,L,S,client_id` i delegeringstabellen.  C (client_orgno) blir satt  automatisk basert på virksomhetsertifikatet.
 
-En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient). Dersom client_id mangler, må i prinsippet alle C's integrasjoner med aktuelt scope S få delegeringen.
+En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient). Dersom client_id mangler, må i prinsippet alle C's integrasjoner(både egne og levereandører) med aktuelt scope S få delegeringen.
 
 ### Fra leverandør
 Utvalgte leverandører kan gjennom en klient-registrering selv-deklarere at de opptrer på vegne av en konsument:
 ```
 POST /clients { client_orgno*, scope* }
 ```
-Her opprettes tuplet `C,L,S,client_id` i tilgangstabellen.  L (supplier_orgno) blir satt automatisk basert på virksomhetssertifikatet.
+Her opprettes tuplet `C,L,S,client_id` i delegeringstabellen.  L (supplier_orgno) blir satt automatisk basert på virksomhetssertifikatet.
 
 ### Hvordan skille de to typene delegering ?
 I begge tilfellene utleverer vi token som
@@ -112,9 +130,34 @@ I begge tilfellene utleverer vi token som
   }   
 }
 ```
-API-tilbyder kan derfor ikke vite hvilken delegering som ligger til grunn.  Dette kan evt. mitigeres ved å inkludere eit `iss` claim som viser delegeringskilde som del av `act`-objektet.
+API-tilbyder kan derfor ikke vite hvilken delegering som ligger til grunn, men i de fleste tilfeller ønsker ikke API-tilbyder å vite noe om dette heller.  
 
-Vi ser også at tuplene i tilgangsmatrisen som resultat av de to ulike typene delegering er like.  Et viktig spørsmål er hvordan, evt. *om* tilgangstyringen ved *tokenutstedelse* skal skille på disse to delegeringsmetodene, eller om det treng regler på andre tidspunkt i verdikjeden.
+For de tilfellene der type delegering er viktig for API-tilbyder, kan man vurdere å inkludere et `iss` claim som viser delegeringskilde som del av `act`-objektet.  iss kan enten følge et kodeverk (Altinn, leverandør, idporten), evt. id eller URL til integrasjonen som benyttet admin-api'et.  
+
+Vi ser også at tuplene i delegeringsmatrisen som resultat av de to ulike typene delegering er like.  Et viktig spørsmål er hvordan, evt. *om* tilgangstyringen ved *tokenutstedelse* skal skille på disse to delegeringsmetodene, eller om det treng regler på andre tidspunkt i verdikjeden.
+
+#### Algoritme for tilgangskontroll:
+1. Grunnleggende Oauth2-validering (gyldig JWT, gyldig klient_id, har klient forespurt scope).
+2. Finn C basert på klienten sin konfigurajon
+2. Utfør klientautentisering
+  - dersom virk.sert:  
+    - stemmer
+3. Eksisterer (C,S) evt (C,S,A) i tilgangsmatrisen ?  
+  - viss nei: avbryt
+4. Finn L basert på klienten sin konfigurasjon
+  - ingen L? Gå til punkt 7
+5. Eksisterer (L,C,S,client_id) i delegeringsmatrisen ?
+  - viss ja: utsted token
+  - viss nei: gå videre
+  - viss annan client_id: avbryt
+6. Eksisterer (L,C,S) i delegeringsmatrisen?
+  - viss ja: utsted token
+  - viss nei: gå videre
+7.
+3.
+ eMeldingsformidlingsinfrastruktur
+2.
+
 
 #### Risiko 1: Kryss-leverandør
 
