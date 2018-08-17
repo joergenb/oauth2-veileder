@@ -46,9 +46,10 @@ For å kunne vedlikeholde egne scopes, må A sin selvbetjeningsklient ha tilgang
 Disse scopene provisjoneres manuelt av Difi, sammen med 1 eller flere `prefix`.
 
 Selvbetjenings-API utvides med:
-| Operasjon| inndata |beskrivelse |
+
+| Operasjon | inndata | beskrivelse |
 |-|-|-|
-|`GET /scopes `||Gir liste over alle scopes beskyttet av ID-porten|
+|`GET /scopes `| |Gir liste over alle scopes beskyttet av ID-porten|
 |`POST /scopes ` | prefix*, subscope*, description, token_egenskaper  | Oppretter et nytt scope (lik prefix+subscope)    |
 |`PUT /scopes/\<scope\> `  |  description, token_egenskaper | Endrer et scope. TBD om selve scope-navnet skal kunne endres.   |
 |`DELETE /scopes/\<scope\>`   |   | Sletter (eller deaktiverer?) et scope. TBD: alle tilganger slettes?  |
@@ -70,19 +71,19 @@ POST /scopes/bank:kontopplysninger/audience/"  { "https://rs.bank1.no/"}
 POST /scopes/bank:kontopplysninger/audience/"  { "https://rs.bank2.no/"}
 ```
 
-Når en klient så forespør aktuelt scope, må den også oppgi et og bare et gyldig audience, ellers feiler tokenutstedelsen. Derimot ser vi ikke for oss å tilgangsstyre audiencer.  Alle konsumenter som har tilgang til S, får også tilgang til alle tilhørende audience.
+Når en klient så forespør aktuelt scope, må den også oppgi et og bare et gyldig audience, ellers feiler tokenutstedelsen. Derimot ser vi ikke for oss å tilgangsstyre audiencer (iallefall ikke i første omgang).  Alle konsumenter som har tilgang til S, får også tilgang til alle tilhørende audience.
 
 Difi foreslår altså at `audience` i første rekke er et forhold med ressursserver og klient, med liten sentral validering i ID-porten.
 
 ### Konsumenter (C)
 
-For å tilgangsstyre konsumenter, utsides selvbetjeningsAPIet med følgdende:
+For å tilgangsstyre konsumenter, utvides selvbetjeningsAPIet med følgende operasjoner for API-tilbyder:
 
 | Operasjon| inndata |beskrivelse |
 |-|-|-|
-|`POST /access/<scope>`| org.no* | Gir konsument C tilgang til scopet S |
-|`DELETE /access/<scope>/<orgno>`   |   |  Fjerner tilgangen C har til S |
-|`GET /access/<scope>`||liste alle tilganger for gitt scope|
+|`POST   /access/{scope}`| org.no* | Gir konsument C tilgang til scopet S |
+|`DELETE /access/{scope}/orgno/{orgno}`   |   |  Fjerner tilgangen C har til S |
+|`GET    /access/{scope}`||liste alle tilganger for gitt scope|
 
 
 
