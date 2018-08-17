@@ -32,62 +32,18 @@ entries:
     output: web, pdf
     folderitems:
 
-    - title: Solution Building Block overview
+    - title: Overordnet
       output: web, pdf
       url: /eoppslag_sbb_oauth2.html
+
+    - title: SelvbetjeningsAPI
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2_adminapi.html
+
+    - title: Brukerreiser
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2_brukerreiser.html
 
     - title: Ulike tokens
       output: web, pdf
       url: /eoppslag_sbb_oauth2_tokens.html
-
-    - title: admin-API
-      output: web, pdf
-      url: /eoppslag_sbb_oauth2_adminapi.html
-
-    - title: Systemlandskap
-      url: /systemlandskap.html
-      output: web, pdf
-
-    - title: Tjenestekategorisering/risikomatrise
-      url: /risikomatrise.html
-      output: web, pdf
-
-    - title: Anbefalinger for konsumenter
-      url: /klienter.html
-      output: web, pdf
-
-    - title: Anbefalinger for API-tilbydere
-      url: /rs.html
-      output: web, pdf
-
-    - title: Anbefalinger for Autorisasjonsservere
-      url: /as.html
-      output: web, pdf
-
-    - title: Navnekonvensjoner
-      url: /navnekonvensjoner.html
-      output: web, pdf
-
-  - title: Oauth2 Sikkerhetsmekanismer
-    output: web, pdf
-    folderitems:
-
-      - title: Protokoll-anbefalinger
-        url: /sec_protocol_recomendations.html
-        output: web, pdf
-
-      - title: Transportsikkerhet
-        url: /sec_transport_security.html
-        output: web, pdf
-
-      - title: Håndtering av hemmeligheter
-        url: /sec_key_management.html
-        output: web, pdf
-
-      - title: Kryptografiske anbefalinger
-        url: /sec_crypto_recomendations.html
-        output: web, pdf
-
-      - title: Klient-anbefalinger
-        url: /sec_client_recomendations.html
-        output: web, pdf
