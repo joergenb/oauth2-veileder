@@ -41,7 +41,7 @@ For å kunne vedlikeholde egne scopes, må A sin selvbetjeningsklient ha tilgang
 | scope | beskrivelse |
 |-|-|
 |idporten:scope.write|Gir tilgang til administrasjon av API-definisjoner (i form av Oauth2 scopes) knyttet til samme org.nr. som gitt i access_token.|
-|idporten:eoppslagadmin.scope.write|Gir tilgang til administrasjon av API-definisjoner (i form av Oauth2 scopes) for alle org.no.   Tiltenkt Altinn og andre fellesløsninger vi stoler på.|
+|idporten:eoppslagadmin.scope.write|Gir tilgang til administrasjon av API-definisjoner (i form av Oauth2 scopes) og tilgangstyring for alle org.no.   Tiltenkt Altinn og andre fellesløsninger vi stoler på.|
 
 Disse scopene provisjoneres manuelt av Difi, sammen med 1 eller flere `prefix`.
 
@@ -49,10 +49,10 @@ Selvbetjenings-API utvides med:
 
 | Operasjon | inndata | beskrivelse |
 |-|-|-|
-|`GET /scopes `| |Gir liste over alle scopes beskyttet av ID-porten|
-|`POST /scopes ` | prefix*, subscope*, description, token_egenskaper  | Oppretter et nytt scope (lik prefix+subscope)    |
-|`PUT /scopes/\<scope\> `  |  description, token_egenskaper | Endrer et scope. TBD om selve scope-navnet skal kunne endres.   |
-|`DELETE /scopes/\<scope\>`   |   | Sletter (eller deaktiverer?) et scope. TBD: alle tilganger slettes?  |
+|`GET    /scopes `| |Gir liste over alle scopes beskyttet av ID-porten|
+|`POST   /scopes ` | prefix*, subscope*, description, token_egenskaper  | Oppretter et nytt scope (lik prefix+subscope)    |
+|`PUT    /scopes/{scope} `  |  description, token_egenskaper | Endrer et scope. TBD om selve scope-navnet skal kunne endres.   |
+|`DELETE /scopes/{scope}`   |   | Sletter (eller deaktiverer?) et scope. TBD: alle tilganger slettes?  |
 
 
 `token-egenskaper` er tekniske egenskaper som API-tilbyder forventer/krever. Dette kan være max tillatt levetid, self-contained eller ikke, minste sikkerhetsnivå, etc.
@@ -93,9 +93,9 @@ Konsumenter kan be om tilgang til et scope S slik:
 
 | Operasjon| inndata |beskrivelse |
 |-|-|-|
-|`POST /accessrequest/<scope>`| | Konsument C (avledet av orgno i access_token) ber om tilgang til S|
+|`POST /accessrequest/{scope}`| | Konsument C (avledet av orgno i access_token) ber om tilgang til S|
 |`GET  /accessrequest`| | Liste opp alle mine ikkje-behandla søknader|
-|`GET  /accessrequest/<scope>`| | Liste opp alle som har bedt om tilgang til aktuelt scope (Leses av API-tilbydere for å behandle tilgangskø)|
+|`GET  /accessrequest/{scope}`| | Liste opp alle som har bedt om tilgang til aktuelt scope (Leses av API-tilbydere for å behandle tilgangskø)|
 |`GET  /myaccesses`| | Liste opp alle mine tilganger|
 
 
