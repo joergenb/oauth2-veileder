@@ -14,6 +14,10 @@ Selve token-utstedelsesprosessen i eOppslag bruker allerede eksisterende funksjo
 
 Det som primært mangler i ID-porten for å realise eOppslag, er å tilby selvbetjeningsløsninger for administrasjon av hvilke APIer (dvs. Oauth2 scopes) som finnes og hvem som skal kunne få utstedt access_tokens til disse.
 
+Design av endringene er dokumentert i RAML her: [eoppslag_0.2.raml](eoppslag_0.2.raml).
+
+
+
 ## Om selvbetjeningsAPIet
 
 eOppslag-APIene bygger videre på selvbetjeningsAPIet som ID-porten allerede tilbyr, se [https://difi.github.io/idporten-oidc-dokumentasjon/oidc_api_admin.html](https://difi.github.io/idporten-oidc-dokumentasjon/oidc_api_admin.html)
@@ -30,7 +34,7 @@ For eOppslag må dette utvides med:
 4. Administrasjons-sentra: Utvalgte klienter som Altinn får mulighet til å adminstere alle API-relaterte data knyttet til vilkårlige organisasjoner.
 
 
-## Grovkornet tilgangstyring i eOppslag
+## eOppslag: tilgangstyring
 
 Funksjoner nødvendige for at API-tilbyder kan få vedlikeholde tuplet (C,S,A) i eOppslag.
 
@@ -63,6 +67,8 @@ Selvbetjenings-API utvides med:
 Difi foreslår at API-tilbyder (A) som hovedregel er koda inn i scope gjennom prefix. Dette betyr at som hovedregel kan A alltid utledes av S.  Dersom default prefix settes lik tilbyderen sitt orgno, gir dette gir mulighet til fullautomatisering uten noen manuell provisjonering, dvs. enhver organisasjon kan på egen hånd bli API-tilbyder.
 
 For organisasjoner som krever flere prefixer, provisjoneres disse manuelt.
+
+**Resten av dette avsnittet er TBD, og ikkje del av en MVP**
 
 For tilfeller der samme scope S beskytter flere APIer fra ulike aktører (eksempel med kontoopplysninger fra bankene), trengs audience, for å unngå at bank1 kan bruke mottatt token til å hente opplysninger fra konkurrerende bank2.
 
@@ -133,12 +139,12 @@ Her opprettes tuplet `C,L,S` i delegeringstabellen.  Tilsvarende trengs API-oper
 ### Utfordringer med delegering
 
 
-En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient), siden Oauth2-modellen som ligger i bunn forutsetter at det er klienter som får tilgang til scopes. Uten kobling til klient, må i prinsippet alle C's integrasjoner (både egne og levereandører) med aktuelt scope S få delegeringen.  Dette er kanskje ikke et problem i praksis
+En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient), siden Oauth2-modellen som ligger i bunn forutsetter at det er klienter som får tilgang til scopes. Uten kobling til klient, må i prinsippet alle C's integrasjoner (både egne og leverandører) med aktuelt scope S få delegeringen.  Dette betyr at leverandører i prsinippet k
 
+Difis forslag er at delegeringstabellen ikke er en run-time kilde, men heller konsulteres når en oauth2-klient skal endres. Dvs Leverandøres klienter får ikke automatisk satt nye scopes som blir delegert, de må aktiv inn å endre klient-integrasjonen sin og konfigurere scope.
 
-
-### Fra leverandør
-Utvalgte leverandører kan gjennom en klient-registrering selv-deklarere at de opptrer på vegne av en konsument.:
+### Leverandør-styrte integrasjoner
+I dagens løsning kan utvalgte leverandører kan gjennom en klient-registrering selv-deklarere at de opptrer på vegne av en konsument.:
 ```
 POST /clients { client_orgno*, scope* }
 ```
@@ -205,7 +211,7 @@ graph LR
 
 </div>
 
-## Risiko
+## Risiko/trusselmodellering
 
 teste algoritmen på ulike trusler
 

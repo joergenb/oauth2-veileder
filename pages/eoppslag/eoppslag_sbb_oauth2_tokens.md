@@ -7,11 +7,47 @@ permalink: eoppslag_sbb_oauth2_tokens.html
 summary: "Ulike Oauth2 tokens brukt i det offentlige, både eOppslag og annen bruk "
 ---
 
-## Scenario
+## Ulike tokens som må støttes
 
-* *Maskinporten* : tbd
-* *Maskinporten delegering* : tbd
-* *Ansattpålogging* : En ansatt i "Min Arbeidsgiver" logger inn på ein sky-regneskapsløsning (levert av Visma), og skal bruke eit API levert av NAV.
+Det er viktig å standardisere innhold i ulike typer tokens slik at konsumenter/tilbydere ikke blir usikre på i hvilken kontekst/ av hvem et token er utstedt og i hvilke virksomhetsprosesser det kan brukes.
+
+Vi kjenner p.t. følgende ulike scenario:
+
+* Vanlige innloggingstoken (id_token) over OpenID connect
+* Tilgangstoken (access_token) for innbyggerstyrt API-sikring (autentiseringsnær autorisasjon)
+* Tilgangstoken for maskin-til-maskin API-sikring
+* Ulike varianter av delegeringsoken / berika token (typisk via Token Exchange)
+  - Ansattpålogging : En ansatt i "Min Arbeidsgiver" logge
+  -
+
+
+### viktige claims
+
+`sub` er innbyggere
+`pid` personidentifikator, IDporten-proprietært claim. Også brukt av HelseID.
+
+
+## hvordan kan dette se ut?
+
+
+```
+id_token                    acccess_token                 access_token (maskinporten)
+
+{                           {
+  sub: TWGi0...2GBY=,         sub: TWGi0...2GBY=,
+  pid: 11111156789,           pid: 11111156789,
+  aud: oidc_oslokommune       
+                              scope: svv:pkk
+                              client_orgno: 944117784
+}
+
+
+
+```
+
+
+
+r inn på ein sky-regneskapsløsning (levert av Visma), og skal bruke eit API levert av NAV.
 
 ## Detaljert token
 
