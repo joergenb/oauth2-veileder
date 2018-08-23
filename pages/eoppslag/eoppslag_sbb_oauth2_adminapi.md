@@ -14,7 +14,7 @@ Selve token-utstedelsesprosessen i eOppslag bruker allerede eksisterende funksjo
 
 Det som primært mangler i ID-porten for å realise eOppslag, er å tilby selvbetjeningsløsninger for administrasjon av hvilke APIer (dvs. Oauth2 scopes) som finnes og hvem som skal kunne få utstedt access_tokens til disse.
 
-Design av endringene er dokumentert i RAML her: [eoppslag_0.2.raml](eoppslag_0.2.raml).
+Design av endringene er dokumentert i RAML her: [eoppslag_0.2.1.yaml](eoppslag_0.2.1.yaml).
 
 
 
