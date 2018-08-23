@@ -47,7 +47,7 @@ id_token                    id_token (ansatt)                id_token (fullmakt)
 
 1. En innbygger logger til Oslo kommune sin nett-tjeneste.
 2. En ansattt i Leikanger Kommune logger inn til et barnehagesystem.  Ansatt-tilknytningen kan komme fra Altinn Autorisasjon gjennom token-berikelse.
-3. En verge (32129912345) skal utføre noe i Lånekassen på vegne av 11111156789.  Vergen logger inn med egen eID.
+3. En verge (32129912345) skal utføre noe i Lånekassen på vegne av 11111156789.  Vergen logger inn med egen eID.  (en betre variant er antakeleg å la sub og pid tilhøre vergen, og heller bruke 'may_act' istadenfor 'act')
 
 
 
