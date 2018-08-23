@@ -117,13 +117,8 @@ Delegering styres av konsument.
 
 | Operasjon| inndata |beskrivelse |
 |-|-|-|
-|`POST /delegations/{scope} `| supplier_org_no |  Leverandør L (supplier_org_no) får lov til å be om token til S på vegne av C (avledet av access_token). |
+|`POST /scopes/{scope}/delegations `| supplier_org_no |  Leverandør L (supplier_org_no) får lov til å be om token til S på vegne av C (avledet av access_token). |
 
-Tilsvarende for administrasjonssentra, som trenger `idporten:eoppslagadmin.delegations.write`:
-
-| Operasjon| inndata |beskrivelse |
-|-|-|-|
-|`POST /delegations/{scope}/orgno/{client_orgno} `| supplier_org_no |  Leverandør L (supplier_org_no) får lov til å be om token til S på vegne av C (client_orgno). |
 
 Her opprettes tuplet `C,L,S` i delegeringstabellen.  Tilsvarende trengs API-operasjoner for å slette og liste opp delegeringer.
 
