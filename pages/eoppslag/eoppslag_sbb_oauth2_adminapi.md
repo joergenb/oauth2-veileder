@@ -99,17 +99,18 @@ Konsumenter kan be om tilgang til et scope S slik:
 |`GET  /accessrequest/{scope}`| | Liste opp alle som har bedt om tilgang til aktuelt scope (Brukes av API-tilbydere for å behandle tilgangskø)|
 |`GET  /myaccesses`| | Liste opp alle mine tilganger|
 
-
 Tilgangsforespørsler legges i en tilgangskø.  
-Konsumenter trenger ikke eget administrativt scope for å be om slik tilgang, dette for å gjøre det så lett som mulig å være API-konsument.
+
+Konsumenter trenger kanskje ikke eget administrativt scope for å be om slik tilgang? Dette for å gjøre det så lett som mulig å være API-konsument.
 
 
-Administrasjonssentra som Altinn må ha et eget administivt scope:
-| scope | beskrivelse |
-|-|-|
-|idporten:eoppslagadmin.request.write|Gir muligheit til administrasjon av forespørsel-operasjoner for vilkårlige org.no |API-definisjoner (i form av Oauth2 scopes) knyttet til samme org.nr. som gitt i access_token.|
+Administrasjonssentra som Altinn må ha et eget administivt scope `idporten:eoppslagadmin.request.write` og bruker da APIet som over, men må spesifisere konsumenten C sitt org.no eksplisitt. (eller eventuelt eget /org/-endepunkt?  sjå RAML-fila):
 
-og bruker da APIet som over, men må spesifisere org.no eksplisitt. (eller eventeutl /org/-endepunkt, sjå RAML-fila)
+| Operasjon| inndata |beskrivelse |
+|-|-|-|
+|`POST /accessrequest/{scope}/orgno/{client_orgno}`| | Konsument C  ber om tilgang til S (Alternativ 1)|
+|`POST /org/{client_orgno}/accessrequest/{scope}`  | | Konsument C  ber om tilgang til S (Alternativ 2)  |
+
 
 
 ## Delegering
@@ -125,11 +126,121 @@ Tilsvarende for administrasjonssentra, som trenger `idporten:eoppslagadmin.deleg
 
 | Operasjon| inndata |beskrivelse |
 |-|-|-|
-|`POST /delegations/{scope}/{client_orgno} `| supplier_org_no |  Leverandør L (supplier_org_no) får lov til å be om token til S på vegne av C (client_orgno). |
+|`POST /delegations/{scope}/orgno/{client_orgno} `| supplier_org_no |  Leverandør L (supplier_org_no) får lov til å be om token til S på vegne av C (client_orgno). |
 
-Her opprettes tuplet `C,L,S` i delegeringstabellen.  Tilsvarnde trengs API-operasjoner for å slette og liste opp delegeringer.
+Her opprettes tuplet `C,L,S` i delegeringstabellen.  Tilsvarende trengs API-operasjoner for å slette og liste opp delegeringer.
 
 ### Utfordringer med delegering
 
 
-En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient), siden Oauth2-modellen som ligger i bunn forutsetter at det er klienter som får tilgang til scopes. Dersom client_id mangler, må i prinsippet alle C's integrasjoner(både egne og levereandører) med aktuelt scope S få delegeringen.  Dette er kanskje ikke et problem i praksis
+En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient), siden Oauth2-modellen som ligger i bunn forutsetter at det er klienter som får tilgang til scopes. Uten kobling til klient, må i prinsippet alle C's integrasjoner (både egne og levereandører) med aktuelt scope S få delegeringen.  Dette er kanskje ikke et problem i praksis
+
+
+
+### Fra leverandør
+Utvalgte leverandører kan gjennom en klient-registrering selv-deklarere at de opptrer på vegne av en konsument.:
+```
+POST /clients { client_orgno*, scope* }
+```
+Her opprettes tuplet `C,L,S,client_id` i delegeringstabellen.  L (supplier_orgno) blir satt automatisk basert på virksomhetssertifikatet brukt mot admin-API.
+
+### Hvordan skille de to typene delegering ?
+I begge tilfellene utleverer vi token som
+```
+{
+  scope: S,
+  client_orgno: C,
+  act: {
+    sub: L
+  }   
+}
+```
+API-tilbyder kan derfor ikke vite hvilken delegering som ligger til grunn, men i de fleste tilfeller ønsker ikke API-tilbyder å vite noe om dette heller.  
+
+For de tilfellene der type delegering er viktig for API-tilbyder, kan man vurdere å inkludere et `iss` claim som viser delegeringskilde som del av `act`-objektet.  iss kan enten følge et kodeverk (Altinn, leverandør, idporten), evt. id eller URL til integrasjonen som benyttet admin-api'et.  
+
+Vi ser også at tuplene i delegeringsmatrisen som resultat av de to ulike typene delegering er like.  Et viktig spørsmål er hvordan, evt. *om* tilgangstyringen ved *tokenutstedelse* skal skille på disse to delegeringsmetodene, eller om det treng regler på andre tidspunkt i verdikjeden.
+
+#### Algoritme for tilgangskontroll:
+1. Grunnleggende Oauth2-validering (gyldig JWT, gyldig klient_id, har klient forespurt scope).
+2. Utfør klientautentisering, validere nøkler
+  - dersom virk.sert, kontrollere at orgno i sertifikat stemmer med org.no registrert på klient, sjekk revokaksjon, valider virksert
+3. Finn C basert på klienten sin konfigurajon
+4. Eksisterer (C,S) evt (C,S,A) i tilgangsmatrisen ?  
+  - viss nei: avbryt
+5. Finn L basert på klienten sin konfigurasjon
+  - ingen L? Gå til punkt 8
+6. Eksisterer (L,C,S,client_id) i delegeringsmatrisen ?
+  - viss ja: gå til 8
+  - viss annan client_id: avbryt
+7. Eksisterer (L,C,S) i delegeringsmatrisen?
+  - viss nei: avbryt
+8. Er forespurte token_egenskaper lik eller strengere enn API-tilbyders krav?
+  - viss nei: avbryt
+9. utsted token
+
+Forsøk på flytdiagram:
+
+<div class="mermaid">
+graph LR
+
+  o2val[Oauth2-validering]
+  klaut[klientautentisering]
+  o2val-->klaut
+  ctil{Har C tilgang til S,A?}
+  klaut-->ctil
+  lev{Leverandør-integrasjon?}
+  ctil-->lev
+  lev-- nei -->token
+  lev-- ja --> lev_client
+
+  lev_client{Tilgang delegert til integrasjon ? L,C,S,client_id}
+  lev_client -- ja --> token
+  lev_client -- nei --> lev_acc
+
+  lev_acc{Tilgang delegert til leverandør ?  L,C,S}
+  lev_acc -- ja -->token
+
+  token[Utsted token]
+
+</div>
+
+## Risiko
+
+teste algoritmen på ulike trusler
+
+#### Risiko 1: Annen leverandør forsøker å opptre på vegne av konsument
+
+* C er gitt tilgang av A til scopet S
+* C ønsker kun å delegere rettighet for scope S til leverandør L1   (L1,C,S lagres i delegeringsmatrise)
+* L2 oppretter en egen integrasjon med scope S der den hevder å opptre på vegne av C (L2,C,S lagres i delegeringsmatrise)
+* L2 lager ein token-forespørsel med C,S,egen client_id og eget virksomhetssertifikat
+  - Dersom delegering er knyttet mot client_id: Maskinporten vil avvise token-forespørsel i punkt 6, siden L2 kommer med feil client_id
+  - Dersom delegering ikke er knyttet mot client_id: Maskinporten vil utstede token, siden L2,C,S er en gyldig kombinasjonsarkitektur
+
+Konklusjon?: Konsumenter som ikke stoler på leverandører, må sørge for at delegering alltid blir knyttet til riktig integrasjon (må håndtere egen kompleksitet)   (andre konsumenter aksepterer dette som en rest-risiko)
+
+#### Risiko 2: Falsk client_id
+
+* C er gitt tilgang av A til scopet S
+* C ønsker kun å delegere tilgang for scope S til leverandør L1
+* L2 oppretter en egen integrasjon med scope S der den hevder å opptre på vegne av C
+* L2 lager ein token-forespørsel med C,S, eget virksomhetssertifikat,  men med L2 sin client_id (må anses som kjent)
+  - Maskinporten vil avvise forespørsel i punkt 2, siden orgno i virksomhetssertifikatet ikke stemmer med det som er registrerert for aktuell client_id.
+
+
+#### Blanding av egne og leverandør-integrasjoner
+eksempel her er API som blir integrert i "alle" systemer, t.d. Folkeregisteret
+
+* C har en egen integrasjon mot S,A   (C,S,A lagres i tilgangsmatrise)
+* C kjøper en skytjeneste som også integrer mot S,A  (C,S,A lagres også i tilgangsmatrise, og (L,C,S,A,client_id) lagres i delegeringsmatrise
+
+Dette er ikke en utfordring for tilgangstyring, men derimot for vedlikehold... Dersom ene systemet blir avsluttet, vil tilgang bli slettet for begge
+
+
+### Risiko 4: få tilgang til feil scopes
+
+
+
+
+### Risiko 5: virksomhetsssertifikat som universalnøkkel:

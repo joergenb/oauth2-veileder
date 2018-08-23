@@ -42,7 +42,7 @@ entries:
 
     - title: Brukerreiser
       output: web, pdf
-      url: /eoppslag_sbb_oauth2_brukerreiser.html
+      url: /eoppslag_sbb_oauth2_brukerreise.html
 
     - title: Ulike tokens
       output: web, pdf
