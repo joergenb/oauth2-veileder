@@ -122,7 +122,7 @@ Delegering styres av konsument.
 
 Her opprettes tuplet `C,L,S` i delegeringstabellen.  Tilsvarende trengs API-operasjoner for å slette og liste opp delegeringer.
 
-## Altinn
+### Altinn
 
 For at administrasjonssentra som Altinn skal kunne bruker APIet på samme måte som organisasjoner med direkte-tilgang, må de i tilegg spesifisere konsumenten og/eller tilbyderen sine org.no eksplisitt, som body-parameter.
 
@@ -132,7 +132,7 @@ For å sikre at ikke andre opptrer som administrasjonssenter, må disse i tilegg
 
 
 
-### Utfordringer med delegering
+## Utfordringer med delegering
 
 
 En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient), siden Oauth2-modellen som ligger i bunn forutsetter at det er klienter som får tilgang til scopes. Uten kobling til klient, må i prinsippet alle C's integrasjoner (både egne og leverandører) med aktuelt scope S få delegeringen.  Dette betyr at leverandører i prsinippet k
