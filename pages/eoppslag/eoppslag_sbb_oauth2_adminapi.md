@@ -45,9 +45,9 @@ For å kunne vedlikeholde egne scopes, må A sin selvbetjeningsklient ha tilgang
 | scope | beskrivelse |
 |-|-|
 |idporten:scope.write|Gir tilgang til administrasjon av API-definisjoner (i form av Oauth2 scopes) knyttet til samme org.nr. som gitt i access_token.|
-|idporten:eoppslagadmin.scope.write|Gir tilgang til administrasjon av API-definisjoner (i form av Oauth2 scopes) og tilgangstyring for alle org.no.   Tiltenkt Altinn og andre fellesløsninger vi stoler på.|
 
-Disse scopene provisjoneres manuelt av Difi, sammen med 1 eller flere `prefix`.
+
+Scopet provisjoneres manuelt av Difi, sammen med 1 eller flere `prefix`.
 
 Selvbetjenings-API utvides med:
 
@@ -88,9 +88,9 @@ For å tilgangsstyre konsumenter, utvides selvbetjeningsAPIet med følgende oper
 
 | Operasjon| inndata |beskrivelse |
 |-|-|-|
-|`POST   /access/{scope}`| org.no* | Gir konsument C tilgang til scopet S |
-|`DELETE /access/{scope}/orgno/{orgno}`   |   |  Fjerner tilgangen C har til S |
-|`GET    /access/{scope}`||liste alle tilganger for gitt scope|
+|`POST   /scopes/{scope}/access`| org.no* | Gir konsument C tilgang til scopet S |
+|`DELETE /scopes/{scope}/access/{orgno}`   |   |  Fjerner tilgangen C har til S |
+|`GET    /scopes/{scope}/access`||liste alle tilganger for gitt scope|
 
 
 
@@ -100,23 +100,14 @@ Konsumenter kan be om tilgang til et scope S slik:
 
 | Operasjon| inndata |beskrivelse |
 |-|-|-|
-|`POST /accessrequest/{scope}`| | Konsument C (avledet av orgno i access_token) ber om tilgang til S|
-|`GET  /accessrequest`| | Liste opp alle mine ikkje-behandla søknader|
-|`GET  /accessrequest/{scope}`| | Liste opp alle som har bedt om tilgang til aktuelt scope (Brukes av API-tilbydere for å behandle tilgangskø)|
+|`POST /scopes/{scope}/accessrequest`| | Konsument C (avledet av orgno i access_token) ber om tilgang til S|
+|`GET  /scopes/{scope}/acessrequest`| | Liste opp alle som har bedt om tilgang til aktuelt scope (Brukes av API-tilbydere for å behandle tilgangskø)|
 |`GET  /myaccesses`| | Liste opp alle mine tilganger|
+|`GET  /myaccessrequest`| | Liste opp alle mine ikkje-behandla søknader|
 
 Tilgangsforespørsler legges i en tilgangskø.  
 
 Konsumenter trenger kanskje ikke eget administrativt scope for å be om slik tilgang? Dette for å gjøre det så lett som mulig å være API-konsument.
-
-
-Administrasjonssentra som Altinn må ha et eget administivt scope `idporten:eoppslagadmin.request.write` og bruker da APIet som over, men må spesifisere konsumenten C sitt org.no eksplisitt. (eller eventuelt eget /org/-endepunkt?  sjå RAML-fila):
-
-| Operasjon| inndata |beskrivelse |
-|-|-|-|
-|`POST /accessrequest/{scope}/orgno/{client_orgno}`| | Konsument C  ber om tilgang til S (Alternativ 1)|
-|`POST /org/{client_orgno}/accessrequest/{scope}`  | | Konsument C  ber om tilgang til S (Alternativ 2)  |
-
 
 
 ## Delegering
@@ -135,6 +126,16 @@ Tilsvarende for administrasjonssentra, som trenger `idporten:eoppslagadmin.deleg
 |`POST /delegations/{scope}/orgno/{client_orgno} `| supplier_org_no |  Leverandør L (supplier_org_no) får lov til å be om token til S på vegne av C (client_orgno). |
 
 Her opprettes tuplet `C,L,S` i delegeringstabellen.  Tilsvarende trengs API-operasjoner for å slette og liste opp delegeringer.
+
+## Altinn
+
+For at administrasjonssentra som Altinn skal kunne bruker APIet på samme måte som organisasjoner med direkte-tilgang, må de i tilegg spesifisere konsumenten og/eller tilbyderen sine org.no eksplisitt, som body-parameter.
+
+For å sikre at ikke andre opptrer som administrasjonssenter, må disse i tilegg få tildelt egne administive scope:    `idporten:eoppslagadmin.scope.write`
+`idporten:eoppslagadmin.request.write`,
+`idporten:eoppslagadmin.delegations.write`
+
+
 
 ### Utfordringer med delegering
 
