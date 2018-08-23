@@ -9,83 +9,141 @@ summary: "Ulike Oauth2 tokens brukt i det offentlige, både eOppslag og annen br
 
 ## Ulike tokens som må støttes
 
-Det er viktig å standardisere innhold i ulike typer tokens slik at konsumenter/tilbydere ikke blir usikre på i hvilken kontekst/ av hvem et token er utstedt og i hvilke virksomhetsprosesser det kan brukes.
+Det er viktig å standardisere innhold i ulike typer tokens slik at konsumenter/tilbydere ikke blir usikre i hvilke virksomhetsprosesser tokenet kan brukes.
 
 Vi kjenner p.t. følgende ulike scenario:
 
 * Vanlige innloggingstoken (id_token) over OpenID connect
+* Ansattinnlogging: id_token som forteller hvor en person er ansatt
 * Tilgangstoken (access_token) for innbyggerstyrt API-sikring (autentiseringsnær autorisasjon)
 * Tilgangstoken for maskin-til-maskin API-sikring
-* Ulike varianter av delegeringsoken / berika token (typisk via Token Exchange)
-  - Ansattpålogging : En ansatt i "Min Arbeidsgiver" logge
-  -
+* Ulike varianter av tilgangstoken der det har skjedd en delegering eller token-berikelse fra passende autorativ kilde.
 
 
-### viktige claims
+## Eksempler på hvordan slike token kan se ut?
 
-`sub` er innbyggere
-`pid` personidentifikator, IDporten-proprietært claim. Også brukt av HelseID.
+Dette er tidlige utkast !  Må diskuteres !
 
-
-## hvordan kan dette se ut?
+Innloggingstoken:
 
 
 ```
-id_token                    acccess_token                 access_token (maskinporten)
+id_token                    id_token (ansatt)                id_token (fullmakt)            
 
-{                           {
-  sub: TWGi0...2GBY=,         sub: TWGi0...2GBY=,
-  pid: 11111156789,           pid: 11111156789,
-  aud: oidc_oslokommune       
-                              scope: svv:pkk
-                              client_orgno: 944117784
-}
+{                           {                                {                            
+  sub: TWGi0...2GBY=,         sub: TWGi0...2GBY=,              sub: TWGi0...2GBY=,        
+  pid: 11111156789,           pid: 11111156789,                pid: 11111156789,          
+  aud: oidc_oslokommune       aud: oidc_barnehagesystem,       aud: lånekassen,
+                              may_act: {                       
+                                orgno: 964967725               
+                                iss: AltinnAutorisasjon        
+                              }                                act: {
+                                                                 pid: 32129912345
+                                                                 iss: Vergemålsregisteret
+															   }	 
+}                            }                               }                           
+```
+
+
+1. En innbygger logger til Oslo kommune sin nett-tjeneste.
+2. En ansattt i Leikanger Kommune logger inn til et barnehagesystem.  Ansatt-tilknytningen kan komme fra Altinn Autorisasjon gjennom token-berikelse.
+3. En verge (32129912345) skal utføre noe i Lånekassen på vegne av 11111156789.  Vergen logger inn med egen eID.
+
+
+
+Tilganstoken for person:
+
+```
+acccess_token                   access_token (m/virksomhetsdelegering)       access_token (m/persondelegering)        
+
+{                               {                                            {                                        
+  sub: TWGi0...2GBY=,              sub: TWGi0...2GBY=,                           sub: TWGi0...2GBY=,
+  pid: 11111156789,                pid: 11111156789,                             pid: 11111156789,
+
+  scope: svv:kjoretoy              scope: svv:pkk                                scope: nav:trygdeopplysninger        
+  client_orgno: "min bil-app"      client_orgno: 817159362                       client_orgno: 934382404              
+                                   may_act: {                                    act: {                               
+                                      orgno: 924328606                              pid: 31129912345                  
+                                   }                                                iss: vergemålsregisteret          
+                                                                                 }
+                              }                                              }                                    }   
+```
+
+4. En innbygger bruke app'en "Mine kjøretøy" (gjerne utviklet av 3djepart) som henter kjøretøysopplysninger fra Statens Vegvesen.
+5. En innbygger (presumptivt mekaniker i Leikanger Auto) skal bruke Vegvesenet sitt API til å rapportere PKK. Det er Vitec Autodata som er klient og kan opptre på vegne av Leikanger auto.  (denne kan dobbeltolkes : er det personen eller leverandøren som kan opptre på vegne av Leikanger auto?)
+6. Her bruker vergen i eksempel 3 en Evry-løsning som igjen henter trygdeopplysninger for NAV.
+
+
+Tilgangstoken for vikrsomhet:
+
+```
+access_token (maskinporten)            access_token (maskinporten m/delegering)    	access_token (alternativ med 'act')
+
+{                                      {                                         		{
+      scope: nav:trygdeopplysninger           scope: nav:trygdeopplysninger              scope: nav:trygdeopplysninger
+      client_orgno: 995568217                 client_orgno: 934382404                    
+}                                             may_act: {                                 act: {
+                                                orgno: 964967725                            orgno: 934382404
+                                             }                                           }
+                                        }                                                 sub: {
+                                                                                           orgno: 964967725
+                                                                                         }										  
+                                                                                  	}
+```
+
+7. Gjensidige henter trygdeopplysninger fra NAV
+8. EVRY henter trygdeopplysninger fra NAV på vegne av Leikanger kommune.
+9. Som 8. med alternativ notasjon.
 
 
 
 ```
+817159362 = Vitec autodata
+924328606 = Leikanger Auto
+934382404 = EVRY ASA
+964967725 = Leikanger kommune
+995568217 = Gjensidige ASA
+```
 
+## Beskrivelse av viktige claims
 
+Standardiserte claims:
 
-r inn på ein sky-regneskapsløsning (levert av Visma), og skal bruke eit API levert av NAV.
-
-## Detaljert token
-
-|claim|Autentiseringsbevis (OIDC id_token)|Autensieringær autorisasjon - bruker innlogget i tjeneste uten delegering (oauth2 access_token)|Maskinporten idag|eOppslag - selvstendig konsument|eOppslag konsument via leverandør| Ansattpålogging (delegering) |spec'|kommentar|
-|-|-|-|-|-|-|-|-|-|-|
-|sub|TWGi0...2GBY=|TWGi0...2GBY=||en UUID |en annen UUID|TWGi0...2GBY=|OIDC, JWT|OIDC: unik, tjenestespesifikk ikke-meningsbærende identifikator(strengt matematisk definert), JWT:  The "sub" (subject) claim identifies the principal that is the  subject of the JWT. |
-|scope|openid|svv:pkk|global/kontaktinformasjon.read|nav:forsikring|nav:forsikring|nav:forsikring|Oauth2|
-|client_orgno||944117784|974761076|999888777 (Storbanken)|777888999 (Lillebanken)|936796702
-|aud| oidc_kongsvingerkommune_acos|oidc_svv_vitecautodata|oidc_skatteetaten_krr|https://api.nav.no/|https://api.nav.no/||OIDC, JWT| `aud` utlevers kun når klient ber om det|
-|acr| Level4 |Level4||egen_nøkkel|kvalifisert_segl|Level4|oidc|Sikkerhetsnivå (Auth. context class ref. )|
-|amr| BankID |BankID||||BankID|oidc|
-|pid|11111156789|11111156789 ||||11111156789 | [krr] | personidentifikator i folkeregisteret (burde heitt folkeregisteridentifikator)|
-|**Fremtidige claims**|
-|act|||||`{ sub: "eika-gruppen", organisasjonsnummer: 999777555 }`||Token Ex.|The "act" (actor) claim provides a means within a JWT to express that    delegation has occurred and identify the acting party to whom authority has been delegated.|
-|may_act||||||`{ sub: "min arbeidsgiver", organisasjonsnummer: 999555111, iss: "altinn autorisasjon" }`|Token Ex. |The "may_act" claim makes a statement that one party is authorized to  become the actor and act on behalf of another party.|
-|client_id||oidc_svv_vitecautodata || oidc_storbanken (evt autogenerert)|oidc_eika_kunde23 (evt. autogenerert)| oidc_visma_skyregnskap
-
-
-Følgende claims er like i alle varianter:
-
-|claim|spec'|definisjon|
+|claim|spec'|kommentar|
 |-|-|-|
-|iss|oidc, jwt|Utsteder (idporten.difi.no)
-|exp|oidc, jwt|tidspunkt for utløp
-|iat|oidc, jwt|tidspunkt for utstedelse
-|jti|oidc, jwt|unik identifikator for selve tokenet
+|scope|oauth2|ressursen som vert beskytta|
+|sub|OIDC, JWT|OIDC: unik, tjenestespesifikk ikke-meningsbærende identifikator(strengt matematisk definert), JWT:  The "sub" (subject) claim identifies the principal that is the  subject of the JWT. |
+|aud|OIDC, JWT| audience. OIDC:  klienten som har mottatt id_token.  JWT:The "aud" (audience) claim identifies the recipients that the JWT is intended for.|
+|act|Token Exchange|The "act" (actor) claim provides a means within a JWT to express that    delegation has occurred and identify the acting party to whom authority has been delegated.|
+|may_act|Token Exchange |The "may_act" claim makes a statement that one party is authorized to  become the actor and act on behalf of another party.||client_orgno||944117784|974761076|999888777 (Storbanken)|777888999 (Lillebanken)|936796702
+|acr| OIDC |Sikkerhetsnivå (Auth. context class ref. )|
+|amr| OIDC| Autentiseringsmetode|
+|client_id|Oauth2 | identifikator for klient, ikke nødvendigvis meningsbærende|
+
+Proprietær claims:
+
+|claim|spec'|kommentar|
+|-|-|-|
+|pid| Kontaktregisteret | personidentifikator i folkeregisteret (burde heitt folkeregisteridentifikator)|
+|orgno| Enhetsregisteret| Organisasjonsnummer|
+|   client_orgno| | (Norsk) organisasjonsnummer til klienten|
+
+
 
 
 Access tokens bør følge strukturen uansett om dei er direkte utsted av Autorisasjonsserver, eller om dei er eit resultat av ein Token Exchange operasjon.
 
+## Kodeverk for claims
 
-## sikkerhetsnivå
+TBD
 
-### Personinnlogging:
+### sikkerhetsnivå
+
+#### Personinnlogging:
 * Level3
 * Level4
 
-### Virksomhet:
+#### Virksomhet:
 (må defineres)
 
 * eIDAS elektronisk segl

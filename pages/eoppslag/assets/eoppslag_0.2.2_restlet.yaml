@@ -1,0 +1,692 @@
+#%RAML 1.0
+title: "ID-porten selvbetjeningsAPI"
+description: "API som lar kunder og leverandører selvbetjene sine integrasjoner i\
+  \ ID-porten OIDC provider.  Det er også mulig for API-tilbydere og API-konsumenter\
+  \ til å selvbetjene tilgangsstrying til egne APIer som er Oauth2-beskytte med ID-porten."
+version: "1.0"
+protocols:
+- "HTTP"
+baseUri: "http://integrasjon-ver2.difi.no/"
+annotationTypes:
+  x-restlet: "any"
+types:
+  OIDCClientExternalRequestResource:
+    type: "object"
+    properties:
+      access_token_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      authorization_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      client_name:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+      client_orgno:
+        type: "string"
+        required: false
+      client_type:
+        type: "string"
+        enum:
+        - "PUBLIC"
+        - "CONFIDENTIAL"
+      client_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      description:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+      force_pkce:
+        type: "boolean"
+        required: false
+      frontchannel_logout_session_required:
+        type: "boolean"
+        required: false
+      frontchannel_logout_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      logo_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      post_logout_redirect_uris:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      redirect_uris:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      refresh_token_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      scopes:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      token_reference:
+        type: "string"
+        enum:
+        - "SELF_CONTAINED"
+        - "OPAQUE"
+    (x-restlet):
+      section: "Integrasjoner"
+  OIDCClientExternalResponseResource:
+    type: "object"
+    properties:
+      access_token_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      authorization_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      client_id:
+        type: "string"
+        pattern: "^[a-zA-Z0-9:_\\-=]+$"
+      client_name:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+      client_orgno:
+        type: "string"
+      client_secret:
+        type: "string"
+        required: false
+      client_type:
+        type: "string"
+        enum:
+        - "PUBLIC"
+        - "CONFIDENTIAL"
+      client_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      created:
+        type: "datetime"
+        required: false
+      description:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+      force_pkce:
+        type: "boolean"
+        required: false
+      frontchannel_logout_session_required:
+        type: "boolean"
+        required: false
+      frontchannel_logout_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      last_updated:
+        type: "datetime"
+        required: false
+      logo_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      onbehalfof:
+        type: "array"
+        required: false
+        items:
+          type: "OIDCClientOnBehalfOfBackendResponseResource"
+      post_logout_redirect_uris:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      redirect_uris:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      refresh_token_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      scopes:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      supplier_orgno:
+        type: "string"
+        required: false
+      token_reference:
+        type: "string"
+        enum:
+        - "SELF_CONTAINED"
+        - "OPAQUE"
+    (x-restlet):
+      section: "Integrasjoner"
+  OIDCClientOnBehalfOfBackendResponseResource:
+    type: "object"
+    properties:
+      created:
+        type: "datetime"
+        required: false
+      description:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      last_updated:
+        type: "datetime"
+        required: false
+      name:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[\\x09\\|\\x20-\\x7E|\\x80-\\xD7FF|\\xE000-\\xFFFD]+$"
+      onbehalfof:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[a-zA-Z0-9:_\\-=]+$"
+      orgno:
+        type: "string"
+        required: false
+    (x-restlet):
+      section: "Integrasjoner"
+  OIDCClientOnBehalfOfExternalRequestResource:
+    type: "object"
+    properties:
+      client_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      description:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      logo_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      name:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[\\x09\\|\\x20-\\x7E|\\x80-\\xD7FF|\\xE000-\\xFFFD]+$"
+      onbehalfof:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[a-zA-Z0-9:_\\-=]+$"
+      orgno:
+        type: "string"
+        required: false
+    (x-restlet):
+      section: "Integrasjoner"
+  OIDCClientOnBehalfOfExternalResponseResource:
+    type: "object"
+    properties:
+      client_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      created:
+        type: "datetime"
+        required: false
+      description:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      last_updated:
+        type: "datetime"
+        required: false
+      logo_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      name:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[\\x09\\|\\x20-\\x7E|\\x80-\\xD7FF|\\xE000-\\xFFFD]+$"
+      onbehalfof:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[a-zA-Z0-9:_\\-=]+$"
+      orgno:
+        type: "string"
+        required: false
+    (x-restlet):
+      section: "Integrasjoner"
+  token_egenskaper:
+    type: "object"
+    description: "krav til token som skal brukes mot et gitt scope fra API-tilbyder"
+    properties:
+      max_lifetime_at:
+        type: "integer"
+        description: "Max antall levetid på access_token i sekunder."
+        required: false
+      max_lifetime_authorization:
+        type: "string"
+        description: "Maksimal levetid på en autorisasjon (hvor lenge skal konsument\
+          \ kunne bruke refresh_token uten at bruker må re-autentisere seg)"
+        required: false
+      self_contained:
+        type: "boolean"
+        description: "om tokens må vere self-contained"
+        default: true
+        required: false
+    (x-restlet):
+      section: "Scopes"
+securitySchemes:
+  OAuth2:
+    type: "OAuth 2.0"
+    settings:
+      authorizationUri: "https://eid-systest-web01.dmz.local/idporten-oidc-provider/authorize"
+      accessTokenUri: "https://eid-systest-web01.dmz.local/idporten-oidc-provider/token"
+      authorizationGrants:
+      - "authorization_code"
+      scopes:
+      - "idporten:dcr.read"
+      - "idporten:dcr.write"
+      - "idporten:dcr.modify"
+      - "idporten:dcr/onbehalfof.write"
+      - "idporten:dcr:supplier"
+      - "idporten:scopes.write"
+      - "idporten:eoppslag.write"
+securedBy:
+- "OAuth2"
+/clients:
+  get:
+    displayName: "list"
+    responses:
+      200:
+        description: "OK"
+        body:
+          application/json;charset=UTF-8:
+            type: "array"
+            items:
+              type: "OIDCClientExternalResponseResource"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+  post:
+    displayName: "create"
+    body:
+      application/json:
+        type: "OIDCClientExternalRequestResource"
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "OIDCClientExternalResponseResource"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+  (x-restlet):
+    section: "Integrasjoner"
+/clients/{clientId}/onbehalfof:
+  uriParameters:
+    clientId:
+      type: "string"
+      description: "clientId"
+  post:
+    displayName: "create"
+    body:
+      application/json:
+        type: "OIDCClientOnBehalfOfExternalRequestResource"
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "OIDCClientOnBehalfOfExternalResponseResource"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+  (x-restlet):
+    section: "Integrasjoner"
+/clients/{clientId}/onbehalfof/{id}:
+  uriParameters:
+    clientId:
+      type: "string"
+      description: "clientId"
+    id:
+      type: "string"
+      description: "id"
+  get:
+    displayName: "get"
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "OIDCClientOnBehalfOfExternalResponseResource"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+  put:
+    displayName: "update"
+    body:
+      application/json:
+        type: "OIDCClientOnBehalfOfExternalRequestResource"
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "OIDCClientOnBehalfOfExternalResponseResource"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+  delete:
+    displayName: "delete"
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "object"
+      204:
+        description: "No Content"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+    securedBy:
+    - "OAuth2"
+  (x-restlet):
+    section: "Integrasjoner"
+/clients/{id}:
+  uriParameters:
+    id:
+      type: "string"
+      description: "id"
+  get:
+    displayName: "get"
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "OIDCClientExternalResponseResource"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+  put:
+    displayName: "update"
+    body:
+      application/json:
+        type: "OIDCClientExternalRequestResource"
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "OIDCClientExternalResponseResource"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+  delete:
+    displayName: "delete"
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "object"
+      204:
+        description: "No Content"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+    securedBy:
+    - "OAuth2"
+  (x-restlet):
+    section: "Integrasjoner"
+/clients/{id}/secret:
+  uriParameters:
+    id:
+      type: "string"
+      description: "id"
+  post:
+    displayName: "updateSecret"
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "object"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+  (x-restlet):
+    section: "Integrasjoner"
+/scopes/:
+  securedBy:
+  - "OAuth2"
+  get:
+    displayName: "Liste opp scopes"
+    description: "Hente ut alle scopes som provideren beskytter."
+    queryParameters:
+      fromDate:
+        type: "datetime"
+        description: "Hent kun scopes som er registrert etter denne dato"
+        required: false
+      orgno:
+        type: "string"
+        description: "Hente kun scopes som tilhører aktuell organisasjon"
+        required: false
+    securedBy:
+    - null
+  post:
+    displayName: "Opprette et nytt scope"
+    description: "x"
+    queryParameters:
+      prefix:
+        type: "string"
+        description: "Et prefix knyttet til API-tilbyder."
+        examples:
+          example: "nav:"
+          example1: "<org.no>:"
+      subscope:
+        type: "string"
+        description: "Vilkårlig"
+      audience:
+        type: "string"
+        required: false
+      token_egenskaper:
+        type: "string"
+        description: "diverse egenskaper som API-tilbyder krever"
+        required: false
+        example: "self_contained"
+      orgno:
+        type: "string"
+        description: "API-eiers orgnummer (dersom Altinn)"
+        required: false
+  (x-restlet):
+    section: "Scopes"
+/scopes/{scope}:
+  displayName: "Et kontret scope"
+  description: "Et konkret scope, består av prefix+subscope, eid av en bestemt virksomhet"
+  uriParameters:
+    scope:
+      type: "string"
+  get:
+    displayName: "Hente detaljer om et konkret scope"
+    description: "Hente detaljer om et konkret scope"
+    responses:
+      200:
+        body:
+          type: "object"
+  delete:
+    displayName: "Deaktivere et scope"
+    description: "Merk at scopet ikkje blir sletta i ID-porten, men derimot markert\
+      \ som inaktivt.  Dvs. token-forespørsler som inneholder dette scopet (evt. blant\
+      \ flere) vil bli avvist.  Eksisterende tilgangsmatrise vil bli beholdt."
+  put:
+    displayName: "Endre scope"
+    description: "endre egenskaper ved et scope"
+  (x-restlet):
+    section: "Scopes"
+/scopes/{scope}/access:
+  displayName: "tilganger til et gitt scope"
+  uriParameters:
+    scope:
+      type: "string"
+  post:
+    displayName: "Gi tilgang"
+    queryParameters:
+      orgno:
+        type: "string"
+        description: "organisasjonsnummer til konsument"
+        required: false
+  get:
+    displayName: "liste tilganger"
+    description: "liste opp alle tilganger til gitt scope"
+  (x-restlet):
+    section: "Tilgangstyring"
+/scopes/{scope}/access/{org.no}:
+  displayName: "tilgangstupel for organisasjon og scope"
+  uriParameters:
+    scope:
+      type: "string"
+    org.no:
+      type: "string"
+  delete:
+    displayName: "Slett tilgang"
+  (x-restlet):
+    section: "Tilgangstyring"
+/scopes/{scope}/accessrequest:
+  description: "konsument (får"
+  uriParameters:
+    scope:
+      type: "string"
+  post:
+    displayName: "be om tilgang"
+    description: "Be om tilgang til aktuelt scope"
+    queryParameters:
+      consumer_orgno:
+        type: "string"
+        description: "For administrasjonsssentral: konsumenten sitt orgnummer"
+        required: false
+  (x-restlet):
+    section: "Tilgangstyring"
+/accessrequest:
+  get:
+    displayName: "status på mine tilgangsforespørsler"
+  (x-restlet):
+    section: "Tilgangstyring"
+/scopes/{scope}/delegations/:
+  uriParameters:
+    scope:
+      type: "string"
+  post:
+    displayName: "opprette delegering"
+    body:
+      type: "object"
+      properties:
+        supplier_orgno:
+          type: "string"
+          description: "Leverandøren sitt organisasjonsnummer"
+          minLength: 9
+          required: false
+          example: "934382404   (\"evry asa\")"
+        consumer_orgno:
+          type: "string"
+          description: "Konsumenten sitt organisasjonsnummer"
+          minLength: 9
+          required: false
+          example: "964967725  (\"leikanger kommune\")"
+  delete:
+    displayName: "slette delegering"
+  (x-restlet):
+    section: "Delegering"
+(x-restlet):
+  sections:
+    Integrasjoner:
+      description: "Oauth2-integrasjoner mot ID-porten\n"
+    Scopes:
+      description: "Administrasjon av API-definisjoner (oauth2 scopes)\n"
+    Tilgangstyring: {}
+    Delegering:
+      description: "eOppslag:  en konsument C delegerer at en leverandør L opptrer\
+        \ på vegne av ham, for et gitt API  (scope S)."

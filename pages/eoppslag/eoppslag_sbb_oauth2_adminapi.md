@@ -14,7 +14,7 @@ Selve token-utstedelsesprosessen i eOppslag bruker allerede eksisterende funksjo
 
 Det som primært mangler i ID-porten for å realise eOppslag, er å tilby selvbetjeningsløsninger for administrasjon av hvilke APIer (dvs. Oauth2 scopes) som finnes og hvem som skal kunne få utstedt access_tokens til disse.
 
-Design av endringene er dokumentert i RAML her: [eoppslag_0.2.1.yaml](eoppslag_0.2.1.yaml).
+Design av endringene er [dokumentert i RAML her: eoppslag.raml](https://github.com/joergenb/oauth2-veileder/blob/gh-pages/pages/eoppslag/assets/eoppslag_0.2.2_restlet.yaml). (kan opnast med Restlet Studio)
 
 
 
@@ -64,15 +64,23 @@ Selvbetjenings-API utvides med:
 
 ### Audience (A)
 
-Difi foreslår at API-tilbyder (A) som hovedregel er koda inn i scope gjennom prefix. Dette betyr at som hovedregel kan A alltid utledes av S.  Dersom default prefix settes lik tilbyderen sitt orgno, gir dette gir mulighet til fullautomatisering uten noen manuell provisjonering, dvs. enhver organisasjon kan på egen hånd bli API-tilbyder.
+Difi mener at som hovedregel skal API-tilbyder (A) være koda inn i scope gjennom prefix. Dette betyr at A alltid utledes av S.  Dersom default prefix t.d. settes lik tilbyderen sitt orgno, gir dette også mulighet til fullautomatisering uten noen manuell provisjonering, dvs. enhver organisasjon kan på egen hånd bli API-tilbyder.
 
 For organisasjoner som krever flere prefixer, provisjoneres disse manuelt.
 
 **Resten av dette avsnittet er TBD, og ikkje del av en MVP**
 
-For tilfeller der samme scope S beskytter flere APIer fra ulike aktører (eksempel med kontoopplysninger fra bankene), trengs audience, for å unngå at bank1 kan bruke mottatt token til å hente opplysninger fra konkurrerende bank2.
+For tilfeller der samme scope S beskytter flere APIer fra ulike aktører (eksempel med kontoopplysninger fra bankene), trengs en mekanisme for å unngå at bank1 kan bruke mottatt token til å hente opplysninger fra konkurrerende bank2.
 
-For å registrere at et scope S benytter audience, utvides /scope-endepunktet med et valgfritt felt:
+Flere alternative løsninger:
+
+#### Alt 1:
+Klient forespør eit audience, dette blir inkludert i token uten å valideres eller tilgangsstyres, og så er det opp til ressursserver (API-tilbyder) å validere at mottatt token er for sitt eget audience.
+
+Difi foreslår altså at `audience` i første rekke er et forhold med ressursserver og klient, med ingen sentral validering i ID-porten.
+
+#### Alt 2:
+For å registrere at et scope S benytter audience, utvides kan POST /scopes-endepunktet med et valgfritt felt for audience:
 ```
 POST /scopes/bank:kontopplysninger/audience/"  { "https://rs.bank1.no/"}
 POST /scopes/bank:kontopplysninger/audience/"  { "https://rs.bank2.no/"}
@@ -80,7 +88,10 @@ POST /scopes/bank:kontopplysninger/audience/"  { "https://rs.bank2.no/"}
 
 Når en klient så forespør aktuelt scope, må den også oppgi et og bare et gyldig audience, ellers feiler tokenutstedelsen. Derimot ser vi ikke for oss å tilgangsstyre audiencer (iallefall ikke i første omgang).  Alle konsumenter som har tilgang til S, får også tilgang til alle tilhørende audience.
 
-Difi foreslår altså at `audience` i første rekke er et forhold med ressursserver og klient, med liten sentral validering i ID-porten.
+#### Alt 3:
+
+som alt 2, men her inkluderer tilgangstabellen også A, som medfører at konsumenter og tilbydere må forholde seg til feltet på alle API-operasjoner.
+
 
 ### Konsumenter (C)
 
@@ -132,12 +143,11 @@ For å sikre at ikke andre opptrer som administrasjonssenter, må disse i tilegg
 
 
 
-## Utfordringer med delegering
-
+## Gjenstående utfordringer med delegering
 
 En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient), siden Oauth2-modellen som ligger i bunn forutsetter at det er klienter som får tilgang til scopes. Uten kobling til klient, må i prinsippet alle C's integrasjoner (både egne og leverandører) med aktuelt scope S få delegeringen.  Dette betyr at leverandører i prsinippet k
 
-Difis forslag er at delegeringstabellen ikke er en run-time kilde, men heller konsulteres når en oauth2-klient skal endres. Dvs Leverandøres klienter får ikke automatisk satt nye scopes som blir delegert, de må aktiv inn å endre klient-integrasjonen sin og konfigurere scope.
+Difis forslag er at delegeringstabellen primært ikke er en run-time kilde, men heller konsulteres når en oauth2-klient skal endres. Dvs Leverandørers klienter får ikke automatisk satt nye scopes som blir delegert, leverandøren må aktivt selv inn å rekonfigurere endre klient-integrasjonen med det nye scopet.  
 
 ### Leverandør-styrte integrasjoner
 I dagens løsning kan utvalgte leverandører kan gjennom en klient-registrering selv-deklarere at de opptrer på vegne av en konsument.:
@@ -147,7 +157,7 @@ POST /clients { client_orgno*, scope* }
 Her opprettes tuplet `C,L,S,client_id` i delegeringstabellen.  L (supplier_orgno) blir satt automatisk basert på virksomhetssertifikatet brukt mot admin-API.
 
 ### Hvordan skille de to typene delegering ?
-I begge tilfellene utleverer vi token som
+I begge tilfellene utleverer vi token som for eksempel.s
 ```
 {
   scope: S,
@@ -163,7 +173,7 @@ For de tilfellene der type delegering er viktig for API-tilbyder, kan man vurder
 
 Vi ser også at tuplene i delegeringsmatrisen som resultat av de to ulike typene delegering er like.  Et viktig spørsmål er hvordan, evt. *om* tilgangstyringen ved *tokenutstedelse* skal skille på disse to delegeringsmetodene, eller om det treng regler på andre tidspunkt i verdikjeden.
 
-#### Algoritme for tilgangskontroll:
+#### mulig algoritme for tilgangskontroll:
 1. Grunnleggende Oauth2-validering (gyldig JWT, gyldig klient_id, har klient forespurt scope).
 2. Utfør klientautentisering, validere nøkler
   - dersom virk.sert, kontrollere at orgno i sertifikat stemmer med org.no registrert på klient, sjekk revokaksjon, valider virksert
