@@ -126,7 +126,7 @@ Proprietære "norske" claims:
 | client_orgno| | (Norsk) organisasjonsnummer til klienten.  |I bruk i ID-porten |
 |consumer_orgno   |   |   Organisasjonsnummer til konsument  | foreslått   |
 |supplier_orgno   |   |   Organisasjonsnummer til leverandør | foreslått  |
-|token_type   | (evt. `typ`)   | hvilket token (se 1-9 ovanfor) som er utstedt   | foreslått  |
+|type   | (evt. `typ`)   | hvilket token (se 1-9 ovanfor) som er utstedt   | foreslått  |
 |amr_org || autentiseringsmetode for virksomhet [QCERT for eSeal, virksomhetssertifikat, client_secret, private_key_jwt]|foreslått|
 
 
