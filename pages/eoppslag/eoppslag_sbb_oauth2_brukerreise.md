@@ -18,14 +18,23 @@ NAV som API-tilbyder A blir manuelt provisjonert i ID-porten, ved at A sitt org.
 NAV kaller så selvbetjeningsAPIet for å opprette ressursdefinisjoner tilknyttet prefix:
 
 ```
-POST /scopes/nav:trygdeopplysninger"    
+POST /scopes/
+{
+  "prefix": "nav",
+  "subscope": "trygdeopplysninger"  
+}  
 ```
-som oppretter scopet `nav:trygdeopplysninger`.   (alternativt bruker NAV en av GUI-løsningene integrert med Maskinporten og gjør pek-og-klikk for det samme.)
+som oppretter scopet `nav:trygdeopplysninger`.   (alternativt bruker NAV en av GUI-løsningene integrert med Maskinporten og gjør   det samme via pek-og-klikk.)
 
 
 NAV vil så tildele noen tilganger:
 ```
-POST /scopes/nav:trygdeopplysninger/access/995568217
+POST /scopes/access/
+{
+  "scope": "nav:trygdeopplysninger",
+  "consumer_orgno": "995568217"
+}
+
 ```
 som gir Gjensidige Forsikring tilgang til å få tokens med scope "nav:trygdeopplysninger".
 
@@ -39,9 +48,11 @@ Gjensidige lager en oauth2-klient som benytter virksomhetssertifikat og får den
 Klienten generer en tokenforespørsel med scope=`nav:trygdeopplysninger`,  signerer dette med Gjensidige sitt virksomhetssertikat (et jwt-grant), og sender til Maskinporten.  Siden Gjensidige allerede har fått tilgang, vil Maskinporten utstede et access_token tilbake:
 ```
 {
-  iss: "Maskinporten"
-  scope: "nav:trygdeopplysninger"
-  client_orgno: "995568217"
+  iss:            "Maskinporten"
+  scope:          "nav:trygdeopplysninger"
+  consumer_orgno: "995568217"
+  amr_org:        "QCert for eSeal"
+  token_type:     "virksomhet"
   ...
 }
 ```
@@ -66,19 +77,28 @@ Storebrand ser i API-katalogen at NAV tilbyr et interessant API.
 
 De lager raskt en Oauth2-klient, får denne registrert i Maskinporten, og forsøker sende en tokenforespørsel til Maskinporten på samme måte som Gjensidige.  Siden Storebrand ikke har fått tilgang, vil denne bli avvist. Storebrand sender så en tilgangsforespørsel til Maskinporten sitt selvbetjeningsAPI:
 ```
-POST /scopes/nav:trygdeopplysninger/accessrequest
+POST /scopes/access/requests
+{
+  "scope": "nav:trygdeopplysninger"
+}
 ```
 
 NAV er flinke og følger hyppig med på tilgangskøen for sitt API:
 ```
-GET /scopes/nav:trygdeopplysninger/accessrequest
+GET /scopes/access/requests?scope=nav:trygdeopplysninger
 ```
 og ser at Storebrand har bedt om tilgang.  Denne godkjenner de tvert:
 ```
-POST /scopes/nav:trygdeopplysninger/access/930553506
+POST /scopes/access/
+{
+  "scope": "nav:trygdeopplysninger",
+  "consumer_orgno": "930553506"
+}
 ```
 
 Storebrand kan nå bruke NAV sitt API.
+
+NAV kan selvfølgelig også håndtere tilgangsforespørsler selv direkte.
 
 
 ## 4. Leikanger Kommune ønsker at Evry skal bruke APIet for dem
@@ -90,9 +110,11 @@ Evry sitt system har allerede en integrasjon i Maskinporten, og har tilgang til 
 En bemyndiget ansatt i kommunen logger inn i Altinn, og delegerer tilgang til at Evry frå lov til å opptre på vegne av dem, opp mot APIet.  Dette er realisert ved at Altinn kaller selvbetjeningsAPIet for å oppdatere Maskinporten sin delegeringstabell:
 
 ```
-POST /scopes/nav:trygdeopplysninger/delegations/934382404
+POST /scopes/delegations/
 {
-  consumer_orgno: "964967725          # Leikanger Kommune
+  "scope": "nav:trygdeopplysninger",
+  "consumer_orgno": "964967725,          # Leikanger Kommune
+  "supplier_orgno": "934382404"          # Evry ASA
 }
 ```
 
@@ -102,10 +124,10 @@ Når Evry nå forsøker å be om token, vil de få dette utstedt:
 {
   iss: "Maskinporten"
   scope: "nav:trygdeopplysninger"
-  client_orgno:  "934382404"       # Evry ASA
-  may_act: {
-    consumer_orgno: "964967725     # Leikanger Kommune
-  }        
+  consumer_orgno: "964967725        # Leikanger Kommune
+  act: {
+    "supplier_orgno": "934382404"   # Evry ASA
+  }
   ...
 }
 ```

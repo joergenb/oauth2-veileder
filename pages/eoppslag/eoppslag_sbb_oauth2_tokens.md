@@ -74,21 +74,18 @@ acccess_token                   access_token (m/virksomhetsdelegering)       acc
 6. Her bruker vergen i eksempel 3 en Evry-løsning som igjen henter trygdeopplysninger for NAV.
 
 
-Tilgangstoken for vikrsomhet:
+Tilgangstoken for virksomhet:
 
 ```
-access_token (maskinporten)            access_token (maskinporten m/delegering)    	access_token (alternativ med 'act')
+access_token (maskinporten)            access_token (maskinporten m/delegering)   access_token (alternativ med 'may_act')
 
-{                                      {                                         		{
-      scope: nav:trygdeopplysninger           scope: nav:trygdeopplysninger              scope: nav:trygdeopplysninger
-      client_orgno: 995568217                 client_orgno: 934382404                    
-}                                             may_act: {                                 act: {
-                                                orgno: 964967725                            orgno: 934382404
-                                             }                                           }
-                                        }                                                 sub: {
-                                                                                           orgno: 964967725
-                                                                                         }										  
-                                                                                  	}
+{                                      {                                          {
+  scope: nav:trygdeopplysninger           scope: nav:trygdeopplysninger             scope: nav:trygdeopplysninger
+  consumer_orgno: 995568217               consumer_orgno: 964967725                 supplier_orgno: 934382404
+}                                         act: {                                    may_act: {
+                                            supplier_orgno: 934382404                 consumer_orgno: 964967725                      
+                                          }                                         }
+                                        }                                         }
 ```
 
 7. Gjensidige henter trygdeopplysninger fra NAV
@@ -120,14 +117,17 @@ Standardiserte claims:
 |amr| OIDC| Autentiseringsmetode|
 |client_id|Oauth2 | identifikator for klient, ikke nødvendigvis meningsbærende|
 
-Proprietær claims:
+Proprietære "norske" claims:
 
-|claim|spec'|kommentar|
-|-|-|-|
-|pid| Kontaktregisteret | personidentifikator i folkeregisteret (burde heitt folkeregisteridentifikator)|
+|claim|spec'|kommentar|status|
+|-|-|-|-|
+|pid| Kontaktregisteret | personidentifikator i folkeregisteret (burde heitt folkeregisteridentifikator)|i bruk i id-porten|
 |orgno| Enhetsregisteret| Organisasjonsnummer|
-|   client_orgno| | (Norsk) organisasjonsnummer til klienten|
-
+| client_orgno| | (Norsk) organisasjonsnummer til klienten.  |I bruk i ID-porten |
+|consumer_orgno   |   |   Organisasjonsnummer til konsument  | foreslått   |
+|supplier_orgno   |   |   Organisasjonsnummer til leverandør | foreslått  |
+|token_type   | (evt. `typ`)   | hvilket token (se 1-9 ovanfor) som er utstedt   | foreslått  |
+|amr_org || autentiseringsmetode for virksomhet [QCERT for eSeal, virksomhetssertifikat, client_secret, private_key_jwt]|foreslått|
 
 
 

@@ -14,7 +14,7 @@ Selve token-utstedelsesprosessen i eOppslag bruker allerede eksisterende funksjo
 
 Det som primært mangler i ID-porten for å realise eOppslag, er å tilby selvbetjeningsløsninger for administrasjon av hvilke APIer (dvs. Oauth2 scopes) som finnes og hvem som skal kunne få utstedt access_tokens til disse.
 
-Design av endringene er [dokumentert i RAML her: eoppslag.raml](https://github.com/joergenb/oauth2-veileder/blob/gh-pages/pages/eoppslag/assets/eoppslag_0.2.2_restlet.yaml). (kan opnast med Restlet Studio)
+Design av endringene er dokumentert i RAML her: [ versjon 0.3.2](https://github.com/joergenb/oauth2-veileder/blob/gh-pages/pages/eoppslag/assets/eoppslag_0.3.2_restlet.yaml). (kan opnast med Restlet Studio)
 
 
 
@@ -53,10 +53,10 @@ Selvbetjenings-API utvides med:
 
 | Operasjon | inndata | beskrivelse |
 |-|-|-|
-|`GET    /scopes `| |Gir liste over alle scopes beskyttet av ID-porten|
+|`GET    /scopes `| |Gir liste over alle scopes beskyttet av ID-porten (evt. filtrering)|
 |`POST   /scopes ` | prefix*, subscope*, description, token_egenskaper  | Oppretter et nytt scope (lik prefix+subscope)    |
-|`PUT    /scopes/{scope} `  |  description, token_egenskaper | Endrer et scope. TBD om selve scope-navnet skal kunne endres.   |
-|`DELETE /scopes/{scope}`   |   | Sletter (eller deaktiverer?) et scope. TBD: alle tilganger slettes?  |
+|`PUT    /scopes?scope={scope} `  |  description, token_egenskaper | Endrer et scope. Selve scope-navnet kan ikkje endres.   |
+|`DELETE /scopes?scope={scope} `   |   | Deaktiverer et scope. (scopet beholdes for konsistens i audit-log) TBD: alle tilganger slettes?  |
 
 
 `token-egenskaper` er tekniske egenskaper som API-tilbyder forventer/krever. Dette kan være max tillatt levetid, self-contained eller ikke, minste sikkerhetsnivå, etc.
@@ -99,9 +99,9 @@ For å tilgangsstyre konsumenter, utvides selvbetjeningsAPIet med følgende oper
 
 | Operasjon| inndata |beskrivelse |
 |-|-|-|
-|`POST   /scopes/{scope}/access`| org.no* | Gir konsument C tilgang til scopet S |
-|`DELETE /scopes/{scope}/access/{orgno}`   |   |  Fjerner tilgangen C har til S |
-|`GET    /scopes/{scope}/access`||liste alle tilganger for gitt scope|
+|`POST   /scopes/access` | scope*, consumer_orgno* | Gir konsument C tilgang til scopet S |
+|`DELETE /scopes/access` | scope*, consumer_orgno* | Fjerner tilgangen C har til S |
+|`GET    /scopes/access?scope={scope}`||liste alle tilganger for gitt scope|
 
 
 
@@ -111,8 +111,8 @@ Konsumenter kan be om tilgang til et scope S slik:
 
 | Operasjon| inndata |beskrivelse |
 |-|-|-|
-|`POST /scopes/{scope}/accessrequest`| | Konsument C (avledet av orgno i access_token) ber om tilgang til S|
-|`GET  /scopes/{scope}/acessrequest`| | Liste opp alle som har bedt om tilgang til aktuelt scope (Brukes av API-tilbydere for å behandle tilgangskø)|
+|`POST /scopes/access/requests`| scope* | Konsument C (avledet av orgno i access_token) ber om tilgang til S|
+|`GET  /scopes/access/requests?scope={scope}`| | Liste opp alle som har bedt om tilgang til aktuelt scope (Brukes av API-tilbydere for å behandle tilgangskø)|
 |`GET  /myaccesses`| | Liste opp alle mine tilganger|
 |`GET  /myaccessrequest`| | Liste opp alle mine ikkje-behandla søknader|
 
@@ -128,16 +128,16 @@ Delegering styres av konsument.
 
 | Operasjon| inndata |beskrivelse |
 |-|-|-|
-|`POST /scopes/{scope}/delegations `| supplier_org_no |  Leverandør L (supplier_org_no) får lov til å be om token til S på vegne av C (avledet av access_token). |
+|`POST /scopes/delegations `| scope*, supplier_orgno* |  Leverandør L (supplier_org_no) får lov til å be om token til S på vegne av C (avledet av access_token). |
 
 
 Her opprettes tuplet `C,L,S` i delegeringstabellen.  Tilsvarende trengs API-operasjoner for å slette og liste opp delegeringer.
 
 ### Altinn
 
-For at administrasjonssentra som Altinn skal kunne bruker APIet på samme måte som organisasjoner med direkte-tilgang, må de i tilegg spesifisere konsumenten og/eller tilbyderen sine org.no eksplisitt, som body-parameter.
+For at administrasjonssentra som Altinn skal kunne bruker APIet på samme måte som organisasjoner med direkte-tilgang, men for vilkårlige organisasjosnummer, må de i tilegg spesifisere konsumenten og/eller tilbyderen sine org.no eksplisitt.
 
-For å sikre at ikke andre opptrer som administrasjonssenter, må disse i tilegg få tildelt egne administive scope:    `idporten:eoppslagadmin.scope.write`
+For å sikre at kun utvalgte aktører kan opptre som administrasjonssenter, må disse dessuten få tildelt egne administive scope:    `idporten:eoppslagadmin.scope.write`
 `idporten:eoppslagadmin.request.write`,
 `idporten:eoppslagadmin.delegations.write`
 
@@ -145,9 +145,9 @@ For å sikre at ikke andre opptrer som administrasjonssenter, må disse i tilegg
 
 ## Gjenstående utfordringer med delegering
 
-En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient), siden Oauth2-modellen som ligger i bunn forutsetter at det er klienter som får tilgang til scopes. Uten kobling til klient, må i prinsippet alle C's integrasjoner (både egne og leverandører) med aktuelt scope S få delegeringen.  Dette betyr at leverandører i prsinippet k
+En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient), siden Oauth2-modellen som ligger i bunn forutsetter at det er klienter som får tilgang til scopes. Uten kobling til klient, må i prinsippet alle C's integrasjoner (både egne og leverandører) med aktuelt scope S få delegeringen.  Dette betyr at potensiale for konflikt med den leverandør-styrte integrasjoner som finst i ID-porten idag.
 
-Difis forslag er at delegeringstabellen primært ikke er en run-time kilde, men heller konsulteres når en oauth2-klient skal endres. Dvs Leverandørers klienter får ikke automatisk satt nye scopes som blir delegert, leverandøren må aktivt selv inn å rekonfigurere endre klient-integrasjonen med det nye scopet.  
+Difis forslag er at delegeringstabellen primært ikke er en run-time kilde, men heller konsulteres når en oauth2-klient skal endres. Dvs Leverandørers klienter får ikke automatisk satt nye scopes som blir delegert, leverandøren må aktivt selv inn og rekonfigurere sin klient-integrasjonen med det nye scopet.
 
 ### Leverandør-styrte integrasjoner
 I dagens løsning kan utvalgte leverandører kan gjennom en klient-registrering selv-deklarere at de opptrer på vegne av en konsument.:
@@ -161,9 +161,9 @@ I begge tilfellene utleverer vi token som for eksempel.s
 ```
 {
   scope: S,
-  client_orgno: C,
+  consumer_orgno: C,
   act: {
-    sub: L
+    supplier_orgno: L
   }   
 }
 ```

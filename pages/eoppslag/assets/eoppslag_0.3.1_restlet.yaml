@@ -1,0 +1,732 @@
+#%RAML 1.0
+title: "ID-porten selvbetjeningsAPI"
+description: "API som lar kunder og leverandører selvbetjene sine integrasjoner i\
+  \ ID-porten OIDC provider.  Det er også mulig for API-tilbydere og API-konsumenter\
+  \ til å selvbetjene tilgangsstrying til egne APIer som er Oauth2-beskytte med ID-porten."
+version: "1.0"
+protocols:
+- "HTTP"
+baseUri: "http://integrasjon-ver2.difi.no/"
+types:
+  OrgnoValueType:
+    type: "string"
+    description: "Organisiasjonsnummer\nhttps://www.brreg.no/om-oss-nn/oppgavene-vare/registera-vare/om-einingsregisteret/organisasjonsnummeret/"
+    minLength: 9
+    maxLength: 9
+  ClientRequestResource:
+    type: "object"
+    properties:
+      access_token_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      authorization_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      client_name:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+      client_orgno:
+        type: "OrgnoValueType"
+        required: false
+      client_type:
+        type: "string"
+        enum:
+        - "PUBLIC"
+        - "CONFIDENTIAL"
+      client_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      description:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+      force_pkce:
+        type: "boolean"
+        required: false
+      frontchannel_logout_session_required:
+        type: "boolean"
+        required: false
+      frontchannel_logout_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      logo_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      post_logout_redirect_uris:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      redirect_uris:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      refresh_token_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      scopes:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      token_reference:
+        type: "string"
+        enum:
+        - "SELF_CONTAINED"
+        - "OPAQUE"
+  ClientResponseResource:
+    type: "object"
+    properties:
+      access_token_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      authorization_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      client_id:
+        type: "string"
+        pattern: "^[a-zA-Z0-9:_\\-=]+$"
+      client_name:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+      client_orgno:
+        type: "string"
+      client_secret:
+        type: "string"
+        required: false
+      client_type:
+        type: "string"
+        enum:
+        - "PUBLIC"
+        - "CONFIDENTIAL"
+      client_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      created:
+        type: "datetime"
+        required: false
+      description:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+      force_pkce:
+        type: "boolean"
+        required: false
+      frontchannel_logout_session_required:
+        type: "boolean"
+        required: false
+      frontchannel_logout_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      last_updated:
+        type: "datetime"
+        required: false
+      logo_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      onbehalfof:
+        type: "array"
+        required: false
+        items:
+          type: "ClientOnBehalfOfResponseResource"
+      post_logout_redirect_uris:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      redirect_uris:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      refresh_token_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      scopes:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      supplier_orgno:
+        type: "string"
+        required: false
+      token_reference:
+        type: "string"
+        enum:
+        - "SELF_CONTAINED"
+        - "OPAQUE"
+  ClientOnBehalfOfRequestResource:
+    type: "object"
+    properties:
+      client_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      description:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      logo_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      name:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[\\x09\\|\\x20-\\x7E|\\x80-\\xD7FF|\\xE000-\\xFFFD]+$"
+      onbehalfof:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[a-zA-Z0-9:_\\-=]+$"
+      orgno:
+        type: "string"
+        required: false
+  ClientOnBehalfOfResponseResource:
+    type: "object"
+    properties:
+      client_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      created:
+        type: "datetime"
+        required: false
+      description:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      last_updated:
+        type: "datetime"
+        required: false
+      logo_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      name:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[\\x09\\|\\x20-\\x7E|\\x80-\\xD7FF|\\xE000-\\xFFFD]+$"
+      onbehalfof:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[a-zA-Z0-9:_\\-=]+$"
+      orgno:
+        type: "string"
+        required: false
+  ScopeRequestResource:
+    type: "object"
+    properties:
+      prefix:
+        type: "ScopePrefixValueType"
+        examples:
+          example: "nav"
+          example1: "idporten"
+      subscope:
+        type: "SubScopeValueType"
+        description: "Vilkårlig"
+        examples:
+          example: "dcr.read"
+          example1: "dcr/onbehalfof.write"
+      owner_orgno:
+        type: "OrgnoValueType"
+        description: "API-eiers orgnummer (må settes dersom man har scopet idporten:eoppslag.write)"
+        required: false
+      audience:
+        type: "string"
+        description: "Ikke implementert"
+        required: false
+      token_egenskaper:
+        type: "TokenPropertiesObject"
+        description: "Ikke implementert"
+        required: false
+  ScopeResponseResource:
+    type: "object"
+    properties:
+      prefix:
+        type: "ScopePrefixValueType"
+        examples:
+          example: "nav"
+          example1: "idporten"
+      subscope:
+        type: "SubScopeValueType"
+        description: "Vilkårlig"
+        examples:
+          example: "dcr.read"
+          example1: "dcr/onbehalfof.write"
+      owner_orgno:
+        type: "OrgnoValueType"
+        description: "API-eiers orgnummer (må settes dersom man har scopet idporten:eoppslag.write)"
+        required: false
+      audience:
+        type: "string"
+        description: "Ikke implementert"
+        required: false
+      token_egenskaper:
+        type: "TokenPropertiesObject"
+        description: "Ikke implementert"
+        required: false
+      last_updated:
+        type: "datetime"
+        format: "rfc3339"
+      created:
+        type: "datetime"
+        format: "rfc3339"
+        required: false
+  ScopeAccessRequestResource:
+    type: "object"
+    properties:
+      scope:
+        type: "ScopeValueType"
+      orgno:
+        type: "OrgnoValueType"
+  ScopeAccessResponseResource:
+    type: "object"
+    properties:
+      scope:
+        type: "ScopeValueType"
+      orgno:
+        type: "OrgnoValueType"
+      created:
+        type: "datetime"
+      last_updated:
+        type: "datetime"
+  TokenPropertiesObject:
+    type: "object"
+    description: "krav til token som skal brukes mot et gitt scope fra API-tilbyder"
+    properties:
+      max_lifetime_at:
+        type: "integer"
+        description: "Max antall levetid på access_token i sekunder."
+        required: false
+      max_lifetime_authorization:
+        type: "string"
+        description: "Maksimal levetid på en autorisasjon (hvor lenge skal konsument\
+          \ kunne bruke refresh_token uten at bruker må re-autentisere seg)"
+        required: false
+      self_contained:
+        type: "boolean"
+        description: "om tokens må vere self-contained"
+        default: true
+        required: false
+  ScopePrefixValueType:
+    type: "string"
+    pattern: "^[a-z]+$"
+    examples:
+      example: "nav"
+      example1: "idporten"
+  ScopeValueType:
+    type: "string"
+    pattern: "^[a-z]+:([a-z]+\\/)+[a-z]+(\\.[a-z]+)?$"
+    examples:
+      example:
+        value: "idporten:dcr.read"
+        strict: false
+      example1: "idporten:dcr/onbehalfof.write"
+  SubScopeValueType:
+    type: "string"
+    pattern: "^([a-z]+\\/)+[a-z]+(\\.[a-z]+)?$"
+    examples:
+      example:
+        value: "dcr.read"
+        strict: false
+      example1: "dcr/onbehalfof.write"
+securitySchemes:
+  OAuth2:
+    type: "OAuth 2.0"
+    settings:
+      authorizationUri: "https://eid-systest-web01.dmz.local/idporten-oidc-provider/authorize"
+      accessTokenUri: "https://eid-systest-web01.dmz.local/idporten-oidc-provider/token"
+      authorizationGrants:
+      - "authorization_code"
+      scopes:
+      - "idporten:dcr.read"
+      - "idporten:dcr.write"
+      - "idporten:dcr.modify"
+      - "idporten:dcr/onbehalfof.write"
+      - "idporten:dcr:supplier"
+      - "idporten:scopes.write"
+      - "idporten:eoppslag.write"
+securedBy:
+- "OAuth2"
+/clients/{id}/secret:
+  uriParameters:
+    id:
+      type: "string"
+      description: "id"
+  post:
+    displayName: "updateSecret"
+    responses:
+      200:
+        description: "OK"
+        body:
+          application/json;charset=UTF-8:
+            type: "ClientResponseResource"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+/clients/{id}:
+  uriParameters:
+    id:
+      type: "string"
+      description: "id"
+  get:
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "ClientResponseResource"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+  put:
+    displayName: "update"
+    body:
+      application/json:
+        type: "ClientRequestResource"
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "ClientResponseResource"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+  delete:
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "object"
+      204:
+        description: "No Content"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+    securedBy:
+    - "OAuth2"
+/clients/{clientId}/onbehalfof/{id}:
+  uriParameters:
+    clientId:
+      type: "string"
+      description: "clientId"
+    id:
+      type: "string"
+      description: "id"
+  get:
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "ClientOnBehalfOfResponseResource"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+  put:
+    displayName: "update"
+    body:
+      application/json:
+        type: "ClientOnBehalfOfRequestResource"
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "ClientOnBehalfOfResponseResource"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+  delete:
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "object"
+      204:
+        description: "No Content"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+    securedBy:
+    - "OAuth2"
+/clients/{clientId}/onbehalfof:
+  uriParameters:
+    clientId:
+      type: "string"
+      description: "clientId"
+  post:
+    displayName: "create"
+    body:
+      application/json:
+        type: "ClientOnBehalfOfRequestResource"
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "ClientOnBehalfOfResponseResource"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+/clients:
+  get:
+    displayName: "list"
+    responses:
+      200:
+        description: "OK"
+        body:
+          application/json;charset=UTF-8:
+            type: "array"
+            items:
+              type: "ClientResponseResource"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+  post:
+    displayName: "create"
+    body:
+      application/json:
+        type: "ClientRequestResource"
+    responses:
+      200:
+        description: "OK"
+        body:
+          '*/*':
+            type: "ClientResponseResource"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - "OAuth2"
+/scopes:
+  securedBy:
+  - "OAuth2"
+  get:
+    displayName: "Liste opp scopes (filtrering mulig)"
+    description: "Hente ut alle scopes som provideren beskytter."
+    queryParameters:
+      fromDate:
+        type: "datetime"
+        description: "Hent kun scopes som er registrert etter denne dato"
+        required: false
+      orgno:
+        type: "OrgnoValueType"
+        description: "Hente kun scopes som tilhører aktuell organisasjon"
+        required: false
+      scope:
+        type: "ScopeValueType"
+        description: "Hente detaljer om et konkret scope"
+        required: false
+    responses:
+      200:
+        body:
+          application/json;charset=UTF-8:
+            type: "array"
+            items:
+              type: "ScopeResponseResource"
+    securedBy:
+    - null
+  post:
+    displayName: "Opprette et nytt scope"
+    body:
+      application/json;charset=UTF-8:
+        type: "ScopeRequestResource"
+    responses:
+      200:
+        body:
+          application/json;charset=UTF-8:
+            type: "ScopeResponseResource"
+  delete:
+    displayName: "Deaktivere et scope"
+    description: "Merk at scopet ikkje blir sletta i ID-porten, men derimot markert\
+      \ som inaktivt.  Dvs. token-forespørsler som inneholder dette scopet (evt. blant\
+      \ flere) vil bli avvist.  Eksisterende tilgangsmatrise vil bli beholdt."
+    queryParameters:
+      scope:
+        type: "ScopeValueType"
+      owner_orgno:
+        type: "OrgnoValueType"
+        description: "API-eiers orgnummer (må settes dersom man har scopet idporten:eoppslag.write)"
+        required: false
+  put:
+    displayName: "Endre scope"
+    description: "endre egenskaper ved et scope"
+    queryParameters:
+      scope:
+        type: "ScopeValueType"
+    body:
+      application/json;charset=UTF-8:
+        type: "ScopeRequestResource"
+    responses:
+      200:
+        body:
+          application/json;charset=UTF-8:
+            type: "ScopeResponseResource"
+/scopes/access:
+  displayName: "tilganger til et gitt scope"
+  post:
+    displayName: "Gi tilgang"
+    body:
+      application/json;charset=UTF-8:
+        type: "ScopeAccessRequestResource"
+    responses:
+      200:
+        body:
+          application/json;charset=UTF-8:
+            type: "ScopeAccessRequestResource"
+  get:
+    displayName: "liste tilganger"
+    description: "liste opp alle tilganger til gitt scope"
+    queryParameters:
+      scope:
+        type: "ScopeValueType"
+    responses:
+      200:
+        body:
+          application/json;charset=UTF-8:
+            type: "array"
+            items:
+              type: "ScopeAccessResponseResource"
+  delete:
+    displayName: "Slett tilgang"
+    queryParameters:
+      scope:
+        type: "ScopeValueType"
+      consumer_orgno:
+        type: "OrgnoValueType"
+        required: false
+/scopes/access/requests:
+  description: "konsument (får"
+  post:
+    displayName: "be om tilgang"
+    description: "Be om tilgang til aktuelt scope"
+    queryParameters:
+      consumer_orgno:
+        type: "OrgnoValueType"
+        description: "For administrasjonsssentral: konsumenten sitt orgnummer"
+        required: false
+      scope:
+        type: "ScopeValueType"
+  get:
+    displayName: "status på mine tilgangsforespørsler"
+    queryParameters:
+      scope:
+        type: "string"
+/scopes/delegations:
+  post:
+    displayName: "opprette delegering"
+    queryParameters:
+      scope:
+        type: "ScopeValueType"
+    body:
+      application/json:
+        type: "object"
+        properties:
+          supplier_orgno:
+            type: "string"
+            description: "Leverandøren sitt organisasjonsnummer"
+            minLength: 9
+            required: false
+            example: "934382404   (\"evry asa\")"
+          consumer_orgno:
+            type: "string"
+            description: "Konsumenten sitt organisasjonsnummer"
+            minLength: 9
+            required: false
+            example: "964967725  (\"leikanger kommune\")"
+  delete:
+    displayName: "slette delegering"
+    queryParameters:
+      scope:
+        type: "string"
