@@ -82,8 +82,8 @@ Difi foreslår altså at `audience` i første rekke er et forhold med ressursser
 #### Alt 2:
 For å registrere at et scope S benytter audience, utvides kan POST /scopes-endepunktet med et valgfritt felt for audience:
 ```
-POST /scopes/bank:kontopplysninger/audience/"  { "https://rs.bank1.no/"}
-POST /scopes/bank:kontopplysninger/audience/"  { "https://rs.bank2.no/"}
+POST /scopes/  { "scope": "bank:kontopplysninger", aud": "https://rs.bank1.no/"}
+POST /scopes/  { "scope": "bank:kontopplysninger", aud": "https://rs.bank2.no/"}
 ```
 
 Når en klient så forespør aktuelt scope, må den også oppgi et og bare et gyldig audience, ellers feiler tokenutstedelsen. Derimot ser vi ikke for oss å tilgangsstyre audiencer (iallefall ikke i første omgang).  Alle konsumenter som har tilgang til S, får også tilgang til alle tilhørende audience.
@@ -99,8 +99,8 @@ For å tilgangsstyre konsumenter, utvides selvbetjeningsAPIet med følgende oper
 
 | Operasjon| inndata |beskrivelse |
 |-|-|-|
-|`POST   /scopes/access` | scope*, consumer_orgno* | Gir konsument C tilgang til scopet S |
-|`DELETE /scopes/access` | scope*, consumer_orgno* | Fjerner tilgangen C har til S |
+|`POST   /scopes/access` | scope, consumer_orgno | Gir konsument C tilgang til scopet S |
+|`DELETE /scopes/access` | scope, consumer_orgno | Fjerner tilgangen C har til S |
 |`GET    /scopes/access?scope={scope}`||liste alle tilganger for gitt scope|
 
 
@@ -111,7 +111,7 @@ Konsumenter kan be om tilgang til et scope S slik:
 
 | Operasjon| inndata |beskrivelse |
 |-|-|-|
-|`POST /scopes/access/requests`| scope* | Konsument C (avledet av orgno i access_token) ber om tilgang til S|
+|`POST /scopes/access/requests`| scope | Konsument C (avledet av orgno i access_token) ber om tilgang til S|
 |`GET  /scopes/access/requests?scope={scope}`| | Liste opp alle som har bedt om tilgang til aktuelt scope (Brukes av API-tilbydere for å behandle tilgangskø)|
 |`GET  /myaccesses`| | Liste opp alle mine tilganger|
 |`GET  /myaccessrequest`| | Liste opp alle mine ikkje-behandla søknader|
@@ -128,7 +128,7 @@ Delegering styres av konsument.
 
 | Operasjon| inndata |beskrivelse |
 |-|-|-|
-|`POST /scopes/delegations `| scope*, supplier_orgno* |  Leverandør L (supplier_org_no) får lov til å be om token til S på vegne av C (avledet av access_token). |
+|`POST /scopes/delegations `| scope, supplier_orgno |  Leverandør L (supplier_org_no) får lov til å be om token til S på vegne av C (avledet av access_token). |
 
 
 Her opprettes tuplet `C,L,S` i delegeringstabellen.  Tilsvarende trengs API-operasjoner for å slette og liste opp delegeringer.
