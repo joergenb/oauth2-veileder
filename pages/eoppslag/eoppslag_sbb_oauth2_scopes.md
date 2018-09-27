@@ -16,7 +16,9 @@ En API-tilbyder tilbyr data gjennom ett eller flere APIer, potensielt realisert 
 `scope`-begrepet er sentralt i Oauth2 sin autorisasjonsmodell.  Et scope kan best beskrives som en *ressurs-definisjon*.  Noen slike ressurser vil i praksis være entydig koblet mot den organisasjonen som forvalter et datasett (eksempel Bostedsadresse i Folkeregisteret), men andre ressurser kan sees på som globale der mange organisasjoner kan tenkes å kunne levere ut en fornuftig respons som svar på en forespørsel etter den aktuelle ressursen. Vi ser at det da ikke nødvenvendigvis er en 1:1 mapping mellom API-tilbyder og scope.
 
 Et annet aspekt er at i noen sektorer, er det standarderer som definerer hvilke scopes som skal brukes.   Et typisk eksempel her er den internasjonale Smart-on-FHIR standarded i helsesektoren, som definerer scope etter syntaksen:
+
 `clinical-scope ::= ( 'patient' | 'user' ) '/' ( fhir-resource | '*' ) '.' ( 'read' | 'write' | '*' )`
+
 (se [http://docs.smarthealthit.org/authorization/scopes-and-launch-context/](http://docs.smarthealthit.org/authorization/scopes-and-launch-context/))
 Andre sektorer kan følge andre syntakser som ikke er kompatible, og vi ser da at det ikke er realistisk å skulle *tvinge* en bestemt syntaks i norsk offentlig forvaltning.
 
