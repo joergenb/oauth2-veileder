@@ -4,7 +4,7 @@ title: "Retningslinjer for eOppslag ressursdefinisjoner"
 sidebar: eoppslag
 permalink: eoppslag_sbb_oauth2_scopes.html
 
-summary: "Retningslinjer for navngiving av ressursdefinisjoner (i form av Oauth2 scopes)"
+summary: "Retningslinjer for navngiving av ressursdefinisjoner "
 ---
 
 På denne siden gir vi retningslinjer for hvordan API-tilbydere skal navngi sine Oauth2 scopes.
