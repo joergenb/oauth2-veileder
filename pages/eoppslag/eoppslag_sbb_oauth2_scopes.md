@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Retningslinjer for eOppslag ressursdefinisjoner
+title: "Retningslinjer for eOppslag ressursdefinisjoner"
 sidebar: eoppslag
 permalink: eoppslag_sbb_oauth2_scopes.html
 
