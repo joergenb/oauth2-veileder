@@ -25,6 +25,7 @@ Andre sektorer kan følge andre syntakser som ikke er kompatible, og vi ser da a
 ## Retningslinjer
 
 I eOppslag legger vi opp til en syntaks:
+
 `scope ::= prefix ':' subscope`
 
 der `prefix` er en tekststreng som blir manuelt tildelt en virksomhet. En virksomhet kan ha flere prefix.  Eksempel på prefix kan være `nav` eller `skatt`.   Det er mulig å full-automatisere prosessen med å bli en API-tilbyder dersom prefix settes lik  organisasjonsnummeret fra  virksomhetsssertikatetet.
