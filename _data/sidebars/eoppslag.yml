@@ -11,21 +11,6 @@ entries:
     output: web, pdf
     folderitems:
 
-      - title: Oversikt
-        output: web, pdf
-        url: /eoppslag_abb_overview.html
-
-      - title: Architecture Building Block
-        output: web, pdf
-        url: /eoppslag_abb.html
-
-      - title: Løsningsarkitekturer
-        output: web, pdf
-        url: /eoppslag_abb_sbb.html
-
-      - title: Eksempler
-        output: web, pdf
-        url: /eoppslag_abb_ex.html
 
 
   - title: Oauth2 løsningsarkitektur (SBB)
