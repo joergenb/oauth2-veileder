@@ -30,4 +30,10 @@ I eOppslag legger vi opp til en syntaks:
 
 der `prefix` er en tekststreng som blir manuelt tildelt en virksomhet. En virksomhet kan ha flere prefix.  Eksempel på prefix kan være `nav` eller `skatt`.   Det er mulig å full-automatisere prosessen med å bli en API-tilbyder dersom prefix settes lik  organisasjonsnummeret fra  virksomhetsssertikatetet.
 
-Difi ønsker å gi API-tilbydere stor frihet til å selv bestemme hvilken semantikk de har behov for.  Samtidig mener vi at som hovedregel bør API-tilbyder (A) være koda inn i scopet gjennom prefix (døme 'nav').
+Difi ønsker å gi API-tilbydere stor frihet til å selv bestemme hvilken semantikk de har behov for.  Samtidig mener vi at som hovedregel bør API-tilbyder (A) være koda inn i scopet.  Vi får da:
+
+- prefix bør identifisere din virksomhet  (for eksempel `nav` eller `folkeregisteret`)
+    - dersom flere virksomheter bruker samme scope, bør prefix være sektoridentifiserende (`forsikring`)
+- subscope bør identifisere ressursen best mulig (`trygdeopplysninger` eller `adresse`)
+- subscope kan gjerne ha ulike postfix for å skille på lese- og skrive-tilgang til ressursen (`user/spraak.write`)
+     - fravær av postfix bør i utgangspunktet tolkes som kun lese-tilgang
