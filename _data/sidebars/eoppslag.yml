@@ -47,3 +47,11 @@ entries:
     - title: Ulike tokens
       output: web, pdf
       url: /eoppslag_sbb_oauth2_tokens.html
+
+    - title: Tokenvalidering
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2_tokenvalidering.html
+
+    - title: Scopes
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2_scopes.html
