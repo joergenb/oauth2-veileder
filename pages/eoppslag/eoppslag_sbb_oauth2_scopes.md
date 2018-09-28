@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Retningslinjer for eOppslag scope"
+title: "Retningslinjer for Oauth2 scope i eOppslag"
 sidebar: eoppslag
 permalink: eoppslag_sbb_oauth2_scopes.html
 
