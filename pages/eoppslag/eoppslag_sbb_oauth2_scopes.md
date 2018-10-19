@@ -45,16 +45,55 @@ Andre sektorer kan følge andre syntakser som ikke er kompatible med denne synta
 
 I eOppslag legger vi opp til en syntaks:
 
-`scope ::= prefix ':' subscope`
+```
+scope ::= prefix ':' subscope
+```
 
-der `prefix` er en tekststreng som blir manuelt tildelt en virksomhet. En virksomhet kan ha flere prefix.  Eksempel på prefix kan være `nav` eller `skatt`.   Det er mulig å full-automatisere prosessen med å bli en API-tilbyder dersom prefix settes lik  organisasjonsnummeret fra  virksomhetsssertikatetet.
+der `prefix` er en tekststreng som blir manuelt tildelt en virksomhet. En virksomhet kan ha flere prefix.  Eksempel på prefix kan være `nav` eller `skatt`. Å bruke organisasjonnummer kan i noen sammenhenger være nyttig, siden det kan legge til rette for automatiserte prosesser. I andre sammenhenger vil ikke organisasjonsnummer være tilstrekkelig granulært for store virksomheter.
 
-Difi ønsker å gi API-tilbydere stor frihet til å selv bestemme hvilken semantikk de har behov for.  Samtidig mener vi at som hovedregel bør API-tilbyder (A) være koda inn i scopet.  Vi får da:
+Difi ønsker å gi API-tilbydere stor frihet til å selv bestemme hvilken semantikk de har behov for.  Samtidig mener vi at som hovedregel bør API-tilbyder (A) være koda inn i scopet. (Merk at )
 
-- prefix bør identifisere din virksomhet  (for eksempel `nav` eller `folkeregisteret`)
+Vi får da:
+
+- prefix bør identifisere din virksomhet  (for eksempel `nav` eller `folkeregisteret` eller organisasjonsnummer)
     - dersom flere virksomheter bruker samme scope, bør prefix være sektoridentifiserende (`forsikring`)
 - subscope bør identifisere ressursen best mulig (`trygdeopplysninger` eller `adresse`)
 - subscope kan gjerne ha ulike postfix for å skille på lese- og skrive-tilgang til ressursen (`user/spraak.write`)
      - fravær av postfix bør i utgangspunktet tolkes som kun lese-tilgang
 
 ## Forhold til API-katalogen
+
+![](assets/eoppslag_sbb_oauth2_scopes-a3bd7cfe.png)
+
+
+
+
+"ting i API-katalogen, eOpplag, Maskinporten, Altinn,...  må henge sammen"
+
+begrep:
+- 1 API-tilbyder har flere API
+- 1 API i api-katalog  
+- 1 API = 1 OAS-fil
+- 1 API = mange eOpplag scopes
+- 1 eOppslag scope = 1 Oauth2 scope
+- 1 oauth2 scope = 1 scope i API-katalog
+
+
+
+  - APIet skal vere tilgjengeleg på 1 og berre 1 domene
+    - Produksjons-APIet skal angis med OAS definsjonen /Server/url/description="prod"
+    - Test-API tilsvarande med "test"
+
+-
+
+
+|OAS|Oauth2|Døme|Kommentar|lenker|
+|-|-|-|-|-|
+| /Server/url   | `aud` (og `iss`) | https://protected.example.net/resource | i Oauth2 blir 'aud' og 'iss' ofte satt til client-id, men for en ressursserver (API) bør en heller bruke baseurl til APIet.  | https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#serverObject https://tools.ietf.org/html/draft-ietf-oauth-resource-indicators-00  |
+|   |   |   |   |
+| /Server/description   |   | 'prod' for URL til produksjonsmiljø, 'test' for testmiljøer  |
+
+
+
+#### døme frå krr
+![](assets/eoppslag_sbb_oauth2_scopes-a89fba48.png)
