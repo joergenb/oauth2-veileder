@@ -96,4 +96,4 @@ begrep:
 
 
 #### døme frå krr
-![](assets/eoppslag_sbb_oauth2_scopes-a89fba48.png)
+![](pages/eoppslag/assets/eoppslag_sbb_oauth2_scopes-a89fba48.png)
