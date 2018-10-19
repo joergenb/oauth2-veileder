@@ -63,7 +63,7 @@ Vi får da:
 
 ## Forhold til API-katalogen
 
-![](assets/eoppslag_sbb_oauth2_scopes-a3bd7cfe.png)
+![](pages/eoppslag/assets/eoppslag_sbb_oauth2_scopes-a3bd7cfe.png)
 
 
 
