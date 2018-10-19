@@ -72,19 +72,21 @@ Vi får da:
 
 begrep:
 - 1 API-tilbyder har flere API
-- 1 API i api-katalog  
-- 1 API = 1 OAS-fil
-- 1 API = mange eOpplag scopes
-- 1 eOppslag scope = 1 Oauth2 scope
-- 1 oauth2 scope = 1 scope i API-katalog
+- 1 API = 1 API i api-katalog = 1 OAS-fil
+- 1 API har mange eOpplag scopes
+    - 1 eOppslag scope = 1 Oauth2 scope
+  - 1 oauth2 scope = 1 scope i API-katalog
 
 
 
-  - APIet skal vere tilgjengeleg på 1 og berre 1 domene
+regler:
+
+
+- APIet skal vere tilgjengeleg på 1 og berre 1 domene
     - Produksjons-APIet skal angis med OAS definsjonen /Server/url/description="prod"
     - Test-API tilsvarande med "test"
 
--
+
 
 
 |OAS|Oauth2|Døme|Kommentar|lenker|
