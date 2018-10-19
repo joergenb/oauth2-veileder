@@ -99,3 +99,125 @@ regler:
 
 #### døme frå krr
 ![](pages/eoppslag/assets/eoppslag_sbb_oauth2_scopes-a89fba48.png)
+
+swagger-fil:
+
+```
+openapi: 3.0.0
+info:
+  title: Eit fint API
+  version: 0.1.0
+
+servers:
+  - url: https://oidc.difi.no/kontaktinfo-oauth2-server/rest
+    description: "prod"
+  - url: https://oidc-ver2.difi.no/kontaktinfo-oauth2-server/rest
+    description: "test"
+
+
+components:
+
+  securitySchemes:
+    person_auth_les:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: "https://oidc.difi.no/idporten-oidc-provider/authorize"
+          tokenUrl: "https://oidc.difi.no/idporten-oidc-provider/token"
+          scopes:
+            user/spraak.read: Gir tilgang til innlogga brukar sin språkpreferanse
+    person_auth_skriv:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: "https://oidc.difi.no/idporten-oidc-provider/authorize"
+          tokenUrl: "https://oidc.difi.no/idporten-oidc-provider/token"
+          scopes:
+            user/spraak.write: Gir tilgang til å oppdatere innlogga brukar sin språkpreferanse
+    maskin_auth:
+      type: oauth2
+      flows:
+        x-urn:ietf:params:oauth:grant-type:jwt-bearer:
+          tokenUrl: "https://oidc.difi.no/idporten-oidc-provider/token"
+          scopes:
+            global/spraak.read: Gir tilgang til å lese personar sin språkpreferanse
+
+  schemas:
+    ContactInfoResource:
+      title: ContactInfoResource
+      type: object
+      properties:
+        epostadresse:
+          type: string
+        epostadresse_oppdatert:
+          type: string
+        epostadresse_sist_verifisert:
+          type: string
+        mobiltelefonnummer:
+          type: string
+        mobiltelefonnummer_oppdatert:
+          type: string
+        mobiltelefonnummer_sist_verifisert:
+          type: string
+
+    PersonResource:
+      title: PersonResource
+      description: 'Personobjekt i Kontaktregisteret.  Kva felt ein får ut i responsen er avhengig av kva scope ein har, sjå https://difi.github.io/idporten-oidc-dokumentasjon/oidc_api_krr.html#tilgjenglige-scopes'
+      type: object
+      properties:
+        personidentifikator:
+          type: string
+        reservasjon:
+          type: string
+          enum:
+            - JA
+            - NEI
+        status:
+          type: string
+          enum:
+            - AKTIV
+            - SLETTET
+            - IKKE_REGISTRERT
+        varslingsstatus:
+          type: string
+          enum:
+            - KAN_IKKE_VARSLES
+            - KAN_VARSLES
+        kontaktinformasjon:
+          $ref: '#/components/schemas/ContactInfoResource'
+        sertifikat:
+          type: string
+        spraak:
+          type: string
+        spraak_oppdatert:
+          type: string
+
+  responses:
+    "200":
+      description: Vellukka oppslag på ein person i KRR
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PersonResource'
+
+paths:
+  /v1/person:
+    get:
+      summary: Hent KRR-data for brukaren knytt til access token
+      security:
+        - person_auth_les:
+      responses:
+        PersonResource
+
+    patch:
+      summary: Oppdatere språkvalg for brukaren knytt til access token
+      security: person_auth_skriv
+  /v1/personer:
+    post:
+      summary: Hent fra 1..1000 personer fra kontaktregisteret. Respons avhengig av hvilke scopes som er brukt
+      security: maskin_auth
+
+
+
+
+```
