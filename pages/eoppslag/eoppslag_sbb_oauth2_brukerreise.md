@@ -41,11 +41,21 @@ som gir Gjensidige Forsikring tilgang til å få tokens med scope "nav:trygdeopp
 
 ## 2. Gjensidige bruker APIet
 
-Når APIet er klart, får Gjensidige beskjed om hvilket scope de må ha for å benytte APIet, at de skal benytte Maskinpoten, samt dokumentasjon av selve APIet.
+Når APIet er klart, får Gjensidige beskjed om hvilket scope de må ha for å benytte APIet, at de skal benytte Maskinporten, samt dokumentasjon av selve APIet.
 
-Gjensidige lager en oauth2-klient som benytter virksomhetssertifikat og får denne registrert i ID-portens OIDC provider.
+Gjensidige lager en oauth2-klient som benytter virksomhetssertifikat. Gjensidige registrerer denne selv i Maskinporten ved å bruke selvbetjeningsAPIet, og  provisjonerer klienten med API-tilgangen virksomheten har fått tildelt:
 
-Klienten generer en tokenforespørsel med scope=`nav:trygdeopplysninger`,  signerer dette med Gjensidige sitt virksomhetssertikat (et jwt-grant), og sender til Maskinporten.  Siden Gjensidige allerede har fått tilgang, vil Maskinporten utstede et access_token tilbake:
+```
+POST /clients/
+{
+  "client_name": "Gjensidige sin maskinport-integrasjon"
+  "token_reference": "SELF_CONTAINED",
+  "scope": "nav:trygdeopplysninger",
+  ...
+}
+```
+
+Når lienten skal bruke APIet, generer den først en tokenforespørsel med scope=`nav:trygdeopplysninger`,  signerer dette med Gjensidige sitt virksomhetssertikat (et jwt-grant), og sender til Maskinporten. Maskinporten utsteder et access_token tilbake:
 ```
 {
   iss:            "Maskinporten"
