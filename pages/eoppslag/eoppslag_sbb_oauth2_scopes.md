@@ -43,8 +43,6 @@ clinical-scope ::= ( 'patient' | 'user' ) '/' ( fhir-resource | '*' ) '.' ( 'rea
 Andre sektorer kan følge andre syntakser som ikke er kompatible med denne syntaksen, og vi ser da at det ikke er realistisk å skulle *tvinge* en bestemt syntaks i norsk offentlig forvaltning.
 
 
-##
-
 ### Forslag
 
 I eOppslag legger vi opp til en syntaks:
