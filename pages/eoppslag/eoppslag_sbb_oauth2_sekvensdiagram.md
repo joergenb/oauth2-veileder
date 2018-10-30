@@ -21,8 +21,5 @@ sequenceDiagram
   A->>AP: registrer (OAS-fil, eOppslag=True)
   AP->>AA: registrer (securityScheme,scope)
   AP->>MP: registrer (scope)
-  alt direkte-registrering
-    A->>MP: registrer (scope)
-    MP->>AA: registrer (securityScheme)
-  end
+
 </div>
