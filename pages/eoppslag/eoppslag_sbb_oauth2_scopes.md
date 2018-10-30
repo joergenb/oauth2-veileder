@@ -9,12 +9,13 @@ summary: "Retningslinjer for navngiving av Oauth2 scopes i eOppslag"
 
 På denne siden gir vi retningslinjer for hvordan API-tilbydere skal navngi sine Oauth2 scopes.
 
-`scope`-begrepet er sentralt i Oauth2 sin autorisasjonsmodell. Et scope kan best beskrives som en *ressurs-definisjon*. Tokens er som hovedregel knyttet (og derigjenomm begrenset) til et eller flere scopes.
-
-
 ## Oppsummering
 
-tbw
+tbd
+
+
+`scope`-begrepet er sentralt i Oauth2 sin autorisasjonsmodell. Et scope kan best beskrives som en *ressurs-definisjon*. Tokens er som hovedregel knyttet (og derigjenomm begrenset) til et eller flere scopes.
+
 
 ## Typer ressurser og scopes
 
@@ -41,6 +42,9 @@ clinical-scope ::= ( 'patient' | 'user' ) '/' ( fhir-resource | '*' ) '.' ( 'rea
 (se [http://docs.smarthealthit.org/authorization/scopes-and-launch-context/](http://docs.smarthealthit.org/authorization/scopes-and-launch-context/))
 Andre sektorer kan følge andre syntakser som ikke er kompatible med denne syntaksen, og vi ser da at det ikke er realistisk å skulle *tvinge* en bestemt syntaks i norsk offentlig forvaltning.
 
+
+##
+
 ### Forslag
 
 I eOppslag legger vi opp til en syntaks:
@@ -58,7 +62,7 @@ Vi får da:
 - prefix bør identifisere din virksomhet  (for eksempel `nav` eller `folkeregisteret` eller organisasjonsnummer)
     - dersom flere virksomheter bruker samme scope, bør prefix være sektoridentifiserende (`forsikring`)
 - subscope bør identifisere ressursen best mulig (`trygdeopplysninger` eller `adresse`)
-- subscope kan gjerne ha ulike postfix for å skille på lese- og skrive-tilgang til ressursen (`user/spraak.write`)
+- subscope kan gjerne ha ulike postfix for å skille på lese- og skrive-tilgang til ressursen (`navr:trygdeopplysninger.write`)
      - fravær av postfix bør i utgangspunktet tolkes som kun lese-tilgang
 
 ## Forhold til API-katalogen
@@ -68,33 +72,107 @@ Vi får da:
 
 
 
-"ting i API-katalogen, eOpplag, Maskinporten, Altinn,...  må henge sammen"
+>"ting i API-katalogen, eOpplag, Maskinporten, Altinn,...  må henge sammen"
 
-begrep:
-- 1 API-tilbyder har flere API
-- 1 API = 1 API i api-katalog = 1 OAS-fil
-- 1 API har mange eOpplag scopes
-    - 1 eOppslag scope = 1 Oauth2 scope
-  - 1 oauth2 scope = 1 scope i API-katalog
+Samspel på tvers er mulig, med antatt overkommelig innsats…
+- ved å bruke begreper fra Open-API-spesifikasjonen som “styrende” for Altinn og Maskinporten
+- ved å støtte et begrenset utfallsrom fra Outh2 og Open-API
+- ved å la et API-tilbyder bestemme hvor konsument kan utføre delegering
 
 
+Følges ikke reglene over, kan aktørene fremdeles bruke komponentene i sin tjenesteproduksjon, men man mister på-tvers-funksjonaliteten
 
-regler:
 
+#### sekvensdiagram for brukerreisene:
 
-- APIet skal vere tilgjengeleg på 1 og berre 1 domene
-    - Produksjons-APIet skal angis med OAS definsjonen /Server/url/description="prod"
-    - Test-API tilsvarande med "test"
+fra workshop 2018-10-30:
 
 
 
+<div class="mermaid">
+sequenceDiagram
 
-|OAS|Oauth2|Døme|Kommentar|lenker|
-|-|-|-|-|-|
-| /Server/url   | `aud` (og `iss`) | https://protected.example.net/resource | i Oauth2 blir 'aud' og 'iss' ofte satt til client-id, men for en ressursserver (API) bør en heller bruke baseurl til APIet.  | https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#serverObject https://tools.ietf.org/html/draft-ietf-oauth-resource-indicators-00  |
-|   |   |   |   |
-| /Server/description   |   | 'prod' for URL til produksjonsmiljø, 'test' for testmiljøer  |
+  participant AP as API-katalog
+  participant AA as Altinn Autorisasjon
+  participant MP AS maskinporten
+  participant C AS konsument(C)
+  participant L AS Levernadør(L)
+  participant A as API-tilbyder
 
+  note right of A: Registrering av API   
+  A->>AP: registrer (OAS-fil, eOppslag=True)
+  AP->>AA: registrer (securityScheme,scope)
+  AP->>MP: registrer (scope)
+
+  alt direkte-registrering
+   A->>MP: registrer (scope)
+   MP->>AA: registrer (securityScheme)
+  end
+
+  note right of A: 1:gi tilgang
+  A->>MP: /acccess (securityScheme, consumer_orgno)
+
+  note right of A: 4: Leikanger kommune...
+  note over AA,C: Bemyndiget person logger inn i Altinn og delegerer
+  alt D2. oppdatere
+  AA->>MP: /delegations (scope, consumer, supplier)
+  end
+
+  note right of A: 4: Token-utstedelse  run-time
+
+  note over L,MP: tokenforespørsel fra leverandør
+  L->>MP: /token(scope, consumer_orgno)
+  MP->>AA: kontroller delegering(scope, consumer_orgno)
+  MP->>L: access_token
+  L->>A: API-request(token)
+
+  note over C,MP: tokenforespørsel direkte fra konsument
+  C->>MP: /token(scope)
+  note right of MP: Siden oauth2-klient ikke oppgir hvem den ønsker å opptre på vegne av, trenger ikke Maskinporten sjekke delegering i Altinn
+  MP->>C: access_token
+  C->>A: API-request(token)
+
+
+</div>
+
+
+Regler som må følges dersom API-tilbyder ønsker at benytte seg av automagisk samspill mellom API-katalog, Altinn Autorisasjon og Maskinporten:
+
+- 1 API-tilbyder kan ha flere API
+- 1 API i API-katalogen = 1 OAS-fil
+- 1 OAS-fil kan ha fleire securitySchemes
+  - SecuritySchemes av typen `x...jwt-grant` blir håndtert av eOppslag
+    - Blir en "delegerbar" ressurs i Altinn
+  - SecuritySchemes må navngis etter følgende konvensjon: **TBD** ( prefix.  / delegeringskilde / bruksområde / operasjon…  `nav:trygdeopplysninger[d:altinn, u:oppslag]`)
+  - 1 securityScheme kan inneholde flere oauth2 scopes
+    - scope må navngis etter følgende konvensjon: **TBD**
+      - mulig å inkludere securityScheme-navnet ?   (`securityScheme :: subscope`)  
+      - hvordan sikre hierarkiske scopes?
+    - scopes som blir definert direkte på /path/operation i OAS-fila blir ignorert av eOppslag
+      - mao ikke synlig i API-katalogen, ingen på-tvers logikk mellom Altinn Autorisasjon og Maskinporten
+
+
+
+Eksempel:
+```
+securitySchemes:
+    krr_read:
+      type: oauth2  
+      x-title: Lesetilgang til oppføring i kontakt- og reservasjonsregisteret
+      x-description: BLa bla blab lba
+      x-delegation-source: altinn
+      x-delegation-data:
+        roles:
+          - DAGL
+          - UTINN
+      flows:
+        x-urn:ietf:params:oauth:grant-type:jwt-bearer:
+        tokenUrl: "https://oidc.difi.no/idporten-oidc-provider/token"
+        scopes:
+          user/kontaktinfo.read: Read KRR information
+          user/varsling.read: Read notifciation information
+
+```
 
 
 #### døme frå krr
