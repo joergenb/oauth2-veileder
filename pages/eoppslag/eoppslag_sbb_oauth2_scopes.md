@@ -88,8 +88,8 @@ Følges ikke reglene over, kan aktørene fremdeles bruke komponentene i sin tjen
 fra workshop 2018-10-30:
 
 
-
 <div class="mermaid">
+
 sequenceDiagram
 
   participant AP as API-katalog
@@ -132,8 +132,8 @@ sequenceDiagram
   MP->>C: access_token
   C->>A: API-request(token)
 
-
 </div>
+
 
 
 Regler som må følges dersom API-tilbyder ønsker at benytte seg av automagisk samspill mellom API-katalog, Altinn Autorisasjon og Maskinporten:
@@ -144,12 +144,12 @@ Regler som må følges dersom API-tilbyder ønsker at benytte seg av automagisk 
   - SecuritySchemes av typen `x...jwt-grant` blir håndtert av eOppslag
     - Blir en "delegerbar" ressurs i Altinn
   - SecuritySchemes må navngis etter følgende konvensjon: **TBD** ( prefix.  / delegeringskilde / bruksområde / operasjon…  `nav:trygdeopplysninger[d:altinn, u:oppslag]`)
-  - 1 securityScheme kan inneholde flere oauth2 scopes
-    - scope må navngis etter følgende konvensjon: **TBD**
-      - mulig å inkludere securityScheme-navnet ?   (`securityScheme :: subscope`)  
-      - hvordan sikre hierarkiske scopes?
-    - scopes som blir definert direkte på /path/operation i OAS-fila blir ignorert av eOppslag
-      - mao ikke synlig i API-katalogen, ingen på-tvers logikk mellom Altinn Autorisasjon og Maskinporten
+- 1 securityScheme må inneholde ett eller flere oauth2 scopes
+  - scope må navngis etter følgende konvensjon: **TBD**
+    - mulig å inkludere securityScheme-navnet ?   (`securityScheme :: subscope`)  
+    - hvordan sikre hierarkiske scopes?
+  - scopes som blir definert direkte på /path/operation i OAS-fila blir ignorert av eOppslag
+    - mao ikke synlig i API-katalogen, ingen på-tvers logikk mellom Altinn Autorisasjon og Maskinporten
 
 
 
