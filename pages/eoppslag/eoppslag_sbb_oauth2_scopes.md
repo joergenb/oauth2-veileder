@@ -87,7 +87,6 @@ fra workshop 2018-10-30:
 
 
 <div class="mermaid">
-
 sequenceDiagram
 
   participant AP as API-katalog
@@ -130,8 +129,7 @@ sequenceDiagram
   MP->>C: access_token
   C->>A: API-request(token)
 
-</div>
-
+  </div>
 
 
 Regler som må følges dersom API-tilbyder ønsker at benytte seg av automagisk samspill mellom API-katalog, Altinn Autorisasjon og Maskinporten:
