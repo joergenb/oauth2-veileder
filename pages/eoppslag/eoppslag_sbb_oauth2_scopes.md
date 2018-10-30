@@ -152,7 +152,16 @@ Regler som må følges dersom API-tilbyder ønsker at benytte seg av automagisk 
     - hvordan sikre hierarkiske scopes?
   - scopes som blir definert direkte på /path/operation i OAS-fila blir ignorert av eOppslag
     - mao ikke synlig i API-katalogen, ingen på-tvers logikk mellom Altinn Autorisasjon og Maskinporten
+- API-tilganger gis primært til securitySchemes, og ikke scopes
+  - dersom tilgang gis direkte til scopes
+- Delegeringskilde følger av securityScheme
+- tokens og -forespørsler forholder seg ikke til securityScheme
+- Dersom leverandør  ikke oppgir hvem den ønsker å opptre på vegne av i tokenforespørsel, avvises token-forespøselen
+  - hvordan håndteres dettepå  Oauth-klient-nivå?
 
+Uteståande punkter:
+- en hel drøss, sikkert...
+- hvem er "bemyndiget person"?  er dette samme rolle for alle APIer?, evt en default rolle?
 
 
 Eksempel:
