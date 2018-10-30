@@ -125,7 +125,9 @@ sequenceDiagram
 
   note over L,MP: Type 1: Tokenforespørsel fra leverandør
   L->>MP: /token(scope, consumer_orgno)
-  MP->>AA: kontroller delegering(scope, consumer_orgno)
+  opt Dersom D.1
+    MP->>AA: kontroller delegering(scope, consumer_orgno)
+  end
   MP->>L: access_token
   L->>A: API-request(token)
 
