@@ -14,9 +14,12 @@ Selve token-utstedelsesprosessen i eOppslag bruker allerede eksisterende funksjo
 
 Det som primært mangler i ID-porten for å realise eOppslag, er å tilby selvbetjeningsløsninger for administrasjon av hvilke APIer (dvs. Oauth2 scopes) som finnes og hvem som skal kunne få utstedt access_tokens til disse.
 
-Design av endringene er dokumentert i RAML her: [ versjon 0.3.2](https://github.com/joergenb/oauth2-veileder/blob/gh-pages/pages/eoppslag/assets/eoppslag_0.3.2_restlet.yaml). (kan opnast med Restlet Studio)
+> Design av endringene er dokumentert i RAML her: [versjon 0.5.0](https://github.com/joergenb/oauth2-veileder/blob/gh-pages/pages/eoppslag/assets/eoppslag_0.5.0_restlet.yaml). (kan opnast med Restlet Studio)
 
+For oppslag av delegeringer i eksterne kilder, etableres et eget oppslags-API som kun Maskinporten gis tilgang til. Her vil det kunne gjøres oppslag på delegeringer for et oppgitt scope.
 
+> Forslag til design er dokumentert i OAS3 her: [versjon 0.1.0](
+https://github.com/joergenb/oauth2-veileder/blob/gh-pages/pages/eoppslag/delegations_0.1.0_oas.yaml)
 
 ## Om selvbetjeningsAPIet
 
@@ -28,10 +31,6 @@ APIet spiser sin egen hundemat, og er sikret vha. Oauth2 :
 1. Enkelt-virksomheter kan autentisere seg med virksomhetssertifikat, for så å administere alle integrasjoner knyttet til egen organisasjon
 2. Brukere innlogga gjennom Difi sin samarbeidsportal kan administrere utvalgte data knyttet til egen organisasjon (Høst 2018)
 2. Utvalgte leverandører kan administrere integrasjoner knyttet til sine kunder
-
-For eOppslag må dette utvides med:
-
-4. Administrasjons-sentra: Utvalgte klienter som Altinn får mulighet til å adminstere alle API-relaterte data knyttet til vilkårlige organisasjoner.
 
 
 ## eOppslag: tilgangstyring
@@ -54,12 +53,14 @@ Selvbetjenings-API utvides med:
 | Operasjon | inndata | beskrivelse |
 |-|-|-|
 |`GET    /scopes `| |Gir liste over alle scopes beskyttet av ID-porten (evt. filtrering)|
-|`POST   /scopes ` | prefix*, subscope*, description, token_egenskaper  | Oppretter et nytt scope (lik prefix+subscope)    |
-|`PUT    /scopes?scope={scope} `  |  description, token_egenskaper | Endrer et scope. Selve scope-navnet kan ikkje endres.   |
+|`POST   /scopes ` | prefix*, subscope*, delegation_scheme, description, token_egenskaper  | Oppretter et nytt scope (lik prefix+subscope)    |
+|`PUT    /scopes?scope={scope} `  |  delegation_scheme, description, token_egenskaper | Endrer et scope. Selve scope-navnet kan ikkje endres.   |
 |`DELETE /scopes?scope={scope} `   |   | Deaktiverer et scope. (scopet beholdes for konsistens i audit-log) TBD: alle tilganger slettes?  |
 
 
-`token-egenskaper` er tekniske egenskaper som API-tilbyder forventer/krever. Dette kan være max tillatt levetid, self-contained eller ikke, minste sikkerhetsnivå, etc.
+`token_egenskaper` er tekniske egenskaper som API-tilbyder forventer/krever. Dette kan være max tillatt levetid, self-contained eller ikke, minste sikkerhetsnivå, etc.
+
+`delegation_scheme` er en beskrivelse av eventuell ekstern delegeringskilde, som f.eks. Altinn
 
 
 ### Audience (A)
@@ -123,48 +124,41 @@ Konsumenter trenger kanskje ikke eget administrativt scope for å be om slik til
 
 ## Delegering
 
-Delegering styres av konsument.  
+Delegering mellom virksomheter (konsument -> leverandør) gjennomføres eksternt av konsumentene, primært i Altinn Autorisasjon, enten via [REST API](https://www.altinn.no/api/Help/Api/POST-who-authorization-Delegations) (vil bli utvidet) eller webgrensesnitt på altinn.no.
 
+Delegeringer kan også gjøres mellom vilkårlige organisasjoner gjennom Altinns tjenesteeier-API.
 
-| Operasjon| inndata |beskrivelse |
-|-|-|-|
-|`POST /scopes/delegations `| scope, supplier_orgno |  Leverandør L (supplier_org_no) får lov til å be om token til S på vegne av C (avledet av access_token). |
+Når leverandøren forsøker å gjøre en klient-registrering hvor de oppgir å opptre på vegne av en konsument, vil Maskinporten gjøre et oppslag i delegerings-API-et for å sjekke om en slik delegering mellom C og L finnes for det aktuelle scopet.
 
-
-Her opprettes tuplet `C,L,S` i delegeringstabellen.  Tilsvarende trengs API-operasjoner for å slette og liste opp delegeringer.
-
-### Altinn
-
-For at administrasjonssentra som Altinn skal kunne bruker APIet på samme måte som organisasjoner med direkte-tilgang, men for vilkårlige organisasjosnummer, må de i tilegg spesifisere konsumenten og/eller tilbyderen sine org.no eksplisitt.
-
-For å sikre at kun utvalgte aktører kan opptre som administrasjonssenter, må disse dessuten få tildelt egne administive scope:    `idporten:eoppslagadmin.scope.write`
-`idporten:eoppslagadmin.request.write`,
-`idporten:eoppslagadmin.delegations.write`
-
-
-
-## Gjenstående utfordringer med delegering
+### Kobling mellom delegering til klient og delegering til virksomhet
 
 En utfordring dersom delegering skjer utenfor ID-porten, er å sikre at delegeringen blir koblet mot riktig integrasjon (Oauth2-klient), siden Oauth2-modellen som ligger i bunn forutsetter at det er klienter som får tilgang til scopes. Uten kobling til klient, må i prinsippet alle C's integrasjoner (både egne og leverandører) med aktuelt scope S få delegeringen.  Dette betyr at potensiale for konflikt med den leverandør-styrte integrasjoner som finst i ID-porten idag.
 
 Difis forslag er at delegeringstabellen primært ikke er en run-time kilde, men heller konsulteres når en oauth2-klient skal endres. Dvs Leverandørers klienter får ikke automatisk satt nye scopes som blir delegert, leverandøren må aktivt selv inn og rekonfigurere sin klient-integrasjonen med det nye scopet.
 
 ### Leverandør-styrte integrasjoner
-I dagens løsning kan utvalgte leverandører kan gjennom en klient-registrering selv-deklarere at de opptrer på vegne av en konsument.:
+Leverandører kan gjennom en klient-registrering selv-deklarere at de opptrer på vegne av en konsument.:
 ```
 POST /clients { client_orgno*, scope* }
 ```
-Her opprettes tuplet `C,L,S,client_id` i delegeringstabellen.  L (supplier_orgno) blir satt automatisk basert på virksomhetssertifikatet brukt mot admin-API.
+Hvis scopet er registrert med et delegeringsoppsett, sjekkes den aktuelle delegeringskilden (f.eks. Altinn) om en delegering fra C til L finnes for det aktuelle scopet.
 
-### Hvordan skille de to typene delegering ?
-I begge tilfellene utleverer vi token som for eksempel.s
+Hvis delegeringsoppsett ikke er definert, begrenses tilgang til selv-deklarering til et utvalgt sett med leverandører (som i dagens løsning)
+
+Hvis autorisering feiler, nektes forespørselen.
+
+Hvis autorisering lykkes, opprettes tuplet `C,L,S,client_id` i delegeringstabellen.  L (supplier_orgno) blir satt automatisk basert på virksomhetssertifikatet brukt mot admin-API.
+
+### Hvordan skille de selv delegering ?
+I begge tilfellene utleverer vi token som for eksempel.
 ```
 {
   scope: S,
   consumer_orgno: C,
   act: {
-    supplier_orgno: L
-  }   
+    supplier_orgno: L,
+    iss: altinn
+  }
 }
 ```
 API-tilbyder kan derfor ikke vite hvilken delegering som ligger til grunn, men i de fleste tilfeller ønsker ikke API-tilbyder å vite noe om dette heller.  
