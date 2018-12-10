@@ -40,6 +40,8 @@ som oppretter scopet `nav:trygdeopplysninger`.   (alternativt bruker NAV en av G
 
 I dette eksemplet blir også en delegeringskonfigurasjon oppgitt, slik at scopet blir gjort delegerbart i Altinn. Her kan ulike scopes grupperes under ulike delegeringsoppsett ("delegation scheme"), slik at delegeringer i Altinn kan gjøres på mer enn ett og ett scope.
 
+Via en `PUT`-operasjon kan delegeringskonfigurasjon legges til eller endres på allerede eksisterende scopes.
+
 #### Alternativ B: NAV publiserer en beskrivelse av API-et til API-katalogen
 
 NAV logger inn i Felles Datalog, og registrerer API-et sitt og oppgir en OpenAPI 3 Specification som inneholder en utvidelse som forklarer hvordan API-et skal tilgangsstyres.
