@@ -1,0 +1,75 @@
+openapi: 3.0.2
+info:
+    title: 'Maskinporten Delegeringskilde API'
+    description: 'API som delegeringskilder må implementere for integrasjon med Maskinportens tilgangskontroll'
+    contact:
+        name: 'Bjørn Dybvik Langfors'
+        email: bdl@brreg.no
+    version: 0.1.0
+paths:
+    '/delegations/{scope}':
+        get:
+            summary: 'Liste over alle delegeringer som er gjort på et scope'
+            responses:
+                '200':
+                    description: 'Liste over alle delegeringer som er gjort på dette scopet.'
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Delegation'
+        parameters:
+            -
+                name: scope
+                in: path
+                description: 'Scope som registrert i ID-porten'
+                required: true
+                schema:
+                    type: string
+            -
+                name: consumer_org
+                in: query
+                description: 'Viser delegeringer begrenset til de utført av oppgitt organisasjonsnummer'
+                schema:
+                    type: string
+            -
+                name: supplier_org
+                in: query
+                description: 'Viser delegeringer begrenset til de gitt til oppgitt organisasjonsnummer'
+                schema:
+                    type: string
+components:
+    schemas:
+        Delegation:
+            title: 'Root Type for Delegation'
+            description: 'The root of the Delegation type''s schema.'
+            type: object
+            properties:
+                consumer_org:
+                    description: 'Organisasjonsnummer til aktøren som gir delegeringen'
+                    type: string
+                supplier_org:
+                    description: 'Organisasjonsnummer til aktøren som har fått delegert tilgang'
+                    type: string
+                delegation_scheme:
+                    description: 'Navn på delegeringsoppsett som det ble delegert på. Inkluderer scope-prefix.'
+                    type: string
+                includes_scopes:
+                    description: 'Hvilke scopes som er definert under dette delegeringsoppsettet. Inkluderer scope-prefix.'
+                    type: array
+                    items: {}
+                created:
+                    format: date-time
+                    description: 'UTC-tidspunkt for når delegeringen fant sted'
+                    type: string
+            example: "{\n    \"consumer_org\": \"987654321\",\n    \"supplier_org\": \"976543210\",\n    \"delegation_scheme\": \"difi:krr_read\",\n    \"includes_scopes\": [\n        \"difi:user/kontaktinfo.read\",\n        \"difi:user/varsling.read\"\n    ],\n    \"created\": \"2018-01-01T12:00:00Z\"\n}"
+    securitySchemes:
+        maskinporten:
+            type: oauth2
+            description: 'Only maskinporten should ever be granted access to this scope'
+            flows:
+                clientCredentials:
+                    tokenUrl: 'https://oidc.difi.no/idporten-oidc-provider/token'
+                    scopes:
+                        delegations: 'Read access to delegations for arbitrary actors and scopes'
