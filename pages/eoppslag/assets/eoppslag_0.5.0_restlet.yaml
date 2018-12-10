@@ -1,0 +1,1007 @@
+#%RAML 1.0
+title: "ID-porten selvbetjeningsAPI"
+description: "API som lar kunder og leverandører selvbetjene sine integrasjoner i\
+  \ ID-porten OIDC provider.  Det er også mulig for API-tilbydere og API-konsumenter\
+  \ til å selvbetjene tilgangsstrying til egne APIer som er Oauth2-beskytte med ID-porten."
+version: "1.0"
+mediaType:
+- "application/json;charset=UTF-8"
+annotationTypes:
+  x-restlet: "any"
+types:
+  OrgnoValueType:
+    type: "string"
+    description: "Organisiasjonsnummer\nhttps://www.brreg.no/om-oss-nn/oppgavene-vare/registera-vare/om-einingsregisteret/organisasjonsnummeret/"
+    minLength: 9
+    maxLength: 9
+  Errors:
+    type: "object"
+    description: "Basert på http://jsonapi.org/format/"
+    properties:
+      errors:
+        type: "array"
+        required: false
+        items:
+          type: "object"
+          properties:
+            status:
+              type: "string"
+              required: false
+            title:
+              type: "string"
+              required: false
+            detail:
+              type: "string"
+              required: false
+            source:
+              type: "object"
+              required: false
+              properties:
+                pointer:
+                  type: "string"
+                  required: false
+                parameter:
+                  type: "string"
+                  required: false
+  ClientRequestResource:
+    type: "object"
+    properties:
+      client_name:
+        type: "string"
+        description: "Navn på klient, blir vist ved innlogging"
+        minLength: 0
+        maxLength: 255
+      description:
+        type: "string"
+        description: "Beskrivelse av klienten, ikke synlig for innbyggere, men blir\
+          \ lagret i Difis støttesystemer"
+        minLength: 0
+        maxLength: 255
+      scopes:
+        type: "array"
+        description: "Liste over scopes som klienten kan forespørre. For OpenID Connect\
+          \ er aktuelle scopes openid og profile. For API-sikring, ta kontakt med\
+          \ oss"
+        uniqueItems: true
+        required: false
+        items:
+          type: "string"
+          pattern: "^[\\x21|\\x23-\\x5B|\\x5D-\\x7E]+$"
+      redirect_uris:
+        type: "array"
+        description: "Liste over gyldige url’er som provideren kan redirecte tilbake\
+          \ til etter vellykket autorisasjonsforespørsel"
+        required: false
+        items:
+          type: "string"
+      frontchannel_logout_uri:
+        type: "string"
+        description: "URL som provideren sender request til ved utlogging trigget\
+          \ av annen klient i samme sesjon"
+        minLength: 0
+        maxLength: 255
+        required: false
+      frontchannel_logout_session_required:
+        type: "boolean"
+        description: "Flagg som bestemmer om parameterne for issuer og sesjons-id\
+          \ skal sendes med frontchannel_logout_uri"
+        required: false
+      post_logout_redirect_uris:
+        type: "array"
+        description: "Liste over url’er som provideren redirecter til etter fullfø\
+          rt utlogging"
+        required: false
+        items:
+          type: "string"
+      client_uri:
+        type: "string"
+        description: "URL til klient (blir brukt på tilbake-knapp og ved feil)"
+        minLength: 0
+        maxLength: 255
+        required: false
+      logo_uri:
+        type: "string"
+        description: "URL til logo som vises ved innlogging"
+        minLength: 0
+        maxLength: 255
+        required: false
+      force_pkce:
+        type: "boolean"
+        default: false
+        required: false
+      token_reference:
+        type: "string"
+        description: "Ved SELF_CONTAINED vil access_token være en JWT som gir deg\
+          \ samme informasjon som kall til tokeninfo som kan brukes til å validere\
+          \ tokenet"
+        default: "OPAQUE"
+        enum:
+        - "SELF_CONTAINED"
+        - "OPAQUE"
+      client_type:
+        type: "string"
+        description: "Type klient ihht Oauth2 kap 2.1. Skal være PUBLIC for mobil-app’\
+          er og SPAer, eller CONFIDENTIAL for klienter som hostes i sikkert driftsmiljø\
+          ."
+        default: "CONFIDENTIAL"
+        enum:
+        - "PUBLIC"
+        - "CONFIDENTIAL"
+      access_token_lifetime:
+        type: "integer"
+        format: "int32"
+        description: "Levetid for utstedt access_token"
+        default: 0
+        minimum: 0
+        required: false
+      authorization_lifetime:
+        type: "integer"
+        format: "int32"
+        description: "Levetid for registrert autorisasjon. I en OpenID Connect sammenheng\
+          \ vil dette være tilgangen til userinfo-endepunktet."
+        default: 0
+        minimum: 0
+        required: false
+      refresh_token_lifetime:
+        type: "integer"
+        format: "int32"
+        description: "Levetid for utstedt refresh_token"
+        default: 0
+        minimum: 0
+        required: false
+      refresh_token_usage:
+        type: "string"
+        description: "Ved REUSE kan refresh_token benyttes flere ganger. Ved ONETIME\
+          \ kan refresh_token kun benyttes en gang."
+        default: "ONETIME"
+        enum:
+        - "ONETIME REUSE"
+      client_orgno:
+        type: "OrgnoValueType"
+        description: "Klienten sitt organisasjonsnummer. Kan bare settes med scope\
+          \ idporten:supplier"
+        required: false
+    (x-restlet):
+      section: "External OIDC"
+  ClientResponseResource:
+    type: "object"
+    properties:
+      access_token_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      authorization_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      client_id:
+        type: "ClientIdValueType"
+      client_name:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+      client_orgno:
+        type: "string"
+      client_secret:
+        type: "string"
+        required: false
+      client_type:
+        type: "string"
+        enum:
+        - "PUBLIC"
+        - "CONFIDENTIAL"
+      client_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      created:
+        type: "datetime"
+        required: false
+      description:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+      force_pkce:
+        type: "boolean"
+        required: false
+      frontchannel_logout_session_required:
+        type: "boolean"
+        required: false
+      frontchannel_logout_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      last_updated:
+        type: "datetime"
+        required: false
+      logo_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      onbehalfof:
+        type: "array"
+        required: false
+        items:
+          type: "ClientOnBehalfOfResponseResource"
+      post_logout_redirect_uris:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      redirect_uris:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      refresh_token_lifetime:
+        type: "integer"
+        format: "int32"
+        minimum: 0
+        required: false
+      scopes:
+        type: "array"
+        required: false
+        items:
+          type: "string"
+      supplier_orgno:
+        type: "string"
+        required: false
+      token_reference:
+        type: "string"
+        enum:
+        - "SELF_CONTAINED"
+        - "OPAQUE"
+    (x-restlet):
+      section: "External OIDC"
+  ClientOnBehalfOfRequestResource:
+    type: "object"
+    properties:
+      onbehalfof:
+        type: "string"
+        description: "ID for onbehalfof klient. Fulle klient navn blir <client_id>::<onbehalfof_verdi>"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[a-zA-Z0-9:_\\-=]+$"
+      name:
+        type: "string"
+        description: "Navn på klient, blir vist ved innlogging"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[\\x09\\|\\x20-\\x7E|\\x80-\\xD7FF|\\xE000-\\xFFFD]+$"
+      orgno:
+        type: "OrgnoValueType"
+        description: "Klienten sitt organisasjonsnummer"
+      description:
+        type: "string"
+        description: "Beskrivelse av klienten, ikke synlig for innbyggere, men blir\
+          \ lagret i Difis støttesystemer"
+        minLength: 0
+        maxLength: 255
+      client_uri:
+        type: "string"
+        description: "URL til klient (blir brukt på tilbake-knapp og ved feil)"
+        minLength: 0
+        maxLength: 255
+        required: false
+      logo_uri:
+        type: "string"
+        description: "URL til logo som vises ved innlogging"
+        minLength: 0
+        maxLength: 255
+        required: false
+    (x-restlet):
+      section: "External OIDC"
+  ClientOnBehalfOfResponseResource:
+    type: "object"
+    properties:
+      client_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      created:
+        type: "datetime"
+        required: false
+      description:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      last_updated:
+        type: "datetime"
+        required: false
+      logo_uri:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        required: false
+      name:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[\\x09\\|\\x20-\\x7E|\\x80-\\xD7FF|\\xE000-\\xFFFD]+$"
+      onbehalfof:
+        type: "string"
+        minLength: 0
+        maxLength: 255
+        pattern: "^[a-zA-Z0-9:_\\-=]+$"
+      orgno:
+        type: "string"
+        required: false
+    (x-restlet):
+      section: "External OIDC"
+  ClientIdValueType:
+    type: "string"
+    description: "client_id som brukes sammen med secret i en basic http authentication\
+      \ mot token endepunktet. Blir generert av systemet"
+    pattern: "^[a-zA-Z0-9:_\\-=]+$"
+    (x-restlet):
+      section: "External OIDC"
+  ScopeRequestResource:
+    type: "object"
+    properties:
+      prefix:
+        type: "ScopePrefixValueType"
+        examples:
+          example: "nav"
+          example1: "idporten"
+      subscope:
+        type: "SubScopeValueType"
+        description: "Vilkårlig"
+        examples:
+          example: "dcr.read"
+          example1: "dcr/onbehalfof.write"
+      delegation_scheme:
+        type: "DelegationSourceConfigurationItem"
+        description: "Oppgir konfigurasjon for delegeringskilde"
+        required: false
+      description:
+        type: "string"
+        description: "Beskrivelse av scope"
+      audience:
+        type: "string"
+        description: "Ikke implementert"
+        required: false
+      token_egenskaper:
+        type: "TokenPropertiesObject"
+        description: "Ikke implementert"
+        required: false
+    (x-restlet):
+      section: "Scopes admin"
+  ScopeResponseResource:
+    type: "object"
+    properties:
+      prefix:
+        type: "ScopePrefixValueType"
+        examples:
+          example: "nav"
+          example1: "idporten"
+      subscope:
+        type: "SubScopeValueType"
+        description: "Vilkårlig"
+        examples:
+          example: "dcr.read"
+          example1: "dcr/onbehalfof.write"
+      owner_orgno:
+        type: "OrgnoValueType"
+        description: "API-eiers orgnummer (må settes dersom man har scopet idporten:eoppslag.write)"
+        required: false
+      audience:
+        type: "string"
+        description: "Ikke implementert"
+        required: false
+      token_egenskaper:
+        type: "TokenPropertiesObject"
+        description: "Ikke implementert"
+        required: false
+      last_updated:
+        type: "datetime"
+        format: "rfc3339"
+      created:
+        type: "datetime"
+        format: "rfc3339"
+        required: false
+    (x-restlet):
+      section: "Scopes admin"
+  ScopeAccessRequestResource:
+    type: "object"
+    properties:
+      scope:
+        type: "ScopeValueType"
+      consumer_orgno:
+        type: "OrgnoValueType"
+    (x-restlet):
+      section: "Scopes admin"
+  ScopeAccessResponseResource:
+    type: "object"
+    properties:
+      scope:
+        type: "ScopeValueType"
+      orgno:
+        type: "OrgnoValueType"
+      created:
+        type: "datetime"
+      last_updated:
+        type: "datetime"
+      access_state:
+        type: "AccessStateValueType"
+    (x-restlet):
+      section: "Scopes admin"
+  TokenPropertiesObject:
+    type: "object"
+    description: "krav til token som skal brukes mot et gitt scope fra API-tilbyder"
+    properties:
+      max_lifetime_at:
+        type: "integer"
+        description: "Max antall levetid på access_token i sekunder."
+        required: false
+      max_lifetime_authorization:
+        type: "string"
+        description: "Maksimal levetid på en autorisasjon (hvor lenge skal konsument\
+          \ kunne bruke refresh_token uten at bruker må re-autentisere seg)"
+        required: false
+      self_contained:
+        type: "boolean"
+        description: "om tokens må vere self-contained"
+        default: true
+        required: false
+    (x-restlet):
+      section: "Scopes admin"
+  ScopePrefixValueType:
+    type: "string"
+    pattern: "^[a-z]([a-z0-9])*$"
+    examples:
+      example: "nav"
+      example1: "idporten"
+    (x-restlet):
+      section: "Scopes admin"
+  ScopeValueType:
+    type: "string"
+    description: "Husk URL-enkoding."
+    pattern: "^[a-z]([a-z0-9])*%3A[a-z]+(\\/?[a-z0-9]+)*(\\.[a-z0-9]+)?$"
+    examples:
+      example: "idporten%3Adcr.read"
+      example1: "idporten%3Adcr/onbehalfof.write"
+    (x-restlet):
+      section: "Scopes admin"
+  SubScopeValueType:
+    type: "string"
+    pattern: "^[a-z]+(\\/?[a-z0-9]+)*(\\.[a-z0-9]+)?$"
+    examples:
+      example: "dcr.read"
+      example1: "dcr/onbehalfof.write"
+    (x-restlet):
+      section: "Scopes admin"
+  ScopeResponseResources:
+    type: "array"
+    uniqueItems: true
+    items:
+      type: "ScopeResponseResource"
+    (x-restlet):
+      section: "Scopes admin"
+  AccessStateValueType:
+    type: "string"
+    enum:
+    - "REQUESTED, APPROVED, DENIED"
+    (x-restlet):
+      section: "Scopes admin"
+  DelegationSourceConfigurationItem:
+    type: "object"
+    properties:
+      key:
+        type: "string"
+        description: "Nøkkelnavn for konfigurasjonsfelt"
+        pattern: "^[a-zA-Z0-9_]+$"
+        required: false
+      value:
+        type: "string"
+        description: "Nøkkelverdi for konfigurasjonsfelt"
+        required: false
+    example:
+      value: "{ \n    \"key\": \"roles\",\n    \"value\": \"PRIV,UTINN\"\n}"
+      strict: false
+    (x-restlet):
+      section: "Scopes admin"
+  DelegationSchemeDefinitionType:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "Identifikator for delegeringsoppsett"
+        pattern: "^[a-zA-Z0-9_]+$"
+      title:
+        type: "string"
+        description: "Menneske-vennlig tittel for delegeringsoppsett"
+        required: false
+      description:
+        type: "string"
+        description: "Valgfri beskrivelse av delegeringsoppsett"
+        maxLength: 300
+        required: false
+      delegation_source:
+        type: "string"
+        description: "Identifikator for kilden hvor delegeringene utføres. Må være\
+          \ kjent for ID-porten."
+        pattern: "^[a-zA-Z0-9_]+$"
+        example: "altinn"
+      delegation_source_config:
+        type: "array"
+        description: "Valgfri liste med nøkkel-verdi-par som benyttes mot delegeringskilden."
+        required: false
+        items:
+          type: "DelegationSourceConfigurationItem"
+    example:
+      value: "{          \n        \"name\": \"krr_write\",\n        \"title\": \"\
+        Skrivetilgang til kontakt- og reservasjonsregisteret\",\n        \"description\"\
+        : \"Gir anledning til å endre data i KRR\",\n        \"delegation_source\"\
+        : \"altinn\",\n        \"delegation_source_config\": [\n            { \n \
+        \               \"key\": \"roles\",\n                \"value\": \"PRIV\"\n\
+        \            }\n        ]\n      }"
+      strict: false
+    (x-restlet):
+      section: "Scopes admin"
+  DelegationSchemeConfigurationType:
+    type: "object"
+    properties:
+      belongs_to_delegation_schemes:
+        type: "array"
+        description: "Liste over identifikatorer for delegeringsoppsett som dette\
+          \ scopet skal tilhøre"
+        items:
+          type: "string"
+          pattern: "^[a-zA-Z0-9_]+$"
+      delegation_scheme_definitions:
+        type: "array"
+        description: "Definisjoner for delegeringsoppsett. Må oppgis hvis liste over\
+          \ delegeringsoppsett refererer oppsett som ikke er definert i et tidligere\
+          \ (delegeringsoppsett er unike per scope-prefix)"
+        required: false
+        items:
+          type: "DelegationSchemeDefinitionType"
+    example:
+      value: "{\n    \"belongs_to_delegation_schemes\": [\"krr_read\", \"krr_full\"\
+        ],\n    \"delegation_scheme_definitions\": [\n      {          \n        \"\
+        name\": \"krr_write\",\n        \"title\": \"Skrivetilgang til kontakt- og\
+        \ reservasjonsregisteret\",\n        \"description\": \"Gir anledning til\
+        \ å endre data i KRR\",\n        \"delegation_source\": \"altinn\",\n    \
+        \    \"delegation_source_config\": [\n            { \n                \"key\"\
+        : \"roles\",\n                \"value\": \"PRIV\"\n            }\n       \
+        \ ]\n      }\n    ]\n  }"
+      strict: false
+    (x-restlet):
+      section: "Scopes admin"
+securitySchemes:
+  OAuth2:
+    type: "OAuth 2.0"
+    settings:
+      authorizationUri: "https://eid-systest-web01.dmz.local/idporten-oidc-provider/authorize"
+      accessTokenUri: "https://eid-systest-web01.dmz.local/idporten-oidc-provider/token"
+      authorizationGrants:
+      - "authorization_code"
+      scopes:
+      - "idporten:dcr.read"
+      - "idporten:dcr.write"
+      - "idporten:dcr.modify"
+      - "idporten:dcr/onbehalfof.write"
+      - "idporten:dcr:supplier"
+      - "idporten:scopes.write"
+      - "idporten:eoppslag.write"
+securedBy:
+- "OAuth2"
+/clients/{clientId}/onbehalfof/{id}:
+  uriParameters:
+    clientId:
+      type: "ClientIdValueType"
+      description: "clientId"
+    id:
+      type: "string"
+      description: "id"
+  get:
+    responses:
+      200:
+        description: "OK"
+        body:
+          type: "ClientOnBehalfOfResponseResource"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - OAuth2:
+        scopes:
+        - "idporten:dcr.read"
+  put:
+    body:
+      type: "ClientOnBehalfOfRequestResource"
+    responses:
+      200:
+        description: "OK"
+        body:
+          type: "ClientOnBehalfOfResponseResource"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - OAuth2:
+        scopes:
+        - "idporten:dcr.write"
+        - "idporten:dcr.modify"
+        - "idporten:dcr/onbehalfof.write"
+  delete:
+    responses:
+      200:
+        description: "OK"
+        body:
+          type: "object"
+      204:
+        description: "No Content"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+    securedBy:
+    - OAuth2:
+        scopes:
+        - "idporten:dcr.write"
+        - "idporten:dcr.modify"
+        - "idporten:dcr/onbehalfof.write"
+  (x-restlet):
+    section: "External OIDC"
+/clients/{clientId}/onbehalfof:
+  uriParameters:
+    clientId:
+      type: "ClientIdValueType"
+      description: "clientId"
+  post:
+    body:
+      application/json:
+        type: "ClientOnBehalfOfRequestResource"
+    responses:
+      200:
+        description: "OK"
+        body:
+          type: "ClientOnBehalfOfResponseResource"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - OAuth2:
+        scopes:
+        - "idporten:dcr.write"
+        - "idporten:dcr.modify"
+        - "idporten:dcr/onbehalfof.write"
+  (x-restlet):
+    section: "External OIDC"
+/clients/{clientId}/secret:
+  uriParameters:
+    clientId:
+      type: "ClientIdValueType"
+      description: "id"
+  post:
+    responses:
+      200:
+        description: "OK"
+        body:
+          type: "ClientResponseResource"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - OAuth2:
+        scopes:
+        - "idporten:dcr.modify"
+        - "idporten:dcr.write"
+  (x-restlet):
+    section: "External OIDC"
+/clients/{clientId}:
+  uriParameters:
+    clientId:
+      type: "ClientIdValueType"
+      description: "id"
+  get:
+    responses:
+      200:
+        description: "OK"
+        body:
+          type: "ClientResponseResource"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - OAuth2:
+        scopes:
+        - "idporten:dcr.read"
+  put:
+    body:
+      type: "ClientRequestResource"
+    responses:
+      200:
+        description: "OK"
+        body:
+          type: "ClientResponseResource"
+      201:
+        description: "Created"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - OAuth2:
+        scopes:
+        - "idporten:dcr.modify"
+        - "idporten:dcr.write"
+  delete:
+    responses:
+      200:
+        description: "OK"
+      204:
+        description: "No Content"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+    securedBy:
+    - OAuth2:
+        scopes:
+        - "idporten:scopes.write"
+  (x-restlet):
+    section: "External OIDC"
+/clients:
+  get:
+    responses:
+      200:
+        description: "OK"
+        body:
+          type: "array"
+          items:
+            type: "ClientResponseResource"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - OAuth2:
+        scopes:
+        - "idporten:dcr.read"
+  post:
+    body:
+      type: "ClientRequestResource"
+    responses:
+      201:
+        description: "Created"
+        body:
+          type: "ClientResponseResource"
+      401:
+        description: "Unauthorized"
+      403:
+        description: "Forbidden"
+      404:
+        description: "Not Found"
+    securedBy:
+    - OAuth2:
+        scopes:
+        - "idporten:dcr.write"
+  (x-restlet):
+    section: "External OIDC"
+/scopes/all/access:
+  get:
+    displayName: "liste tilganger"
+    description: "liste opp alle tilganger til en organisasjon"
+    queryParameters:
+      owner_orgno:
+        type: "OrgnoValueType"
+        description: "API-eiers orgnummer (må settes dersom man har scopet idporten:eoppslag.write)"
+        required: false
+    responses:
+      200:
+        body:
+          type: "array"
+          items:
+            type: "ScopeAccessResponseResource"
+  (x-restlet):
+    section: "Scopes admin"
+/scopes/all:
+  get:
+    displayName: "Liste opp scopes (filtrering mulig)"
+    description: "Hente ut alle scopes som provideren beskytter."
+    queryParameters:
+      fromDate:
+        type: "datetime"
+        description: "Hent kun scopes som er registrert etter denne dato"
+        required: false
+      owner_orgno:
+        type: "OrgnoValueType"
+        description: "Henter scopes som eies av en gitt organisasjon"
+        required: false
+    responses:
+      200:
+        body:
+          type: "ScopeResponseResources"
+    securedBy:
+    - null
+  (x-restlet):
+    section: "Scopes admin"
+/scopes/access/requests:
+  description: "Scope access requests."
+  post:
+    displayName: "be om tilgang"
+    description: "Be om tilgang til aktuelt scope"
+    queryParameters:
+      consumer_orgno:
+        type: "OrgnoValueType"
+        description: "konsumenten sitt orgnummer (må settes dersom man har scopet\
+          \ idporten:eoppslag.write)"
+        required: false
+      scope:
+        type: "ScopeValueType"
+    responses:
+      200:
+        body:
+          type: "ScopeAccessResponseResource"
+  get:
+    displayName: "status på mine tilgangsforespørsler"
+    queryParameters:
+      scope:
+        type: "ScopeValueType"
+      consumer_orgno:
+        type: "OrgnoValueType"
+        description: "konsumenten sitt orgnummer (må settes dersom man har scopet\
+          \ idporten:eoppslag.write)"
+        required: false
+      state:
+        type: "AccessStateValueType"
+        description: "Tilgangsstatus"
+        required: false
+    responses:
+      200:
+        body:
+          type: "ScopeAccessResponseResource"
+  (x-restlet):
+    section: "Scopes admin"
+/scopes/access/{consumer_orgno}:
+  uriParameters:
+    consumer_orgno:
+      type: "string"
+  delete:
+    displayName: "Slett tilgang"
+    queryParameters:
+      scope:
+        type: "ScopeValueType"
+      owner_orgno:
+        type: "OrgnoValueType"
+        description: "API-eiers orgnummer (må settes dersom man har scopet idporten:eoppslag.write)"
+        required: false
+  (x-restlet):
+    section: "Scopes admin"
+/scopes/access:
+  displayName: "tilganger til et gitt scope"
+  post:
+    displayName: "Gi tilgang"
+    queryParameters:
+      owner_orgno:
+        type: "OrgnoValueType"
+        description: "API-eiers orgnummer (må settes dersom man har scopet idporten:eoppslag.write)"
+        required: false
+    body:
+      type: "ScopeAccessRequestResource"
+    responses:
+      200:
+        body:
+          type: "ScopeAccessRequestResource"
+  get:
+    displayName: "liste tilganger"
+    description: "liste opp alle tilganger til gitt scope"
+    queryParameters:
+      scope:
+        type: "ScopeValueType"
+      owner_orgno:
+        type: "OrgnoValueType"
+        description: "API-eiers orgnummer (må settes dersom man har scopet idporten:eoppslag.write)"
+        required: false
+    responses:
+      200:
+        body:
+          type: "array"
+          items:
+            type: "ScopeAccessResponseResource"
+  (x-restlet):
+    section: "Scopes admin"
+/scopes:
+  securedBy:
+  - "OAuth2"
+  post:
+    displayName: "Opprette et nytt scope"
+    body:
+      type: "ScopeRequestResource"
+    responses:
+      200:
+        body:
+          type: "ScopeResponseResource"
+      400:
+        body:
+          type: "Errors"
+  delete:
+    displayName: "Deaktivere et scope"
+    description: "Merk at scopet ikkje blir sletta i ID-porten, men derimot markert\
+      \ som inaktivt.  Dvs. token-forespørsler som inneholder dette scopet (evt. blant\
+      \ flere) vil bli avvist.  Eksisterende tilgangsmatrise vil bli beholdt."
+    queryParameters:
+      scope:
+        type: "ScopeValueType"
+      owner_orgno:
+        type: "OrgnoValueType"
+        description: "API-eiers orgnummer (må settes dersom man har scopet idporten:eoppslag.write)"
+        required: false
+    responses:
+      200:
+        body:
+          type: "ScopeResponseResource"
+  put:
+    displayName: "Endre scope"
+    description: "endre egenskaper ved et scope"
+    queryParameters:
+      scope:
+        type: "ScopeValueType"
+    body:
+      type: "ScopeRequestResource"
+    responses:
+      200:
+        body:
+          type: "ScopeResponseResource"
+      400:
+        body:
+          type: "Errors"
+  get:
+    displayName: "Liste opp scopes (filtrering mulig)"
+    description: "Hente ut alle scopes som provideren beskytter."
+    queryParameters:
+      fromDate:
+        type: "datetime"
+        description: "Hent kun scopes som er registrert etter denne dato"
+        required: false
+      owner_orgno:
+        type: "OrgnoValueType"
+        description: "API-eiers orgnummer (må settes dersom man har scopet idporten:eoppslag.write)"
+        required: false
+      scope:
+        type: "ScopeValueType"
+        description: "Hente detaljer om et konkret scope"
+    responses:
+      200:
+        body:
+          type: "ScopeResponseResource"
+  (x-restlet):
+    section: "Scopes admin"
+(x-restlet):
+  sections:
+    External OIDC: {}
+    Scopes admin: {}
