@@ -104,8 +104,8 @@ sequenceDiagram
 
   note over AP,A: 0: Registrering av API   
   A->>AP: registrer (OAS-fil, eOppslag=True)
-  AP->>AA: registrer (securityScheme,scope)
   AP->>MP: registrer (securityScheme,scope)
+  MP->>AA: registrer (securityScheme,scope)
 
   opt Alternativ med direkte-registrering
    A->>MP: registrer (securityScheme, scope)
