@@ -119,11 +119,12 @@ sequenceDiagram
   note over AA,C: D1: Bemyndiget person logger inn i Altinn og delegerer
   opt D2. alternativt
   AA->>MP: /delegations (scope, consumer_orgno, supplier_orgno)
+  note right of MP: dette bygger lokal kopi av Altinn?
   end
-  note right of MP: skal vi bygge lokal kopi av Altinn? 
+
   note over AA,L: Leverandør provisjonerer
   L->>MP: /clients (scope, is_supplier, delegation_source)
-  MP->>AA: kontroller delegering (scope, consumer, supplier)
+  MP->>AA: /is_supplier (scope, supplier_orgno)
 
   note over AP,A: 2: API-oppslag run-time
 
