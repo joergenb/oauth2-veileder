@@ -22,7 +22,7 @@ paths:
         parameters:
             -
                 name: scope
-                in: path
+                in: query
                 description: 'Scope som registrert i ID-porten'
                 required: true
                 schema:
