@@ -120,13 +120,17 @@ sequenceDiagram
   opt D2. alternativt
   AA->>MP: /delegations (scope, consumer_orgno, supplier_orgno)
   end
+  note right of MP: skal vi bygge lokal kopi av Altinn? 
+  note over AA,L: Leverandør provisjonerer
+  L->>MP: /clients (scope, is_supplier, delegation_source)
+  MP->>AA: kontroller delegering (scope, consumer, supplier)
 
   note over AP,A: 2: API-oppslag run-time
 
   note over L,MP: Type 1: Tokenforespørsel fra leverandør
   L->>MP: /token(scope, consumer_orgno)
   opt Dersom D.1
-    MP->>AA: kontroller delegering(scope, consumer_orgno)
+    MP->>AA: kontroller delegering(scope, consumer_orgno, supplier)
   end
   MP->>L: access_token
   L->>A: API-request(token)
