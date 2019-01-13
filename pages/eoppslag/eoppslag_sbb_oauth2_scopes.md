@@ -124,14 +124,14 @@ sequenceDiagram
 
   note over AA,L: Leverandør provisjonerer
   L->>MP: /clients (scope, is_supplier, delegation_source)
-  MP->>AA: /is_supplier (scope, supplier_orgno)
+  MP->>AA: /delegations (scope, supplier_orgno)
 
   note over AP,A: 2: API-oppslag run-time
 
   note over L,MP: Type 1: Tokenforespørsel fra leverandør
   L->>MP: /token(scope, consumer_orgno)
   opt Dersom D.1
-    MP->>AA: kontroller delegering(scope, consumer_orgno, supplier)
+    MP->>AA: /delegations (scope, consumer_orgno, supplier)
   end
   MP->>L: access_token
   L->>A: API-request(token)
