@@ -102,37 +102,30 @@ sequenceDiagram
   participant L AS Levernadør(L)
   participant A as API-tilbyder
 
-  note over AP,A: 0: Registrering av API   
-  A->>AP: registrer (OAS-fil, eOppslag=True)
-  AP->>MP: registrer (securityScheme,scope)
-  MP->>AA: registrer (securityScheme,scope)
+  note over AP,A: 0a: Registrering av API via API-katalog
+  A->>AP: registrer (OAS-fil, registrer_i_maskinporten=T)
+  AP->>MP: registrer (scope, delegationScheme)
+  MP->>AA: registrer (scope, delegationScheme)
 
-  opt Alternativ med direkte-registrering
-   A->>MP: registrer (securityScheme, scope)
-   MP->>AA: registrer (securityScheme, scope)
-  end
+  note over AP,A: 0b: Registrering av API direkte
+
+   A->>MP: registrer (scope, delegationScheme)
+   MP->>AA: registrer (scope, delegationScheme)
 
   note over AP,A: 1:gi tilgang
-  A->>MP: /acccess (securityScheme, consumer_orgno)
+  A->>MP: /access (scope, consumer_orgno)
+  note right of A: Ett kall per scope i delegationScheme
 
   note over AP,A: 4: Leikanger kommune ønsker at Evry...
-  note over AA,C: D1: Bemyndiget person logger inn i Altinn og delegerer
-  opt D2. alternativt
-  AA->>MP: /delegations (scope, consumer_orgno, supplier_orgno)
-  note right of MP: dette bygger lokal kopi av Altinn?
-  end
-
-  note over AA,L: Leverandør provisjonerer
-  L->>MP: /clients (scope, is_supplier, delegation_source)
-  MP->>AA: /delegations (scope, supplier_orgno)
+  note over AA,C: Bemyndiget person logger inn i Altinn og delegerer
+  note over AA,L: Leverandør provisjonerer Oauth2-klient
+  L->>MP: /clients (scope, is_supplier=T)
 
   note over AP,A: 2: API-oppslag run-time
 
   note over L,MP: Type 1: Tokenforespørsel fra leverandør
   L->>MP: /token(scope, consumer_orgno)
-  opt Dersom D.1
-    MP->>AA: /delegations (scope, consumer_orgno, supplier)
-  end
+    MP->>AA: /delegations (scope, consumer_orgno, supplier_orgno)
   MP->>L: access_token
   L->>A: API-request(token)
 
@@ -147,8 +140,8 @@ Regler som må følges dersom API-tilbyder ønsker at benytte seg av automagisk 
 
 - 1 API-tilbyder kan ha flere API
 - 1 API i API-katalogen = 1 OAS-fil
-- 1 OAS-fil kan ha fleire securitySchemes
-  - SecuritySchemes av typen `x...jwt-grant` blir håndtert av eOppslag
+- Ihht OAS-standarden kan et API ha ett eller fleire securitySchemes
+    - securitySchemes av typen `x...jwt-grant` blir håndtert av eOppslag
     - Blir en "delegerbar" ressurs i Altinn
   - SecuritySchemes må navngis etter følgende konvensjon: **TBD** ( prefix.  / delegeringskilde / bruksområde / operasjon…  `nav:trygdeopplysninger[d:altinn, u:oppslag]`)
 - 1 securityScheme må inneholde ett eller flere oauth2 scopes
@@ -157,9 +150,12 @@ Regler som må følges dersom API-tilbyder ønsker at benytte seg av automagisk 
     - hvordan sikre hierarkiske scopes?
   - scopes som blir definert direkte på /path/operation i OAS-fila blir ignorert av eOppslag
     - mao ikke synlig i API-katalogen, ingen på-tvers logikk mellom Altinn Autorisasjon og Maskinporten
-- API-tilganger gis primært til securitySchemes, og ikke scopes
+- API-tilganger gis primært til scopes
+  - API-tilbyder må sende ett tilgangs-kall per scope under et delegationScheme
+  eget kall for alle gi tilgang psecuritySchemes, og ikke scopes
+  - Maskinporten kjenner ikke til "delegationSchemes"
   - dersom tilgang gis direkte til scopes
-- Delegeringskilde følger av securityScheme
+- Delegeringskilde følger av scope
 - tokens og -forespørsler forholder seg ikke til securityScheme
 - Dersom leverandør  ikke oppgir hvem den ønsker å opptre på vegne av i tokenforespørsel, avvises token-forespøselen
   - hvordan håndteres dettepå  Oauth-klient-nivå?
