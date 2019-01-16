@@ -154,11 +154,12 @@ Når Evry nå forsøker å be om token, vil Maskinporten se at scopet er registr
 
 ```
 {
-  iss: "Altinn"
+  iss: "Maskinporten"               # token-utsteder (den som signerer tokenet)
   scope: "nav:trygdeopplysninger"
   consumer_orgno: "964967725        # Leikanger Kommune
   act: {
     "supplier_orgno": "934382404"   # Evry ASA
+    iss: "Altinn"                   # delegerinskilde
   }
   ...
 }
