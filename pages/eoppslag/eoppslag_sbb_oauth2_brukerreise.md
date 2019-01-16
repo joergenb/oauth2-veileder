@@ -45,6 +45,8 @@ I dette eksemplet blir også en delegeringskonfigurasjon oppgitt, slik at scopet
 
 Via en `PUT`-operasjon kan delegeringskonfigurasjon legges til eller endres på allerede eksisterende scopes.  En delegeringskonfigurasjon trengs bare oppgis en gang.  Dersom API-tilbyder senere sender en oppdatert delegeringskonfigurasjon, vil eksisterende overskrives.
 
+Registringene hos Maskinporten og Altinn er en atomisk opersjon, dersom en av partene ikke kan registere scopet, så returnes feilkode tilbake til API-tilbyder. 
+
 #### Alternativ B: NAV publiserer en beskrivelse av API-et til API-katalogen
 
 NAV logger inn i Felles Datalog, og registrerer API-et sitt og oppgir en OpenAPI 3 Specification som inneholder en utvidelse som forklarer hvordan API-et skal tilgangsstyres.
@@ -66,6 +68,7 @@ securitySchemes:
 ```
 
 I forbindelse med den manuelle provisjoneringen av scope-prefixet for NAV i Maskinporten, blir det også lagret en assosiasjon til en "tilbyder" i API-katalogen. Via en hendelsesfeed fra FDK, vil Maskinporten kunne abonnere på nye/endrede API-definisjoner for de scope-prefix/scopes som er registrert.
+
 
 ### Tilgangstyring
 
