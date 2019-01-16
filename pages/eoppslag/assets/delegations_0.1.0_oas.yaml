@@ -39,6 +39,10 @@ paths:
                 description: 'Viser delegeringer begrenset til de gitt til oppgitt organisasjonsnummer'
                 schema:
                     type: string
+    '/registration/':
+      post:
+        summary: DENNE ER IKKJE DETALJERT ENNO.
+
 components:
     schemas:
         Delegation:
