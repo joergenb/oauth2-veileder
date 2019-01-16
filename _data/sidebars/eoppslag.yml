@@ -17,19 +17,30 @@ entries:
     output: web, pdf
     folderitems:
 
-    - title: Overordnet
+    - title: Overordnet beskrivelse
       output: web, pdf
       url: /eoppslag_sbb_oauth2.html
-
-    - title: SelvbetjeningsAPI
-      output: web, pdf
-      url: /eoppslag_sbb_oauth2_adminapi.html
 
     - title: Brukerreiser
       output: web, pdf
       url: /eoppslag_sbb_oauth2_brukerreise.html
 
-    - title: Ulike tokens
+    - title: Grensesnitt
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2_grensesnitt.html
+
+    - title: Bruk av OpenAPI
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2_oas.html
+
+
+  - title: Gjenstående arbeid og diskusjonssider
+    output: web, pdf
+    folderitems:
+
+
+
+    - title: Standardisere tokens
       output: web, pdf
       url: /eoppslag_sbb_oauth2_tokens.html
 
@@ -40,3 +51,11 @@ entries:
     - title: Scopes
       output: web, pdf
       url: /eoppslag_sbb_oauth2_scopes.html
+
+    - title: Todo
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2_todo.html
+
+    - title: maskinporten selvbetjeningsapi
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2_adminapi.html

@@ -4,9 +4,10 @@ title: "Brukerreise for eOppslag"
 sidebar: eoppslag
 permalink: eoppslag_sbb_oauth2_brukerreise.html
 
-summary: "En brukerreise som viser hvordan man etablerer og tilgangsstyrer APIer som følger eOppslag-mønsteret. "
+summary: "Brukerreiser som viser hvordan man etablerer og tilgangsstyrer APIer som følger eOppslag-mønsteret."
 ---
 
+Dette dokumentet inneholder 4 brukerreiser som viser overordnet hvordan funksjonalitet og meldingsflyt i løsningsarkitekturen er tenkt.  Merk at grensesnitts-eksemplene i dette dokumentet ikke er normative.  Nederst i dokumentet finner man sekvensdiagram som viser brukerreisene.
 
 ## 1. NAV oppretter et API
 
@@ -15,6 +16,8 @@ NAV ønsker å opprette et API og gi tilgang til Gjensidige Forsikring.
 NAV som API-tilbyder A blir manuelt provisjonert i ID-porten, ved at A sitt org.no får tildelt scope-prefixet `nav:`.
 
 NAV har nå to muligheter. De kan registrere API-et sitt direkte i maskinporten, eller så kan de publisere en formell beskrivelse (OAS3) av API-et i [API-katalogen](https://fellesdatakatalog.brreg.no/apis).
+
+### Registrering
 
 #### Alternativ A: NAV oppretter API-et direkte i Maskinporten
 
@@ -164,3 +167,50 @@ Når Evry nå forsøker å be om token, vil Maskinporten se at scopet er registr
   ...
 }
 ```
+
+## Sekvensdiagram
+
+Her er deler av brukerreisene over vist i et sekvensdiagram:
+
+<div class="mermaid">
+sequenceDiagram
+
+  participant AP as API-katalog
+  participant AA as Altinn Autorisasjon
+  participant MP AS Maskinporten
+  participant C AS konsument(C)
+  participant L AS Leverandør(L)
+  participant A as API-tilbyder(A)
+
+  note over AP,A: 0a: Registrering av API via API-katalog
+  A->>AP: registrer (OAS-fil, registrer_i_maskinporten=T)
+  AP->>MP: registrer (scope, delegationScheme)
+  MP->>AA: registrer (scope, delegationScheme)
+
+  note over AP,A: 0b: Registrering av API direkte
+
+   A->>MP: registrer (scope, delegationScheme)
+   MP->>AA: registrer (scope, delegationScheme)
+
+  note over AP,A: 1:gi tilgang
+  A->>MP: /access (scope, consumer_orgno)
+
+  note over AP,A: 4: Leikanger kommune ønsker at Evry...
+  note over AA,C: Bemyndiget person logger inn i Altinn og delegerer
+  note over MP,L: Leverandør provisjonerer Oauth2-klient
+  L->>MP: /clients (scope, is_supplier=T)
+
+  note over AP,A: 2: API-oppslag run-time
+
+  note over L,MP: Type 1: Tokenforespørsel fra leverandør
+  L->>MP: /token(scope, consumer_orgno)
+    MP->>AA: /delegations (scope, consumer_orgno, supplier_orgno)
+  MP->>L: access_token
+  L->>A: API-request(token)
+
+  note over C,MP: Type 2: Tokenforespørsel direkte fra konsument
+  C->>MP: /token(scope)
+  MP->>C: access_token
+  C->>A: API-request(token)
+
+  </div>
