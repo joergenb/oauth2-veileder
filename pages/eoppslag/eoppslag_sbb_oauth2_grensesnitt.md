@@ -2,7 +2,7 @@
 layout: page
 title: "Grensesnitt for eOppslag"
 sidebar: eoppslag
-permalink: eoppslag_sbb_oauth2_adminapi.html
+permalink: eoppslag_sbb_oauth2_grensesnitt.html
 
 summary: "Dette dokumentet beskriver nye grensesnitt og utvidelser på eksisterende grensesnitt for å kunne realisere referansearkitekturen i eOppslag."
 ---

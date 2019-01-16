@@ -4,26 +4,14 @@ title: "Forslag admin-API for eOppslag"
 sidebar: eoppslag
 permalink: eoppslag_sbb_oauth2_adminapi.html
 
-summary: "Dette dokumentet beskriver utvidelser på ID-porten sitt selvbejenings-API for å kunne realisere referansearkitekturen i eOppslag."
+summary: "Dette dokumentet diskuterer utvidelser på ID-porten sitt selvbejenings-API for å kunne realisere referansearkitekturen i eOppslag."
 ---
 
-
-## Bakgrunn
-
-Selve token-utstedelsesprosessen i eOppslag bruker allerede eksisterende funksjonalitet i ID-portens OIDC provider for "server-to-server Oauth2" (populært kalla "maskinporten"), se:  [https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html](https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html)
-
-Det som primært mangler i ID-porten for å realise eOppslag, er å tilby selvbetjeningsløsninger for administrasjon av hvilke APIer (dvs. Oauth2 scopes) som finnes og hvem som skal kunne få utstedt access_tokens til disse.
-
-> Design av endringene er dokumentert i RAML her: [versjon 0.5.0](https://github.com/joergenb/oauth2-veileder/blob/gh-pages/pages/eoppslag/assets/eoppslag_0.5.0_restlet.yaml). (kan opnast med Restlet Studio)
-
-For oppslag av delegeringer i eksterne kilder, etableres et eget oppslags-API som kun Maskinporten gis tilgang til. Her vil det kunne gjøres oppslag på delegeringer for et oppgitt scope.
-
-> Forslag til design er dokumentert i OAS3 her: [versjon 0.1.0](
-https://github.com/joergenb/oauth2-veileder/blob/gh-pages/pages/eoppslag/delegations_0.1.0_oas.yaml)
 
 ## Om selvbetjeningsAPIet
 
 eOppslag-APIene bygger videre på selvbetjeningsAPIet som ID-porten allerede tilbyr, se [https://difi.github.io/idporten-oidc-dokumentasjon/oidc_api_admin.html](https://difi.github.io/idporten-oidc-dokumentasjon/oidc_api_admin.html)
+
 
 
 APIet spiser sin egen hundemat, og er sikret vha. Oauth2 :
@@ -43,7 +31,7 @@ For å kunne vedlikeholde egne scopes, må A sin selvbetjeningsklient ha tilgang
 
 | scope | beskrivelse |
 |-|-|
-|idporten:scope.write|Gir tilgang til administrasjon av API-definisjoner (i form av Oauth2 scopes) knyttet til samme org.nr. som gitt i access_token.|
+|idporten:scopes.write|Gir tilgang til administrasjon av API-definisjoner (i form av Oauth2 scopes) knyttet til samme org.nr. som gitt i access_token.|
 
 
 Scopet provisjoneres manuelt av Difi, sammen med 1 eller flere `prefix`.
