@@ -11,7 +11,7 @@ For å oppnå samspill med API-katalogen, må vi
 - innføre noen norske utvidelser til OpenAPI-spesifikasjon
 - definere en konvensjon for hvordan bruke OAS
 
-![](assets/eoppslag_sbb_oauth2-cd1afddf.png)
+![infomodell](assets/eoppslag_sbb_oauth2-cd1afddf.png)
 
 Ett API kan inneholde en eller flere delegerbare ressurser,  og et Oauth2 scope kan tilhøre et eller flere delegerbare ressurser.  Token-tjenesten forholder seg kun til oauth2 scopes. Delegeringskilden forholder seg primært til delegerbare ressurser, men er også ansvarlig for å vedlikeholde hvilke scopes som hører til en delegerbar ressurs.
 

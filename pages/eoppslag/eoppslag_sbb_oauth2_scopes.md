@@ -7,23 +7,17 @@ permalink: eoppslag_sbb_oauth2_scopes.html
 summary: "Retningslinjer for navngiving av Oauth2 scopes i eOppslag"
 ---
 
-
-
-
-d
+## Oppsummering
 
 
 På denne siden gir vi retningslinjer for hvordan API-tilbydere skal navngi sine Oauth2 scopes.
 
-## Oppsummering
+ID-porten vil manuelt tildele ett eller flere *prefix* til en API-tilbyder.  API-tilbyderen kan så selv legge til subscopes etter eget ønsker, men vi anbefaler `prefix:ressursdefinisjon.operasjon` (nav:trygdeopplysninger.les)
 
-tbd
-
+## Bakgrunn
 
 `scope`-begrepet er sentralt i Oauth2 sin autorisasjonsmodell. Et scope kan best beskrives som en *ressurs-definisjon*. Tokens er som hovedregel knyttet (og derigjenomm begrenset) til et eller flere scopes.
 
-
-## Typer ressurser og scopes
 
 Noen scopes/ressursdefinisjoner  vil i praksis være entydig koblet mot den organisasjonen som forvalter et datasett (eksempel Bostedsadresse i Folkeregisteret), men andre ressurser kan sees på som globale der mange organisasjoner kan tenkes å kunne levere ut en fornuftig respons som svar på en forespørsel etter den aktuelle ressursen. Vi ser at det da ikke nødvendigvis er en 1:1 mapping mellom API-tilbyder og scope.
 
@@ -31,7 +25,7 @@ En API-tilbyder tilbyr data gjennom ett eller flere APIer, potensielt realisert 
 
 ## Syntaks
 
-https://tools.ietf.org/html/rfc6749?#section-3.3
+https://tools.ietf.org/html/rfc6749?#section-3.3 sier:
 ```
      scope       = scope-token *( SP scope-token )
      scope-token = 1*( %x21 / %x23-5B / %x5D-7E )

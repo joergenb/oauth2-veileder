@@ -37,4 +37,4 @@ Registering og provisjoner av Oauth2 klienter skjer vha Oauth2 Dynamic Client Re
 
 Tokenutstedelse skjer over standard Oauth2, med bruk av RFC7523 med virksomhetssertifikater og/eller egenregistrerte asymetriske nøkler.
 
-Denne arkitekturen sier ikke noe om grensesnittet for selve APIet, utover at det er sikret med Oauth2 Bearer tokens.  (hva skjedde med signering / krypterings-diskusjonen?)
+Denne arkitekturen sier ikke noe om grensesnittet for selve APIet til API-tilbyder, utover at det er sikret med Oauth2 Bearer tokens.  

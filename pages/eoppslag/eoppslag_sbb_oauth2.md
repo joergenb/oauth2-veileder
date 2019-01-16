@@ -54,7 +54,7 @@ Modellen over er generisk.  I første iterasjon av arkitekturen er følgende lag
 
 Ett API kan inneholde en eller flere delegerbare ressurser,  og et Oauth2 scope kan tilhøre et eller flere delegerbare ressurser.  Token-tjenesten forholder seg kun til oauth2 scopes. Delegeringskilden forholder seg primært til delegerbare ressurser, men er også ansvarlig for å vedlikeholde hvilke scopes som hører til en delegerbar ressurs.
 
-Modellen forsøker å rendyre ansvarsområdene mellom  tokentjeneste og delegeringskilde.
+Modellen forsøker å rendyrke ansvarsområdene mellom tokentjeneste og delegeringskilde.
 
 
 

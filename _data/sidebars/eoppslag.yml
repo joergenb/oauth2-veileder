@@ -33,6 +33,10 @@ entries:
       output: web, pdf
       url: /eoppslag_sbb_oauth2_oas.html
 
+    - title: Scopes
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2_scopes.html
+
 
   - title: Gjenstående arbeid og diskusjonssider
     output: web, pdf
@@ -48,9 +52,6 @@ entries:
       output: web, pdf
       url: /eoppslag_sbb_oauth2_tokenvalidering.html
 
-    - title: Scopes
-      output: web, pdf
-      url: /eoppslag_sbb_oauth2_scopes.html
 
     - title: Todo
       output: web, pdf

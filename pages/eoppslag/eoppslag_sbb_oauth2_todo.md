@@ -8,13 +8,12 @@ summary: "eOppslag SBB: Gjenstående punkter"
 ---
 
 
-* I forbindelse med den manuelle provisjoneringen av scope-prefixet for NAV i Maskinporten, blir det også lagret en assosiasjon til en "tilbyder" i API-katalogen.
 
+* Følgende prosesser er ikke avklart:
+  > I forbindelse med den manuelle provisjoneringen av scope-prefixet for NAV i Maskinporten, blir det også lagret en assosiasjon til en "tilbyder" i API-katalogen. Via en hendelsesfeed fra FDK, vil Maskinporten kunne abonnere på nye/endrede API-definisjoner for de scope-prefix/scopes som er registrert.
 
-* hierariske Scopes
+* hvordan hierariske scopes kan passe inn i modellen
 
-- gjenstår definere grensesnittet mellom  Maskinporten og  API-katalogen
+* juridiske / merkantile modeller
 
-* juridiske / merkantile modeller må jobbes med,  bør ikkje vente med utvikling
-
-*
+* hva skjedde med signering / krypterings-diskusjonen? - skal det inn?

@@ -7,7 +7,7 @@ permalink: eoppslag_sbb_oauth2_brukerreise.html
 summary: "Brukerreiser som viser hvordan man etablerer og tilgangsstyrer APIer som følger eOppslag-mønsteret."
 ---
 
-Dette dokumentet inneholder 4 brukerreiser som viser overordnet hvordan funksjonalitet og meldingsflyt i løsningsarkitekturen er tenkt.  Merk at grensesnitts-eksemplene i dette dokumentet ikke er normative.  Nederst i dokumentet finner man sekvensdiagram som viser brukerreisene.
+Dette dokumentet inneholder 4 brukerreiser som viser overordnet hvordan funksjonalitet og meldingsflyt i løsningsarkitekturen er tenkt.  Merk at grensesnittseksemplene i dette dokumentet ikke er normative.  Nederst i dokumentet finner man sekvensdiagram som viser brukerreisene.
 
 ## 1. NAV oppretter et API
 
@@ -39,11 +39,11 @@ POST /scopes/
   ]
 }  
 ```
-som oppretter scopet `nav:trygdeopplysninger`.   (alternativt bruker NAV en av GUI-løsningene integrert med Maskinporten og gjør   det samme via pek-og-klikk.)
+som oppretter scopet `nav:trygdeopplysninger`.   Alternativt bruker NAV en av GUI-løsningene integrert med Maskinporten og gjør det samme via pek-og-klikk.
 
 I dette eksemplet blir også en delegeringskonfigurasjon oppgitt, slik at scopet blir gjort delegerbart i Altinn. Her kan ulike scopes grupperes under ulike delegeringsoppsett ("delegation scheme"), slik at delegeringer i Altinn kan gjøres på mer enn ett og ett scope.
 
-Via en `PUT`-operasjon kan delegeringskonfigurasjon legges til eller endres på allerede eksisterende scopes.
+Via en `PUT`-operasjon kan delegeringskonfigurasjon legges til eller endres på allerede eksisterende scopes.  En delegeringskonfigurasjon trengs bare oppgis en gang.  Dersom API-tilbyder senere sender en oppdatert delegeringskonfigurasjon, vil eksisterende overskrives.
 
 #### Alternativ B: NAV publiserer en beskrivelse av API-et til API-katalogen
 
@@ -98,6 +98,8 @@ POST /clients/
   ...
 }
 ```
+Maskinporten validerer at Gjensidige har tilgang til scopet, dersom ikke så feiler provisjoneringen.
+
 
 Når klienten skal bruke APIet, generer den først en tokenforespørsel med scope=`nav:trygdeopplysninger`,  signerer dette med Gjensidige sitt virksomhetssertikat (et jwt-grant), og sender til Maskinporten. Maskinporten utsteder et access_token tilbake:
 ```
