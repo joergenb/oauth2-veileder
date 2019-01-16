@@ -14,7 +14,7 @@ eOppslag-APIene bygger videre på selvbetjeningsAPIet som ID-porten allerede til
 
 
 
-APIet spiser sin egen hundemat, og er sikret vha. Oauth2 :
+APIet er sikret vha. Oauth2 :
 
 1. Enkelt-virksomheter kan autentisere seg med virksomhetssertifikat, for så å administere alle integrasjoner knyttet til egen organisasjon
 2. Brukere innlogga gjennom Difi sin samarbeidsportal kan administrere utvalgte data knyttet til egen organisasjon (Høst 2018)
@@ -48,7 +48,8 @@ Selvbetjenings-API utvides med:
 
 `token_egenskaper` er tekniske egenskaper som API-tilbyder forventer/krever. Dette kan være max tillatt levetid, self-contained eller ikke, minste sikkerhetsnivå, etc.
 
-`delegation_scheme` er en beskrivelse av eventuell ekstern delegeringskilde, som f.eks. Altinn
+`delegation_scheme` er en beskrivelse av eventuell ekstern delegeringskilde, som f.eks. Altinn.   Denne er - foruten et par faste attributter  - utvidarbar med key:value attributter, slik at den kan tilpasses behov hos andre delegeringskilder.
+
 
 
 ### Audience (A)
