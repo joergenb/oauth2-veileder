@@ -95,19 +95,9 @@ NAV sitt API (ressursserver) validerer tokenet, gjør evt. videre finkornet tilg
 
 Storebrand ser i API-katalogen at NAV tilbyr et interessant API.  
 
-De lager raskt en Oauth2-klient, får denne registrert i Maskinporten, og forsøker sende en tokenforespørsel til Maskinporten på samme måte som Gjensidige.  Siden Storebrand ikke har fått tilgang, vil denne bli avvist. Storebrand sender så en tilgangsforespørsel til Maskinporten sitt selvbetjeningsAPI:
-```
-POST /scopes/access/requests
-{
-  "scope": "nav:trygdeopplysninger"
-}
-```
+De lager raskt en Oauth2-klient, får denne registrert i Maskinporten, og forsøker provisjonere det aktuelle scopet til klienten. Siden Storebrand ikke har fått tilgang, vil provisjoneringen bli avvist. Storebrand sender istedet en tilgangsforespørsel manuelt til NAV, og inngår eventuelle avtaler som behøves.
 
-NAV er flinke og følger hyppig med på tilgangskøen for sitt API:
-```
-GET /scopes/access/requests?scope=nav:trygdeopplysninger
-```
-og ser at Storebrand har bedt om tilgang.  Denne godkjenner de tvert:
+Når avtalen er på plass, gir NAV tilgang til Storebrand:
 ```
 POST /scopes/access/
 {
@@ -117,9 +107,6 @@ POST /scopes/access/
 ```
 
 Storebrand kan nå bruke NAV sitt API.
-
-NAV kan selvfølgelig også håndtere tilgangsforespørsler selv direkte.
-
 
 ## 4. Leikanger Kommune ønsker at Evry skal bruke APIet for dem
 
