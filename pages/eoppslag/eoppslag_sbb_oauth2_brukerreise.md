@@ -96,7 +96,7 @@ POST /clients/
 }
 ```
 
-Når lienten skal bruke APIet, generer den først en tokenforespørsel med scope=`nav:trygdeopplysninger`, signerer dette med Gjensidige sitt virksomhetssertikat (et jwt-grant), og sender til Maskinporten. Maskinporten utsteder et access_token tilbake:
+Når klienten skal bruke APIet, generer den først en tokenforespørsel med scope=`nav:trygdeopplysninger`,  signerer dette med Gjensidige sitt virksomhetssertikat (et jwt-grant), og sender til Maskinporten. Maskinporten utsteder et access_token tilbake:
 ```
 {
   iss:            "Maskinporten"
@@ -126,19 +126,9 @@ NAV sitt API (ressursserver) validerer tokenet, gjør evt. videre finkornet tilg
 
 Storebrand ser i API-katalogen at NAV tilbyr et interessant API.  
 
-De lager raskt en Oauth2-klient, får denne registrert i Maskinporten, og forsøker sende en tokenforespørsel til Maskinporten på samme måte som Gjensidige.  Siden Storebrand ikke har fått tilgang, vil denne bli avvist. Storebrand sender så en tilgangsforespørsel til Maskinporten sitt selvbetjeningsAPI:
-```
-POST /scopes/access/requests
-{
-  "scope": "nav:trygdeopplysninger"
-}
-```
+De lager raskt en Oauth2-klient, får denne registrert i Maskinporten, og forsøker provisjonere det aktuelle scopet til klienten. Siden Storebrand ikke har fått tilgang, vil provisjoneringen bli avvist. Storebrand sender istedet en tilgangsforespørsel manuelt til NAV, og inngår eventuelle avtaler som behøves.
 
-NAV er flinke og følger hyppig med på tilgangskøen for sitt API:
-```
-GET /scopes/access/requests?scope=nav:trygdeopplysninger
-```
-og ser at Storebrand har bedt om tilgang.  Denne godkjenner de tvert:
+Når avtalen er på plass, gir NAV tilgang til Storebrand:
 ```
 POST /scopes/access/
 {
