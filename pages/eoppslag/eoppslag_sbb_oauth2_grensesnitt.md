@@ -10,7 +10,7 @@ summary: "Dette dokumentet beskriver nye grensesnitt og utvidelser på eksistere
 
 ## Grensesnittsdefinisjoner
 
-De fleste grensesnittene i løsningsarkitekturen følger standardisert Oauth2, men for å støtte funksjonaliteten i eOppslag, trengs det tre propriteære APIer:
+De fleste grensesnittene i løsningsarkitekturen følger standardisert Oauth2, men for å støtte funksjonaliteten i eOppslag, trengs det tre proprieteære APIer:
 
 ### 1. Token-tjenestens selvbetjenings-API
 
@@ -35,6 +35,6 @@ Gjenstår å definere.
 
 Registering og provisjoner av Oauth2 klienter skjer vha Oauth2 Dynamic Client Registration.  Merk at såkalt "unmanaged/open" DCR ikke støttes.  Brukere av APIet må ha en selvbetjenings-integrasjon som er kjent for Maskinporten.
 
-Tokenutstedelse skjer over standard Oauth2, med bruk av RFC7523 med virksomhetssertifikater og/eller egenregistrerte assymetriske nøkler.
+Tokenutstedelse skjer over standard Oauth2, med bruk av RFC7523 med virksomhetssertifikater og/eller egenregistrerte asymetriske nøkler.
 
-Denne arkitekturen sier ikke noe om API-tilgang, utover at den er bruke Oauth2 Bearer tokens.  (hva med signering / krypterings-diskusjoenn?)
+Denne arkitekturen sier ikke noe om grensesnittet for selve APIet, utover at det er sikret med Oauth2 Bearer tokens.  (hva skjedde med signering / krypterings-diskusjonen?)
