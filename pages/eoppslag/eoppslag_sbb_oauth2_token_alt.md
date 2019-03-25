@@ -94,12 +94,12 @@ der indre JWT er
 {
    "orgno": 888111222
 }
-</pre
+</pre>
 </td>
 
 <td>
 <pre>
-</pre
+</pre>
 </td>
 
 <td>
