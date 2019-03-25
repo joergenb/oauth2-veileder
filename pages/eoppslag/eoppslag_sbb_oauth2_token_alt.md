@@ -100,7 +100,8 @@ der indre JWT er
 
 #### token exhange:
 - https://tools.ietf.org/html/draft-ietf-oauth-token-exchange-16
-
+- i eoppslag:  delegatio has occured -> bruke `act`-claim (og ikkje 'may_act')
+- virkar fornuftig å bruke orgno både for konsuemnt og leverandør
 
 
 #### nested jwt:
