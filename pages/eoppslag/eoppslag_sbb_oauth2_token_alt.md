@@ -52,6 +52,7 @@ Det finst flere alternative "inspirasjonskilder" som vi kan skjele til
 {
   "consumer_orgno": 999888777
   "supplier_orgno": 888111222
+  "delegation_source": "Altinn Autorisasjon"
 }
 </pre>
 
@@ -61,6 +62,7 @@ eller tilogmed norsk?
 {
   "konsument": 999888777
   "leverandør": 888111222
+  "delegeringskilde": "Altinn Autorisasjon"
 }
 </pre>
 
@@ -79,6 +81,7 @@ eller tilogmed norsk?
   "orgno": 999888777
   "act": {
     "orgno": 888111222
+    "iss": "Altinn Autorisasjon"
   }
 }
 </pre>
@@ -95,10 +98,9 @@ eller tilogmed norsk?
 {
   "orgno": 999888777
   "jwt": "ey......"
-  }
 }
 </pre>
-der indre JWT er
+der indre JWT er signert av Altinn og har body
 <pre>
 {
    "orgno": 888111222
