@@ -18,9 +18,10 @@ Ressursserver skal kunne...
 
 
 Generelt
-* la seg lett leve i parallell med fremtige token som kommuniserer andre representasjonsforhold
-* bør støtte både sentralisert og distribuert infrastruktur
-  - sentralisert: all logikk i en og samme autorisasjonsserver
+* eoppslag-toke må lett kunne leve i parallell med fremtige token som kommuniserer andre representasjonsforhold
+* bør støtte både sentralisert og distribuert infrastruktur  
+  - sentralisert: all logikk i en og samme autorisasjonsserver)
+  - desentralisert: klient, AS eller ressurs-server "sender token hit og dit" mellom flere AS og STSer,  slutt-tokenet bør vere identisk
 
 
 
@@ -122,7 +123,7 @@ der indre JWT er
       }}},
  "name": "HSØ responssenter"
 }
-</pre
+</pre>
 </td>
 
 
