@@ -44,10 +44,6 @@ Det finst flere alternative "inspirasjonskilder" som vi kan skjele til
 <table>
 <tr>
 <th>Priorietær</th>
-<th>Token exchange</th>
-<th>Nested JWT</th>
-<th>Vectors of Trust</th>
-<th>Helsesektoren</th>
 </tr>
 
 <tr>
@@ -69,7 +65,14 @@ eller tilogmed norsk?
 </pre>
 
 </td>
+</tr>
+</table>
 
+
+<table>
+<tr>
+<th>Token exchange</th>
+</tr>
 <td>
 <pre>
 {
@@ -80,7 +83,13 @@ eller tilogmed norsk?
 }
 </pre>
 </td>
+</tr>
+</table>
 
+<table>
+<tr>
+<th>Nested JWT</th>
+</tr>
 <td>
 <pre>
 {
@@ -96,12 +105,24 @@ der indre JWT er
 }
 </pre>
 </td>
+</tr>
+</table>
 
+<table>
+<tr>
+<th>Vectors of Trust</th>
+</tr>
 <td>
 <pre>
 </pre>
 </td>
+</tr>
+</table>
 
+<table>
+<tr>
+<th>Helsesektoren</th>
+</tr>
 <td>
 <pre>
 "helse://client/requester":
