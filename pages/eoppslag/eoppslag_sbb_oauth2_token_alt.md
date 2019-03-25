@@ -94,6 +94,37 @@ der indre JWT er
 </pre
 </td>
 
+<td>
+<pre>
+</pre
+</td>
+
+<td>
+<pre>
+"helse://client/requester":
+{
+  "resourceType": "HealthcareService ",
+  "identifier": {
+    "system": "urn:oid:2.16.578.1.12.4.1.2.102",
+    "value": "client_id"
+  },
+  "provideBy": {
+    "Organization": {
+      "identifier": {
+        "system": "urn:oid:2.16.578.1.12.4.1.2.101",
+        "value": "999888777"
+      }}},
+  "provideBy": {
+    "Organization": {
+      "identifier": {
+        "system": "urn:oid:2.16.578.1.12.4.1.2.101",
+        "value": "888111222"
+      }}},
+ "name": "HSØ responssenter"
+}
+</pre
+</td>
+
 
 </table>
 
