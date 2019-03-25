@@ -42,11 +42,13 @@ Det finst flere alternative "inspirasjonskilder" som vi kan skjele til
 ### Oppsummert:
 
 <table>
+<tr>
 <th>Priorietær</th>
 <th>Token exchange</th>
 <th>Nested JWT</th>
 <th>Vectors of Trust</th>
 <th>Helsesektoren</th>
+</tr>
 
 <tr>
 <td>
@@ -126,11 +128,12 @@ der indre JWT er
 </pre>
 </td>
 
-
+</tr>
 </table>
 
 
 #### token exhange:
+
 - https://tools.ietf.org/html/draft-ietf-oauth-token-exchange-16
 - i eoppslag:  delegatio has occured -> bruke `act`-claim (og ikkje 'may_act')
 - virkar fornuftig å bruke orgno både for konsuemnt og leverandør
