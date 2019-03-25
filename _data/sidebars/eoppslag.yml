@@ -48,6 +48,10 @@ entries:
       output: web, pdf
       url: /eoppslag_sbb_oauth2_tokens.html
 
+    - title: Tokens for eOppslag
+      output: web, pdf
+      url: /eoppslag_sbb_oauth2_token_alt.html
+
     - title: Tokenvalidering
       output: web, pdf
       url: /eoppslag_sbb_oauth2_tokenvalidering.html
