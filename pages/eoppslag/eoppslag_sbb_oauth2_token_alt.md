@@ -75,6 +75,7 @@ eller tilogmed norsk?
 <tr>
 <th>Token exchange</th>
 </tr>
+<tr>
 <td>
 <pre>
 {
@@ -93,6 +94,7 @@ eller tilogmed norsk?
 <tr>
 <th>Nested JWT</th>
 </tr>
+<tr>
 <td>
 <pre>
 {
@@ -110,21 +112,12 @@ der indre JWT er signert av Altinn og har body
 </tr>
 </table>
 
-<table>
-<tr>
-<th>Vectors of Trust</th>
-</tr>
-<td>
-<pre>
-</pre>
-</td>
-</tr>
-</table>
 
 <table>
 <tr>
 <th>Helsesektoren</th>
 </tr>
+<tr>
 <td>
 <pre>
 "helse://client/requester":
