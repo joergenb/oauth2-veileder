@@ -1,0 +1,466 @@
+openapi: 3.0.2
+info:
+    title: Maskinporten Delegeringskilde API
+    description: API som delegeringskilder må implementere for integrasjon med Maskinportens tilgangskontroll
+    contact:
+        name: Bjørn Dybvik Langfors
+        email: bdl@brreg.no
+    version: 0.2.0
+paths:
+    /delegations/:
+        summary: Henter ut en liste over alle delegeringer som er gjort på et scope
+        description: >-
+            Scope oppgis som query-parameter for å unngå problemer med "/" i paths. Kan filtreres på
+            `consumer_org`, som returnerer alle delegeringer gitt av oppgitt organisasjonsnummer. Hvis
+            `supplier_org` oppgis, returneres alle delegeringer som oppgitt organisasjonsnummer har mottatt.
+            En, begge eller ingen av parameterene kan oppgis. 
+        get:
+            summary: Liste over alle delegeringer som er gjort på et scope
+            responses:
+                '200':
+                    description: Liste over alle delegeringer som er gjort på dette scopet.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Delegation'
+        parameters:
+            -
+                name: scope
+                in: query
+                description: Scope som registrert i ID-porten
+                required: true
+                schema:
+                    type: string
+            -
+                name: consumer_org
+                in: query
+                description: Viser delegeringer begrenset til de utført av oppgitt organisasjonsnummer
+                schema:
+                    type: string
+            -
+                name: supplier_org
+                in: query
+                description: Viser delegeringer begrenset til de gitt til oppgitt organisasjonsnummer
+                schema:
+                    type: string
+    /delegationSchemes:
+        summary: Hente ut liste over registrerte delegeringsoppsett eller registrere et nytt
+        description: >-
+            Endepunkt for å hente ut en liste over delegeringsoppsett (valgfritt filtrert på eier), eller for
+            å poste et nytt oppsett.
+        get:
+            summary: Lister ut alle delegeringsoppsett
+            description: 'Returnerer en liste over alle delegeringsoppsett, valgfritt filtrert på oppgitt owner_id'
+            parameters:
+                -
+                    name: owner_id
+                    in: query
+                    description: Begrens liste til delegeringsoppsett eid av oppgitt owner_id
+                    schema:
+                        type: string
+            responses:
+                '200':
+                    description: Returnerer en liste av delegeringsoppsett
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/DelegationScheme'
+        post:
+            summary: Opprett et delegeringsoppsett
+            description: Lager et nytt delegeringsoppsett.
+            requestBody:
+                description: Delegeringsoppsett som ønskes opprettet.
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DelegationScheme'
+                required: true
+            responses:
+                '201':
+                    description: Delegeringsoppsettet er opprettet.
+                '400':
+                    description: Ugyldig delegeringsoppsett. Se respons for nærmere forklaring.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '403':
+                    description: >-
+                        Ingen tilgang til å opprette oppgitt delegeringsoppsett. Se respons for nærmere
+                        forklaring.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '409':
+                    description: Et delegeringsskjema med samme id finnes allerede.
+    '/delegationSchemes/{delegationSchemeId}':
+        summary: Path for å administrere et enkelt delegeringsoppsett
+        description: >-
+            Endepunkt for å hente, oppdatere og slette spesifikke delegeringsoppsett. Avhengig av
+            delegeringskilde og om det foreligger delegeringer knyttet til oppgitte oppsettet vil
+            skriveoperasjoner kunne nektes av delegeringskilden. 
+        get:
+            summary: Hent et delegeringsoppsett
+            description: Hent informasjon om et enkelt delegeringsoppsett.
+            responses:
+                '200':
+                    description: Returnerer et delegeringsoppsett som definert av `DelegationScheme`.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DelegationScheme'
+                '404':
+                    description: Forespurte delegeringsoppsett ble ikke funnet.
+        put:
+            summary: Oppdaterer et delegeringsoppsett
+            description: Oppdaterer et delegeringsoppsett.
+            requestBody:
+                description: Oppdatert delegeringsoppsett
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DelegationScheme'
+                required: true
+            responses:
+                '202':
+                    description: Delegeringsoppsettet ble oppdatert.
+                '400':
+                    description: Ugyldig delegeringsoppsett. Se respons for nærmere forklaring.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '403':
+                    description: >-
+                        Ikke tilgang til å oppdatere delegeringsoppsettet. Nærmere forklaring ligger i
+                        response body.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '404':
+                    description: Forespurte delegeringsoppsett ble ikke funnet.
+        delete:
+            summary: Slett et delegeringsoppsett
+            description: 'Sletter et eksisterende delegeringsoppsett, hvis delegeringsskilden tillater det.'
+            responses:
+                '204':
+                    description: Oppsettet ble slettet.
+                '403':
+                    description: Kunne ikke slette delegeringsoppsettet. Nærmere forklaring ligger i response body.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                '404':
+                    description: Forespurte delegeringsoppsett ble ikke funnet.
+        parameters:
+            -
+                name: delegationSchemeId
+                in: path
+                description: ID for delegeringsoppsett
+                required: true
+                schema:
+                    type: string
+    '/delegationSchemes/{delegationSchemeId}/scopes':
+        summary: Scopes knyttet til et delegeringsoppsett
+        description: Endepunkt for hente og oppdatere listen med scopes knyttet til et delegeringsoppsett
+        get:
+            summary: Hent liste over alle scopes for et delegeringsoppsett
+            parameters:
+                -
+                    name: delegationSchemeId
+                    in: path
+                    description: ID på delegeringsoppsett
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                '200':
+                    description: Liste av scopes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ScopeList'
+                '404':
+                    description: Oppgitt delegeringoppsett-ID finnes ikke
+        put:
+            summary: Erstatt eksisterende liste av scopes med ny liste med scopes
+            parameters:
+                -
+                    name: delegationSchemeId
+                    in: path
+                    description: ID for delegeringsoppsett
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                description: Ny list med scopes
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ScopeList'
+                required: true
+            responses:
+                '204':
+                    description: Listen med scopes ble oppdatert
+                '400':
+                    description: Ugyldig liste med scopes
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+        parameters:
+            -
+                name: delegationSchemeId
+                in: path
+                description: ID for delegeringsoppsett
+                required: true
+                schema:
+                    type: string
+    '/delegationSchemes/{delegationSchemeId}/scopes/{scope}':
+        summary: Legg til eller fjern tilknytning til oppgitt scope for oppgitt delegeringsoppsett
+        description: >-
+            Endepunkt for å administrere enkeltscopes for det gitte delegeringsoppsettet. PUT vil knytte et
+            nytt scope til delegeringsoppsettet. Hvis scopet allerede finnes, skjer ingenting. DELETE vil
+            fjerne det oppgitte scopet fra listen av scopes knyttet til det gitte delegeringsoppsettet.
+        put:
+            summary: Knytt oppgitt scope med oppgitt delegeringsoppsett
+            responses:
+                '204':
+                    description: Scope lagt til delegeringsoppsett
+                '400':
+                    description: Ugyldig scope
+                '404':
+                    description: Delegeringsoppsett ikke funnet
+        delete:
+            summary: Slett oppgitt scope fra liste av scopes for oppgitt delegeringsoppsett
+            responses:
+                '204':
+                    description: Scope fjernet fra listen
+                '404':
+                    description: Oppgitt scope ikke funnet i listen av scopes for gitt delegeringsoppsett
+        parameters:
+            -
+                name: delegationSchemeId
+                in: path
+                description: ID for delegeringsoppsett
+                required: true
+                schema:
+                    type: string
+            -
+                name: scope
+                in: path
+                description: >-
+                    Navn på nytt scope som skal knyttes til delegeringsoppsettet, eller eksisterende scope som
+                    skal fjernes fra listen av scopes for delegeringsoppsettet.
+                required: true
+                schema:
+                    type: string
+components:
+    schemas:
+        Delegation:
+            title: Root Type for Delegation
+            description: Aktiv delegering i delegeringskilde
+            type: object
+            properties:
+                consumer_org:
+                    description: Organisasjonsnummer til aktøren som gir delegeringen
+                    type: string
+                supplier_org:
+                    description: Organisasjonsnummer til aktøren som har fått delegert tilgang
+                    type: string
+                delegation_scheme:
+                    description: Navn på delegeringsoppsett som det ble delegert på.
+                    type: string
+                created:
+                    format: date-time
+                    description: UTC-tidspunkt for når delegeringen fant sted
+                    type: string
+                scopes:
+                    $ref: '#/components/schemas/ScopeList'
+            example:
+                consumer_org: '987654321'
+                supplier_org: '976543210'
+                delegation_scheme: 'difi:krr_read'
+                scopes:
+                    - 'difi:user/kontaktinfo.read'
+                    - 'difi:user/varsling.read'
+                created: '2018-01-01T12:00:00Z'
+        DelegationSourceConfigurationItem:
+            title: Root Type for DelegationSourceConfigurationItem
+            description: >-
+                Generisk nøkkel/verdi-par for å kunne oppgi vilkårlige attributter for en delegationScheme
+                spesifikke for valgt delegationSource
+            required:
+                - key
+                - value
+            type: object
+            properties:
+                key:
+                    description: Nøkkelnavn for konfigurasjonsfelt
+                    pattern: '^[a-zA-Z0-9_]+$'
+                    type: string
+                value:
+                    description: Nøkkelverdi for konfigurasjonsfelt
+                    type: string
+            example: |-
+                { 
+                    "key": "roles",
+                    "value": "PRIV,UTINN"
+                }
+        LocalizedString:
+            description: Modell for å utrykke en streng i flere språk / locales.
+            required:
+                - default
+            type: object
+            properties:
+                default:
+                    description: Representasjon som skal brukes når ingen andre språk er oppgitt eller er aktuelle
+                    type: string
+                lang:
+                    description: Liste med oversettelser av strengen i ulike språk/locales
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/LocalizedStringItem'
+            example:
+                value: API for Departementenes sikkerhets- og serviceorganisasjon
+                lang:
+                    -
+                        code: nb_NO
+                        value: API for Departementenes sikkerhets- og serviceorganisasjon
+                    -
+                        code: nn_NO
+                        value: API for Tryggings- og serviceorganisasjonen til departementa
+                    -
+                        code: en_GB
+                        value: API for Norwegian Government Security and Service Organisation
+                    -
+                        code: en_US
+                        value: Norwegian Government Security and Service Organization
+        LocalizedStringItem:
+            title: Root Type for LocalizedStringItem
+            description: En streng oppgitt i henhold til et språk/locale som definert i IETF BCP 47
+            required:
+                - code
+                - value
+            type: object
+            properties:
+                code:
+                    description: IETF BCP 47 language tag
+                    type: string
+                value:
+                    description: Verdi for strengen i oppgitt språk/locale
+                    type: string
+            example:
+                code: nb_NO
+                value: API for Departementenes sikkerhets- og serviceorganisasjon
+        DelegationScheme:
+            title: Root Type for DelegationSchemeDefinition
+            description: >-
+                Modell som beskriver et delegeringsoppsett. Dette vil tilgjengeliggjøres som en delegerbar
+                ressurs i oppgitt delegeringskilde.
+            required:
+                - id
+                - owner_org
+                - scopes
+            type: object
+            properties:
+                title:
+                    $ref: '#/components/schemas/LocalizedString'
+                description:
+                    $ref: '#/components/schemas/LocalizedString'
+                delegation_source:
+                    description: >-
+                        Identifikator for kilden hvor delegeringer på knyttet til dette delegeringsoppsettet
+                        utføres.
+                    pattern: '^[a-zA-Z0-9_]+$'
+                    type: string
+                    example: altinn
+                delegation_source_config:
+                    description: Valgfri liste med nøkkel-verdi-par som benyttes mot delegeringskilden.
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DelegationSourceConfigurationItem'
+                id:
+                    description: Unik identifikator for delegeringsoppsett
+                    pattern: '^[a-zA-Z0-9_]+$'
+                    type: string
+                scopes:
+                    $ref: '#/components/schemas/ScopeList'
+                owner_org:
+                    description: Eier av delegeringsoppsettet. Norsk organisasjonsnummer.
+                    type: string
+            example:
+                id: krr_full
+                scopes:
+                    - 'difi:user/kontaktinfo.read'
+                    - 'difi:user/varsling.read'
+                title:
+                    default: Full tilgang til kontakt- og reservasjonsregisteret
+                    lang:
+                        -
+                            code: en_GB
+                            value: Full access to the Contact and Reservation Register
+                description:
+                    default: Gir anledning til å lese og endre data i KRR
+                    lang:
+                        -
+                            code: nn_NO
+                            value: Gjer høve til å lesa og endra data i KRR
+                        -
+                            code: en_GB
+                            value: Allows you to read and change data in the Contact and Reservation Register
+                owner_org: '991825827'
+                delegation_source: altinn
+                delegation_source_config:
+                    -
+                        key: roles
+                        value: PRIV
+        Error:
+            title: Root Type for Error
+            description: >-
+                Generisk modell for å beskrive kjøretidsfeil. Brukes i forbindelse med 4xx og 5xx returer fra
+                API-et.
+            required:
+                - errorDescription
+                - errorCode
+            type: object
+            properties:
+                errorCode:
+                    format: int32
+                    description: Feilkode. TODO! Kodeliste må beskrives.
+                    type: integer
+                errorDescription:
+                    description: Beskrivelse av feilen som oppstod.
+                    type: string
+            example: |-
+                {
+                    "errorCode": 4031,
+                    "errorDescription": "Unable to delete the delegation scheme that has active delegations"
+                }
+        ScopeList:
+            title: Liste med scopes
+            description: Scopes assosiert med et delegeringsoppsett
+            type: array
+            items:
+                type: string
+            example: |-
+                [
+                    "difi:user/kontaktinfo.read",
+                    "difi:user/varsling.read"
+                ]
+    securitySchemes:
+        maskinporten:
+            type: oauth2
+            description: Only maskinporten should ever be granted access to this scope
+            flows:
+                clientCredentials:
+                    tokenUrl: 'https://oidc.difi.no/idporten-oidc-provider/token'
+                    scopes:
+                        delegations: Read access to delegations for arbitrary actors and scopes

@@ -24,8 +24,8 @@ Utledning av grensesnittsdefinisjonen kan leses [her](/eoppslag_sbb_oauth2_admin
 
 Dette APIet blir kun brukt av Token-tjenesten for å registrere delegerbare ressurser og validere gjeldende delegeringsforhold.
 
-> Forslag til design er dokumentert i OAS3 her: [versjon 0.1.0](
-https://github.com/joergenb/oauth2-veileder/blob/gh-pages/pages/eoppslag/assets/delegations_0.1.0_oas.yaml)
+> Forslag til design er dokumentert i OAS3 her: [versjon 0.2.0](
+https://github.com/joergenb/oauth2-veileder/blob/gh-pages/pages/eoppslag/assets/delegations_0.2.0_oas.yaml)
 
 ### 3. Grensesnitt mellom API-katalog og token-tjenestens
 
