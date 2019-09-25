@@ -1,0 +1,47 @@
+0.3.0
+---------------------------------------------------------------------------------------------------
+/delegations
+	GET: 403 hvis ikke tilgang til å hente delegeringer
+
+/delegationSchemes
+	POST: 201 returnerer nå GUID for delegeringsoppsettet som streng
+	GET: query parameter owner_id endret til owner_orgno
+
+/delegationSchemes/{delegationSchemeId}
+	GET: returnerer nå 403 hvis ikke tilgang til oppgitt delegationSchemeId
+
+
+/delegationSchemes/{delegationSchemeId}/scopes
+	GET: returnerer nå 403 hvis ikke tilgang til oppgitt delegationSchemeId
+	PUT: returnerer nå 403 hvis ikke tilgang til oppgitt delegationSchemeId
+
+/delegationSchemes/{delegationSchemeId}/scopes/{scope}
+	GET: returnerer nå 403 hvis ikke tilgang til oppgitt delegationSchemeId
+	PUT: returnerer nå 403 hvis ikke tilgang til oppgitt delegationSchemeId
+
+DelegationScheme
+	- id -> delegation_scheme_id
+	- owner_org > owner_orgno
+	- La til feltene "created" og "last_changed"
+
+Error
+	- errorCode -> error_code
+	- errorDescription -> error_description
+
+LocalizedString
+	- "lang" er nå påkrevd
+	- "default" peker nå på den språk-koden (key i "lang") som skal brukes som standard
+
+
+ScopeList
+	- Fjernet til fordel for Scope, som brukes i en array der scopelist tidligere ble brukt
+
+
+Generelt:
+	- Flere kontekst-avhengige eksempler
+	- Regex der det behøves (orgnr)
+	- format-hints for uuid
+
+
+0.2.0
+---------------------------------------------------------------------------------------------------
