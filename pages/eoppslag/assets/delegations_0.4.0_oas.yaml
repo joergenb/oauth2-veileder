@@ -74,6 +74,17 @@ paths:
                                 type: array
                                 items:
                                     $ref: '#/components/schemas/DelegationScheme'
+                '403':
+                    description: Ingen tilgang til å hente ut liste over delegeringsoppsett.
+                '400':
+                    description: Oppgitt organisasjonsnummer finnes ikke eller er ugyldig
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example: 
+                                error_code: 4001
+                                error_description: 'Supplied organization number is invalid or does not exist'
         post:
             summary: Opprett et delegeringsoppsett
             description: Lager et nytt delegeringsoppsett.
