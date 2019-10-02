@@ -1,3 +1,15 @@
+0.4.0
+---------------------------------------------------------------------------------------------------
+
+LocalizedStringItem
+	- Renamed til LocalizedString
+
+LocalizedString (den gamle)
+	- Fjernet, erstattes med generisk array
+
+DelegationScheme
+	- La til "standard_language"
+
 0.3.0
 ---------------------------------------------------------------------------------------------------
 /delegations
