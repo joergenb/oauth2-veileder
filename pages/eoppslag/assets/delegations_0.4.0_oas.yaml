@@ -99,7 +99,7 @@ paths:
                             scopes:
                                 - 'difi:user/kontaktinfo.read'
                                 - 'difi:user/varsling.read'
-                            standard_language: nb_NO
+                            default_language: nb_NO
                             title:
                                 -
                                     code: nb_NO
@@ -193,7 +193,7 @@ paths:
                             scopes:
                                 - 'difi:user/kontaktinfo.read'
                                 - 'difi:user/varsling.read'
-                            standard_language: nb_NO
+                            default_language: nb_NO
                             title:
                                 -
                                     code: nb_NO
@@ -434,7 +434,7 @@ components:
                   type: array
                   items:
                     $ref: '#/components/schemas/Scope'
-                standard_language:
+                default_language:
                     description: Standard språk for dette delegationSchemet. IETF BCP 47 language tag som må finnes på alle tekststrenger som strenger lokalisering.
                     type: string
                 title:
@@ -469,6 +469,7 @@ components:
                 scopes:
                     - 'difi:user/kontaktinfo.read'
                     - 'difi:user/varsling.read'
+                default_language: nb_NO
                 title:
                     -
                         code: nb_NO
@@ -519,7 +520,7 @@ components:
                     "value": "PRIV,UTINN"
                 }
         LocalizedString:
-            title: LocalizedStrin
+            title: LocalizedString
             description: En streng oppgitt i henhold til et språk/locale som definert i IETF BCP 47
             required:
                 - code
