@@ -1,8 +1,17 @@
+0.5.0
+---------------------------------------------------------------------------------------------------
+/delegationSchemes/{delegationSchemeId}/scopes/{scope}
+	- Fjernet til fordel for query parameter
+
+/delegationSchemes/{delegationSchemeId}/scopes
+	- POST: La til POST-operasjon, som krever scope-parameter oppgitt i query
+	- DELETE: La til DELETE-operasjon, som krever scope-parameter oppgitt i query
+
 0.4.0
 ---------------------------------------------------------------------------------------------------
 
 /delegationSchemes
-	GET: La til 403 hvis ikke tilgang, 400 med Error-modell hvis ugyldig owner_orgno oppgis
+	- GET: La til 403 hvis ikke tilgang, 400 med Error-modell hvis ugyldig owner_orgno oppgis
 
 LocalizedStringItem
 	- Renamed til LocalizedString
